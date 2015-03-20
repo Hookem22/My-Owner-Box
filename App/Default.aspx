@@ -47,6 +47,13 @@
                 if ($(this).hasClass("active"))
                     return;
 
+                if ($(this).text() == "Print")
+                {
+                    var header = $(".nav.primary .active").html();
+                    window.open("/Word?header=" + header);
+                    return;
+                }
+
                 $(this).siblings().removeClass("active");
                 $(this).addClass("active");
 
@@ -114,7 +121,7 @@
             var header = $(".nav.primary div.active").html();
             if(header == "Concept")
             {
-                subheaders = ["Create Your Concept"];
+                subheaders = ["Create Your Concept", "Print"];
             }
             else if (header == "Business Plan")
             {
@@ -382,6 +389,7 @@
         <div class="main">
            <div class="nav secondary">
                 <div class="active" style="margin-left:0;">Create Your Concept</div>
+                <div>Print</div>
             </div>
             <div class="fromDb" style="margin-left:5%;">
                 <div class="multiTextGroup">

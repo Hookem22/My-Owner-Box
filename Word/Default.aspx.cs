@@ -13,13 +13,25 @@ public partial class Word_Default : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-
+        string header = "";
+        if (!string.IsNullOrEmpty(Request.QueryString["header"]))
+        {
+            header = Request.QueryString["header"];
+        }
+        
         using (MemoryStream mem = new MemoryStream())
         {
-            WordDoc.InsertTableInDoc(mem);
+            if (header == "Concept")
+            {
+                WordDoc.PrintConcept(mem);
+            }
+            else
+            {
+                WordDoc.Financials(mem);
+            }
 
             // Stream it down to the browser
-            Response.AppendHeader("Content-Disposition", "attachment;filename=" + "Testdoc.docx");
+            Response.AppendHeader("Content-Disposition", "attachment;filename=" + "Testdoc1.docx");
             Response.ContentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
             mem.Position = 0;
             mem.CopyTo(Response.OutputStream);
