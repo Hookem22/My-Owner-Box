@@ -1,0 +1,404 @@
+﻿@font-face {
+font-family: 'KlinicSlab';
+src: url('/fonts/KlinicSlabMedium.otf') format("opentype");
+}
+@font-face {
+font-family: 'KlinicSlabBold';
+src: url('/fonts/KlinicSlabBold.otf') format("opentype");
+}
+@font-face {
+font-family: 'KlinicSlabBoldIt';
+src: url('/fonts/KlinicSlabBoldIt.otf') format("opentype");
+}
+@font-face {
+font-family: 'KlinicSlabLight';
+src: url('/fonts/KlinicSlabLight.otf') format("opentype");
+}
+html, body, form {
+    height: 100%;
+}
+body {
+    font-family: "KlinicSlab","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    color: #333333;
+    margin: 0;
+    padding: 0;
+    letter-spacing: 1px;
+}
+ul {
+    padding: 0;
+    margin: 0;
+}
+ul li {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+a
+{
+    text-decoration: none;
+}
+a:hover
+{
+    text-decoration: none;
+    color: #fff;
+}
+input
+{
+    font-family: "KlinicSlab","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+textarea
+{
+    font-family: "KlinicSlab","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+.modal-backdrop {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    background-color: #000;
+    opacity: .5;
+    display: none;
+}
+.modal-dialog
+{
+    position: absolute;
+    width: 800px;
+    z-index: 1000;
+    background: white;
+    left: 50%;
+    margin-left: -400px;
+    display: none;
+}
+.dialogClose
+{
+    float: right;
+    padding: 0 15px 15px 15px;
+    margin: 11px 3px -50px 0;
+    font-size: 16pt;
+    color: #34B8F4;
+    cursor: pointer;
+    position: relative;
+    font-family:Helvetica,Arial,san-serif;
+}
+.mainnav {
+    background: #F19F00;
+    position: fixed;
+    z-index: 100;
+    width: 100%;
+    text-align: center;
+    top: 0;
+}
+.mainnav ul
+{
+    margin: 8px 16px;
+
+}
+.mainnav ul li
+{
+    display: inline;
+    margin: 8px 16px;
+}
+.mainnav ul li a
+{
+    color: white;
+}
+
+
+.pitch
+{
+    height: 100%;
+    width: 100%;
+    min-height: 680px;
+    background-image: url(/img/pitch.png);
+    background-position: center 120px;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    margin-top: -95px;
+}
+.logoDiv
+{
+    width: 98%;
+    text-align: center;
+    margin: 10px 0;
+    padding-top: 130px;
+}
+.logoDiv img
+{
+    width: 210px;
+}
+.tagline, .question
+{
+    font-family: "KlinicSlabBoldIt","KlinicSlab","Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: white;
+    font-size: 34px;
+    line-height: 34px;
+    position: relative;
+    text-align: center;
+    margin: 20px 0 20px;
+}
+.pitchButton
+{
+    color: #fff;
+    background: #F19F00;
+    transition-duration: 0.7s;
+    -webkit-transition: 0.7s;
+    padding: 10px 30px;
+    position: absolute;
+    font-size: 24px;
+    line-height: 30px;
+    text-align: center;
+    width: 400px;
+    margin: 16px auto;
+    border-radius: 15px;
+    border: 4px solid white;
+    box-shadow: 3px 3px 8px #333333;
+    left: 50%;
+    margin-left: -234px;
+}
+.pitchButton:hover {
+    box-shadow: inset 0 100px 0 0 white;
+    transition-duration: 0.4s;
+    -webkit-transition: 0.4s;
+    cursor: pointer;
+    border: 4px solid #F19F00;
+    color: #F19F00;
+}
+.questions
+{
+    display: none;
+    left: 120%;
+    position: absolute;
+    min-width: 600px;
+}
+.question
+{
+    margin-top: -56px;
+}
+.answer
+{
+    padding: 16px 0 16px 30px;
+    width: 400px;
+    margin: 16px auto;
+    border-radius: 15px;
+    border: 4px solid #F19F00;
+    color: #F19F00;
+    background: white;
+}
+.answer.whatType
+{
+    padding: 2em 0;
+    text-align: center;
+    width:470px;
+}
+.answer input
+{
+    width: 240px;
+    margin-right: 16px;
+}
+.answer h2
+{
+    color: #333;
+    margin: 0 0 .25em;
+}
+.answer img
+{
+    height: 240px;
+    margin-right: 16px;
+    float: left;
+}
+.answer.withImg
+{
+    height: 265px;
+}
+.answer.withImg .button
+{
+    float: left;
+}
+.questionsContent
+{
+    display: none;
+    font-size: 26px;
+    line-height: 38px;
+    margin: 25px 0;
+}
+.signupContent div
+{
+    width: 140px;
+    float: left;
+}
+.signupContent input
+{
+    font-size: 22px;
+    width: 60%;
+    float: left;
+}
+.arrow-up {
+	width: 0; 
+	height: 0; 
+	border-left: 20px solid transparent;
+	border-right: 20px solid transparent;
+	
+	border-bottom: 40px solid white;
+    margin: -39px 47% 0;
+}
+.howitworks
+{
+    margin: 40px 20px;
+    text-align: center;
+}
+.howitworks h2
+{
+    color: #BEBEBE;
+}
+.howitworks img
+{
+    height: 54px;
+}
+.step
+{
+    width: 32%;
+    float: left;
+    margin-bottom: 70px;
+}
+.step h2
+{
+    color: #00AAF1;
+    margin-bottom: 4px;
+}
+.step div
+{
+    font-size: 20px;
+    line-height: 24px;
+    clear: both;
+    margin: 4px 10%;
+}
+.step .horizontal
+{
+    width: 80%;
+}
+.quote
+{
+    font-family: "KlinicSlabLight","KlinicSlab","Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: white;
+    background-color: #00AAF1;
+    padding: 80px 14%;
+    font-size: 38px;
+    line-height: 48px;
+    clear: both;
+    margin-bottom: 1em;
+}
+.quote div
+{
+    font-size: 28px;
+    text-align: center;
+}
+.contact
+{
+    text-align:center;
+}
+.contact h2
+{
+    color: #00AAF1;
+    margin: 28px 0 18px;
+}
+.contact input, .contact textarea
+{
+    font-size: 22px;
+    width: 75%;
+    margin: 4px 0 0 5%;
+    padding: 4px 0;
+}
+.button
+{
+    color: #fff;
+    background: #F19F00;
+    transition-duration: 0.7s;
+    -webkit-transition: 0.7s;
+    padding: 4px 30px;
+    font-size: 16px;
+    text-align: center;
+    border-radius: 10px;
+    border: 2px solid white;
+    box-shadow: 3px 3px 8px #333333;
+    width: 60px;
+}
+.button:hover {
+    box-shadow: inset 0 100px 0 0 white;
+    transition-duration: 0.4s;
+    -webkit-transition: 0.4s;
+    cursor: pointer;
+    border: 2px solid #F19F00;
+    color: #F19F00;
+}
+.horizontal
+{
+    width: 75%;
+    border-bottom: solid 2px #00AAF1;
+    float: left;
+    margin: 0 15%;
+}
+.footer
+{
+    color: white;
+    background-color: #00AAF1;
+    margin: 2em 0 0;
+    padding: 15px 0;
+    font-family: "KlinicSlabLight","KlinicSlab","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 16px;
+    clear: both;
+    text-align: center;
+    min-width: 750px;
+}
+.footer span
+{
+    font-family: "KlinicSlabBold","KlinicSlab","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+
+.blueBtn 
+{
+    font-size: 16px;
+    border: 2px solid transparent;
+    border-radius: 15px;
+    padding: 5px 25px;
+    background: #4683ea;
+    color: #fff;
+    margin: 1em;
+}
+.blueBtn:hover 
+{
+    color: #4683ea;
+    background: #fff;
+    border-color: #4683ea;
+    cursor: pointer;
+}
+.answer.price
+{
+    height:110px;
+    color:#333;
+    padding:0;
+    width: 500px;
+}
+.answer ul
+{
+    color:#333;
+    margin-bottom:2em;
+}
+.answer ul li
+{
+    margin: .6em 0;
+    font-size: 1.3em;
+}
+.answer .buyBtn
+{
+    width: 120px;
+    font-size:1.5em;
+    line-height:2em;
+    margin-bottom: .2em;
+}
+.answer .startToday
+{
+    float:left;
+    padding: 15px 0 0 63px;
+}

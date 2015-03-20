@@ -1,0 +1,85 @@
+﻿body.Mobile
+{
+    overflow-x: hidden;
+}
+.Mobile .pitch
+{
+    background: #075DCB;
+}
+
+.Mobile .pitchButton
+{
+    width: 60%;
+    left: 10%;
+    margin-left: 0;
+}
+.Mobile .step
+{
+    width: 99%;
+}
+.Mobile .questions .question
+{
+    width: 50%;
+    margin-top: -86px;
+}
+.Mobile .questions .answer
+{
+    width: 45%;
+    left: 10%;
+    margin-left: 0;
+}
+.Mobile .questions .answer.price 
+{
+    width: 55%;
+}
+.Mobile .answer .startToday
+{
+    padding: 15px 0 0 20px;
+}
+.Mobile .answer input
+{
+    margin-bottom:1em;
+    margin-right: 0;
+}
+.Mobile .answer.whatType
+{
+    width: 45%;
+    float: left;
+    padding: 1em 0;
+}
+.Mobile .answer.whatType .blueBtn
+{
+    float: left;
+    margin: .5em 0 .5em 2.5em;
+}
+.Mobile .questions .tagline
+{
+    margin-top: -75px;
+    text-align: left;
+    left: 0%;
+}
+.Mobile .questions .pitchButton
+{
+    left: 0;
+    width: 40%;
+}
+.Mobile .answer .buyBtn
+{
+    padding: 0 16px;
+    width:95px;
+    font-size: 1.2em;
+    line-height: 2em;
+    margin-bottom: .5em;
+}
+.Mobile .answer .startToday 
+{
+    padding: 15px 0 0 10px;
+}
+.Mobile .answer .underMinute
+{
+    width: 120px;
+}
+.Mobile .footer
+{
+    min-width: 0;
+}
