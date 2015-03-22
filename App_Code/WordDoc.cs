@@ -67,10 +67,10 @@ public class WordDoc
             mainPart.Document = new Document();
             Body body = mainPart.Document.AppendChild(new Body());
 
-            FinancialsOverview(wordDocument);
-            body.AddPageBreak();
-            FinancialsCapitalBudget(wordDocument);
-            body.AddPageBreak();
+            //FinancialsOverview(wordDocument);
+            //body.AddPageBreak();
+            //FinancialsCapitalBudget(wordDocument);
+            //body.AddPageBreak();
             FinancialsSalesProjection(wordDocument);
         }
     }
@@ -78,6 +78,9 @@ public class WordDoc
     public static void FinancialsOverview(WordprocessingDocument wordDocument)
     {
         Body body = wordDocument.MainDocumentPart.Document.Body;
+
+        body.AddHeader("Financials Overview");
+        
         // Create a table.
         Table tbl = new Table();
 
@@ -121,8 +124,11 @@ public class WordDoc
     }
 
     public static void FinancialsCapitalBudget(WordprocessingDocument wordDocument)
-    {
+    {       
         Body body = wordDocument.MainDocumentPart.Document.Body;
+
+        body.AddHeader("Capital Budget");
+
         // Create a table.
         Table tbl = new Table();
 
@@ -187,9 +193,167 @@ public class WordDoc
 
     public static void FinancialsSalesProjection(WordprocessingDocument wordDocument)
     {
+        Body body = wordDocument.MainDocumentPart.Document.Body;
+        
+        body.AddHeader("Sales Projections");
+
+        //if breakfast
+        BreakfastCheck(body);
+        body.AddLineBreak();
+        //if lunch
+        LunchCheck(body);
+        body.AddLineBreak();
+        //if dinner
+        DinnerCheck(body);
 
     }
+
+    static void BreakfastCheck(Body body)
+    {
+        // Create a table.
+        Table tbl = new Table();
+
+        // Set the style and width for the table.
+        TableProperties tableProp = new TableProperties();
+        TableStyle tableStyle = new TableStyle() { Val = "TableGrid" };
+
+        // Make the table width 100% of the page width.
+        TableWidth tableWidth = new TableWidth() { Width = "5000", Type = TableWidthUnitValues.Pct };
+
+        // Apply
+        tableProp.Append(tableStyle, tableWidth);
+        tbl.AppendChild(tableProp);
+
+        // Add 3 columns to the table.
+        TableGrid tg = new TableGrid(new GridColumn(), new GridColumn(), new GridColumn(), new GridColumn(), new GridColumn(), new GridColumn());
+        tbl.AppendChild(tg);
+
+        string[] header = new string[] { "FontSize:36|Bold|JustifyCenter|Background:ABCDEF", "JustifyCenter|Background:AAAAAA", "JustifyCenter|Background:AAAAAA", "JustifyCenter|Background:AAAAAA", "JustifyCenter|Background:AAAAAA", "JustifyCenter|Background:AAAAAA", "JustifyCenter|Background:AAAAAA" };
+        string[] sumStyle = new string[] { "", "", "Bold" };
+        double foodSum = 0;
+        double bevSum = 0;
+
+        List<Question> questions = Question.Get("Financials", "Sales Projection", 1 /*TODO: User Id*/);
+        //if breakfast
+        tbl.AddRow(new string[] { "Breakfast", "Average|Price Point", "% Ordered", "Average|Food", "Average|Beverage", "Average|Check" }, header);
+        tbl.AddRow(new string[] { "Food" }, new string[] { "Bold" });
+        foodSum += AddCheckPrice(tbl, "Entree", questions[0].Answer.Text, questions[1].Answer.Text, true);
+        foodSum += AddCheckPrice(tbl, "Appetizer", questions[2].Answer.Text, questions[3].Answer.Text, true);
+        tbl.AddRow(new string[] { "Beverage" }, new string[] { "Bold" });
+        foodSum += AddCheckPrice(tbl, "Non-Alcoholic", questions[4].Answer.Text, questions[5].Answer.Text, true);
+        bevSum += AddCheckPrice(tbl, "Liquor", questions[6].Answer.Text, questions[7].Answer.Text, false);
+        bevSum += AddCheckPrice(tbl, "Beer", questions[8].Answer.Text, questions[9].Answer.Text, false);
+        bevSum += AddCheckPrice(tbl, "Wine", questions[10].Answer.Text, questions[11].Answer.Text, false);
+        tbl.AddRow(new string[] { "TOTALS", "", "", foodSum.ToString("0.00"), bevSum.ToString("0.00"), (foodSum + bevSum).ToString("0.00") }, new string[] { "Bold", "JustifyCenter|Bold", "JustifyCenter|Bold", "JustifyCenter|Bold", "JustifyCenter|Bold", "JustifyCenter|Bold", "JustifyCenter|Bold" });
+
+        // Add the table to the document
+        body.AppendChild(tbl);
+    }
+
+    static void LunchCheck(Body body)
+    {
+        // Create a table.
+        Table tbl = new Table();
+
+        // Set the style and width for the table.
+        TableProperties tableProp = new TableProperties();
+        TableStyle tableStyle = new TableStyle() { Val = "TableGrid" };
+
+        // Make the table width 100% of the page width.
+        TableWidth tableWidth = new TableWidth() { Width = "5000", Type = TableWidthUnitValues.Pct };
+
+        // Apply
+        tableProp.Append(tableStyle, tableWidth);
+        tbl.AppendChild(tableProp);
+
+        // Add 3 columns to the table.
+        TableGrid tg = new TableGrid(new GridColumn(), new GridColumn(), new GridColumn(), new GridColumn(), new GridColumn(), new GridColumn());
+        tbl.AppendChild(tg);
+
+        string[] header = new string[] { "FontSize:36|Bold|JustifyCenter|Background:ABCDEF", "JustifyCenter|Background:AAAAAA", "JustifyCenter|Background:AAAAAA", "JustifyCenter|Background:AAAAAA", "JustifyCenter|Background:AAAAAA", "JustifyCenter|Background:AAAAAA", "JustifyCenter|Background:AAAAAA" };
+        string[] sumStyle = new string[] { "", "", "Bold" };
+        double foodSum = 0;
+        double bevSum = 0;
+
+        List<Question> questions = Question.Get("Financials", "Sales Projection", 1 /*TODO: User Id*/);
+
+        tbl.AddRow(new string[] { "Lunch", "Average|Price Point", "% Ordered", "Average|Food", "Average|Beverage", "Average|Check" }, header);
+        tbl.AddRow(new string[] { "Food" }, new string[] { "Bold" });
+        foodSum += AddCheckPrice(tbl, "Entree", questions[12].Answer.Text, questions[13].Answer.Text, true);
+        foodSum += AddCheckPrice(tbl, "Appetizer", questions[14].Answer.Text, questions[15].Answer.Text, true);
+        foodSum += AddCheckPrice(tbl, "Dessert", questions[16].Answer.Text, questions[17].Answer.Text, true);
+        tbl.AddRow(new string[] { "Beverage" }, new string[] { "Bold" });
+        foodSum += AddCheckPrice(tbl, "Non-Alcoholic", questions[18].Answer.Text, questions[19].Answer.Text, true);
+        bevSum += AddCheckPrice(tbl, "Liquor", questions[22].Answer.Text, questions[23].Answer.Text, false);
+        bevSum += AddCheckPrice(tbl, "Beer", questions[24].Answer.Text, questions[25].Answer.Text, false);
+        bevSum += AddCheckPrice(tbl, "Wine", questions[26].Answer.Text, questions[27].Answer.Text, false);
+        tbl.AddRow(new string[] { "TOTALS", "", "", foodSum.ToString("0.00"), bevSum.ToString("0.00"), (foodSum + bevSum).ToString("0.00") }, new string[] { "Bold", "JustifyCenter|Bold", "JustifyCenter|Bold", "JustifyCenter|Bold", "JustifyCenter|Bold", "JustifyCenter|Bold", "JustifyCenter|Bold" });
+
+        // Add the table to the document
+        body.AppendChild(tbl);
+    }
+
+    static void DinnerCheck(Body body)
+    {
+        // Create a table.
+        Table tbl = new Table();
+
+        // Set the style and width for the table.
+        TableProperties tableProp = new TableProperties();
+        TableStyle tableStyle = new TableStyle() { Val = "TableGrid" };
+
+        // Make the table width 100% of the page width.
+        TableWidth tableWidth = new TableWidth() { Width = "5000", Type = TableWidthUnitValues.Pct };
+
+        // Apply
+        tableProp.Append(tableStyle, tableWidth);
+        tbl.AppendChild(tableProp);
+
+        // Add 3 columns to the table.
+        TableGrid tg = new TableGrid(new GridColumn(), new GridColumn(), new GridColumn(), new GridColumn(), new GridColumn(), new GridColumn());
+        tbl.AppendChild(tg);
+
+        string[] header = new string[] { "FontSize:36|Bold|JustifyCenter|Background:ABCDEF", "JustifyCenter|Background:AAAAAA", "JustifyCenter|Background:AAAAAA", "JustifyCenter|Background:AAAAAA", "JustifyCenter|Background:AAAAAA", "JustifyCenter|Background:AAAAAA", "JustifyCenter|Background:AAAAAA" };
+        string[] sumStyle = new string[] { "", "", "Bold" };
+        double foodSum = 0;
+        double bevSum = 0;
+
+        List<Question> questions = Question.Get("Financials", "Sales Projection", 1 /*TODO: User Id*/);      
+        tbl.AddRow(new string[] { "Dinner", "Average|Price Point", "% Ordered", "Average|Food", "Average|Beverage", "Average|Check" }, header);
+        tbl.AddRow(new string[] { "Food" }, new string[] { "Bold" });
+        foodSum += AddCheckPrice(tbl, "Entree", questions[28].Answer.Text, questions[29].Answer.Text, true);
+        foodSum += AddCheckPrice(tbl, "Appetizer", questions[30].Answer.Text, questions[31].Answer.Text, true);
+        foodSum += AddCheckPrice(tbl, "Dessert", questions[32].Answer.Text, questions[33].Answer.Text, true);
+        tbl.AddRow(new string[] { "Beverage" }, new string[] { "Bold" });
+        foodSum += AddCheckPrice(tbl, "Non-Alcoholic", questions[34].Answer.Text, questions[35].Answer.Text, true);
+        bevSum += AddCheckPrice(tbl, "Liquor", questions[36].Answer.Text, questions[37].Answer.Text, false);
+        bevSum += AddCheckPrice(tbl, "Beer", questions[38].Answer.Text, questions[39].Answer.Text, false);
+        bevSum += AddCheckPrice(tbl, "Wine", questions[40].Answer.Text, questions[41].Answer.Text, false);
+        tbl.AddRow(new string[] { "TOTALS", "", "", foodSum.ToString("0.00"), bevSum.ToString("0.00"), (foodSum + bevSum).ToString("0.00") }, new string[] { "Bold", "JustifyCenter|Bold", "JustifyCenter|Bold", "JustifyCenter|Bold", "JustifyCenter|Bold", "JustifyCenter|Bold", "JustifyCenter|Bold" });
+
+        // Add the table to the document
+        body.AppendChild(tbl);
+    }
+
+
+    static double AddCheckPrice(Table tbl, string rowName, string s_price, string s_ordered, bool isFood)
+    {
+        string[] detail = new string[] { "LeftIndent:400", "JustifyCenter", "JustifyCenter", "JustifyCenter", "JustifyCenter", "JustifyCenter", "JustifyCenter" };
+        double price = 0;
+        double ordered = 0;
+        double.TryParse(s_price, out price);
+        double.TryParse(s_ordered, out ordered);
+        if(isFood)
+            tbl.AddRow(new string[] { rowName, price.ToString("0.00"), ordered.ToString() + "%", (price * ordered / 100).ToString("0.00") }, detail);
+        else
+            tbl.AddRow(new string[] { rowName, price.ToString("0.00"), ordered.ToString() + "%", "",  (price * ordered / 100).ToString("0.00") }, detail);
+
+        return (price * ordered / 100);
+    }
+
+
 }
+
 
 public static class BodyPart
 {
@@ -224,6 +388,11 @@ public static class BodyPart
         run.AppendChild(new Break());
     }
 
+    public static void AddLineBreak(this Body body)
+    {
+        body.AppendChild(new Paragraph(new Run(new Break() )));
+    }
+
     public static void AddPageBreak(this Body body)
     {
         body.AppendChild(new Paragraph(new Run(new Break(){ Type = BreakValues.Page })));
@@ -237,7 +406,24 @@ public static class TablePart
         TableRow tr = new TableRow();
         for (int i = 0; i < cells.Length; i++)
         {
-            TableCell tc = new TableCell(new Paragraph(new ParagraphProperties(), new Run(new RunProperties(), new Text(cells[i]))));
+            TableCell tc = new TableCell();
+            if(cells[i].Contains("|"))
+            {
+                Paragraph para = tc.AppendChild(new Paragraph(new ParagraphProperties()));
+                Run run = para.AppendChild(new Run(new RunProperties()));
+
+                string[] values = cells[i].Split('|');
+                for(int j = 0, jj = values.Length; j < jj; j++)
+                {
+                    if(j != 0)
+                        run.AppendChild(new Break());
+
+                    run.AppendChild(new Text(values[j])); 
+                }
+            }
+            else
+                tc.AppendChild(new Paragraph(new ParagraphProperties(), new Run(new RunProperties(), new Text(cells[i]))));
+
             if(singleSpace)
             {
                 foreach (OpenXmlElement els in tc.Elements())
@@ -281,6 +467,13 @@ public static class TablePart
                     tc.Right();
                 if (styles[i].Contains("JustifyCenter"))
                     tc.Center();
+                if(styles[i].Contains("FontSize"))
+                {
+                    string value = styles[i].Substring(styles[i].IndexOf("FontSize:") + 9);
+                    if (value.Contains("|"))
+                        value = value.Substring(0, value.IndexOf("|"));
+                    tc.FontSize(value);
+                }
                 //if (styles[i].Contains("BorderBottom"))
                 //    props.BorderBottom();
             }
@@ -327,6 +520,21 @@ public static class TableCellClass
                 {
                     Run run = (Run)el;
                     run.RunProperties.AppendChild(new Bold() { Val = OnOffValue.FromBoolean(true) });
+                }
+            }
+        }
+    }
+    public static void FontSize(this TableCell tc, string value)
+    {
+        foreach (OpenXmlElement els in tc.Elements())
+        {
+
+            foreach (OpenXmlElement el in els)
+            {
+                if (el.GetType() == typeof(Run))
+                {
+                    Run run = (Run)el;
+                    run.RunProperties.AppendChild(new FontSize() { Val = value });
                 }
             }
         }
