@@ -312,8 +312,11 @@
                     answerText.push($(this).val());
                 });
                 var answerArray = [];
-                for (var i = 0; i < answerText.length; i++) {
-                    var question = Questions[currentQuestion + i];
+                for (var i = 0, blankQuestions = 0; i < answerText.length; i++) {
+                    if (!Questions[currentQuestion + blankQuestions + i].Title) {
+                        blankQuestions++;
+                    }
+                    var question = Questions[currentQuestion + blankQuestions + i];
                     question.Answer.Text = answerText[i];
                     answerArray.push(question.Answer);
                 }

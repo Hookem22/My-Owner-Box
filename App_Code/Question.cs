@@ -260,9 +260,9 @@ public class Question : BaseClass<Question>
 
 public static class QuestionList
 {
-    public static string ByTitle(this List<Question> questions, string title)
+    public static string ByTitle(this List<Question> questions, string title, string emptyValue = "")
     {
         List<Question> qs = questions.Where(q => q.Title == title).ToList();
-        return qs.Count > 0 ? qs[0].Answer.Text : "";
+        return qs.Count > 0 && qs[0].Answer != null && !string.IsNullOrEmpty(qs[0].Answer.Text) ? qs[0].Answer.Text : emptyValue;
     }
 }

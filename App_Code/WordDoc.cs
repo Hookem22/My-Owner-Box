@@ -17,6 +17,9 @@ public class WordDoc
     {
     }
 
+    static double[] TotalSalesPerDay = new double[7];
+    static int[] CoversPerDay = new int[7];
+
     //public static void Sample(MemoryStream mem)
     //{
     //    // Create Document
@@ -72,6 +75,8 @@ public class WordDoc
             //FinancialsCapitalBudget(wordDocument);
             //body.AddPageBreak();
             FinancialsSalesProjection(wordDocument);
+            body.AddPageBreak();
+            FinancialsHourlyLabor(wordDocument);
         }
     }
 
@@ -220,7 +225,7 @@ public class WordDoc
         return (price * ordered / 100);
     }
 
-    static void TableTurns(Body body, double[] breakfastSums, double[] lunchSums, double [] dinnerSums)
+    static void TableTurns(Body body, double[] breakfastSums, double[] lunchSums, double[] dinnerSums)
     {
         body.AddHeader("Sales Projections - Typical Week");
 
@@ -239,37 +244,18 @@ public class WordDoc
         double totalLiquor = 0;
         double totalBeer = 0;
         double totalWine = 0;
+        int totalCovers = 0;
 
         for (int i = 0; i < 7; i++)
         {
-            string day = "Monday";
-            switch (i)
-            {
-                case 1:
-                    day = "Tuesday";
-                    break;
-                case 2:
-                    day = "Wednesday";
-                    break;
-                case 3:
-                    day = "Thursday";
-                    break;
-                case 4:
-                    day = "Friday";
-                    break;
-                case 5:
-                    day = "Saturday";
-                    break;
-                case 6:
-                    day = "Sunday";
-                    break;
-            }
+            string day = GetDay(i);
 
             string[] style = new string[] { "JustifyCenter|Bold", "Bold", "JustifyRight|RightIndent:300", "JustifyRight|RightIndent:300", "JustifyRight|RightIndent:300", "JustifyRight|RightIndent:300", "JustifyRight|RightIndent:300", "JustifyRight|RightIndent:300", "JustifyRight|RightIndent:300", "JustifyRight|RightIndent:300" };
 
             double turns = 0;
             double.TryParse(questions[i + 40].Answer.Text, out turns);
             double covers = Math.Floor(turns * numberSeats);
+            totalCovers += (int)covers;
             double breakfastFood = covers * breakfastSums[0];
             double breakfastLiquor = covers * breakfastSums[1];
             double breakfastBeer = covers * breakfastSums[2];
@@ -278,6 +264,7 @@ public class WordDoc
 
             double.TryParse(questions[i + 47].Answer.Text, out turns);
             covers = Math.Floor(turns * numberSeats);
+            totalCovers += (int)covers;
             double lunchFood = covers * lunchSums[0];
             double lunchLiquor = covers * lunchSums[1];
             double lunchBeer = covers * lunchSums[2];
@@ -286,6 +273,7 @@ public class WordDoc
 
             double.TryParse(questions[i + 54].Answer.Text, out turns);
             covers = Math.Floor(turns * numberSeats);
+            totalCovers += (int)covers;
             double dinnerFood = covers * dinnerSums[0];
             double dinnerLiquor = covers * dinnerSums[1];
             double dinnerBeer = covers * dinnerSums[2];
@@ -296,13 +284,120 @@ public class WordDoc
             totalLiquor += breakfastLiquor + lunchLiquor + dinnerLiquor;
             totalBeer += breakfastBeer + lunchBeer + dinnerBeer;
             totalWine += breakfastWine + lunchWine + dinnerWine;
-            tbl.AddRow(new string[] { "", "TOTALS", "", "", (breakfastFood + lunchFood + dinnerFood).ToString("#,##0;(#,##0)"), (breakfastLiquor + lunchLiquor + dinnerLiquor).ToString("#,##0;(#,##0)"), (breakfastBeer + lunchBeer + dinnerBeer).ToString("#,##0;(#,##0)"), (breakfastWine + lunchWine + dinnerWine).ToString("#,##0;(#,##0)"), (breakfastFood + lunchFood + dinnerFood + breakfastLiquor + lunchLiquor + dinnerLiquor + breakfastBeer + lunchBeer + dinnerBeer + breakfastWine + lunchWine + dinnerWine).ToString("#,##0;(#,##0)") }, style);
+            double totalDay = breakfastFood + lunchFood + dinnerFood + breakfastLiquor + lunchLiquor + dinnerLiquor + breakfastBeer + lunchBeer + dinnerBeer + breakfastWine + lunchWine + dinnerWine;
+            tbl.AddRow(new string[] { "", "TOTALS", "", "", (breakfastFood + lunchFood + dinnerFood).ToString("#,##0;(#,##0)"), (breakfastLiquor + lunchLiquor + dinnerLiquor).ToString("#,##0;(#,##0)"), (breakfastBeer + lunchBeer + dinnerBeer).ToString("#,##0;(#,##0)"), (breakfastWine + lunchWine + dinnerWine).ToString("#,##0;(#,##0)"), totalDay.ToString("#,##0;(#,##0)") }, style);
             tbl.AddRow(new string[] { ""});
+
+            CoversPerDay[i] = totalCovers;
+            TotalSalesPerDay[i] = totalDay;
         }
 
         string[] totalStyle = new string[] { "JustifyCenter|Bold|FontSize:28", "", "", "", "JustifyRight|RightIndent:100|FontSize:28", "JustifyRight|RightIndent:100|FontSize:28", "JustifyRight|RightIndent:100|FontSize:28", "JustifyRight|RightIndent:100|FontSize:28", "JustifyRight|RightIndent:100|Bold|FontSize:28" };
         tbl.AddRow(new string[] { "TOTALS", "", "", "", totalFood.ToString(), totalLiquor.ToString(), totalBeer.ToString(), totalWine.ToString(), (totalFood + totalLiquor + totalBeer + totalWine).ToString() }, totalStyle);
+    }
 
+    static void FinancialsHourlyLabor(WordprocessingDocument wordDocument)
+    {
+        Body body = wordDocument.MainDocumentPart.Document.Body;
+
+        //body.AddHeader("Hourly Labor Projection");
+
+        Table tbl = NewTable(body, 17);
+
+        string[] firstStyle = new string[] { "VerticalText:1500|Bold", "VerticalText:1500|Bold", "VerticalText:1500|TopIndent:200", "VerticalText:1500|Background:ABCDEF|TopIndent:200", "VerticalText:1500|TopIndent:200", "VerticalText:1500|Background:ABCDEF|TopIndent:200", "VerticalText:1500|Bold|FontSize:26", "VerticalText:1500|Background:ABCDEF", "VerticalText", "VerticalText:1500|Background:ABCDEF", "VerticalText", "VerticalText:1500|Background:ABCDEF", "VerticalText:1500|Bold|FontSize:26", "VerticalText:1500|Bold", "VerticalText:1500|Bold", "VerticalText:1500|Bold", "VerticalText:1500|Bold" };
+        string[] secondStyle = new string[] { "VerticalText:650|Bold|JustifyCenter", "VerticalText:650|Bold|JustifyCenter", "VerticalText:650|Borders:Top:Left:Bottom|JustifyCenter", "VerticalText:650|Background:ABCDEF|Borders:Top:Bottom|JustifyCenter", "VerticalText:650|Borders:Top:Bottom|JustifyCenter", "VerticalText:650|Background:ABCDEF|Borders:Top:Bottom|JustifyCenter", "VerticalText:650|Borders:Top:Bottom|JustifyCenter", "VerticalText:650|Background:ABCDEF|Borders:Top:Bottom|JustifyCenter", "VerticalText:650|Borders:Top:Bottom|JustifyCenter", "VerticalText:650|Background:ABCDEF|Borders:Top:Bottom|JustifyCenter", "VerticalText:650|Borders:Top:Bottom|JustifyCenter", "VerticalText:650|Background:ABCDEF|Borders:Top:Bottom:Right|JustifyCenter", "VerticalText:650|Bold|JustifyCenter", "VerticalText:650", "VerticalText:650", "VerticalText:650", "VerticalText:650|VerticalMerge:Restart|JustifyCenter|FontSize:44" };
+        string[] style = new string[] { "VerticalText:650|Bold|JustifyCenter|VerticalMerge:Restart", "VerticalText:650|Bold|JustifyCenter|VerticalMerge:Restart", "VerticalText:650|JustifyCenter|Borders:Left", "VerticalText:650|Background:ABCDEF|JustifyCenter", "VerticalText:650|JustifyCenter", "VerticalText:650|Background:ABCDEF|JustifyCenter", "VerticalText:650|Bold|JustifyCenter", "VerticalText:650|Background:ABCDEF|JustifyCenter", "VerticalText:650|JustifyCenter", "VerticalText:650|Background:ABCDEF|JustifyCenter", "VerticalText:650|JustifyCenter", "VerticalText:650|Background:ABCDEF|JustifyCenter", "VerticalText:650|JustifyCenter|Bold|Borders:Left", "VerticalText:650|JustifyCenter|VerticalMerge:Restart", "VerticalText:650|JustifyCenter|VerticalMerge:Restart", "VerticalText:650|Bold|JustifyCenter|VerticalMerge:Restart", "VerticalText:650|JustifyCenter|VerticalMerge:Continue" };
+        string[] borderStyle = new string[] { "VerticalText:650|Bold|JustifyCenter|VerticalMerge:Continue", "VerticalText:650|Bold|JustifyCenter|VerticalMerge:Continue", "VerticalText:650|JustifyCenter|Borders:Left:Bottom", "VerticalText:650|Background:ABCDEF|JustifyCenter|Borders:Bottom", "VerticalText:650|JustifyCenter|Borders:Bottom", "VerticalText:650|Background:ABCDEF|JustifyCenter|Borders:Bottom", "VerticalText:650|Bold|JustifyCenter|Borders:Bottom", "VerticalText:650|Background:ABCDEF|JustifyCenter|Borders:Bottom", "VerticalText:650|JustifyCenter|Borders:Bottom", "VerticalText:650|Background:ABCDEF|JustifyCenter|Borders:Bottom", "VerticalText:650|JustifyCenter|Borders:Bottom", "VerticalText:650|Background:ABCDEF|JustifyCenter|Borders:Bottom:Right", "VerticalText:650|JustifyCenter|Bold", "VerticalMerge:Continue", "VerticalMerge:Continue", "VerticalMerge:Continue", "VerticalMerge:Continue" };
+        string[] lastStyle = new string[] { "VerticalText:900|Bold|JustifyCenter", "VerticalText:900|Bold|JustifyCenter", "VerticalText:900|JustifyCenter|Borders:Left:Bottom", "VerticalText:900|Background:ABCDEF|JustifyCenter|Borders:Bottom", "VerticalText:900|JustifyCenter|Borders:Bottom", "VerticalText:900|Background:ABCDEF|JustifyCenter|Borders:Bottom", "VerticalText:900|Bold|JustifyCenter|Borders:Bottom", "VerticalText:900|Background:ABCDEF|JustifyCenter|Borders:Bottom", "VerticalText:900|JustifyCenter|Borders:Bottom", "VerticalText:900|Background:ABCDEF|JustifyCenter|Borders:Bottom", "VerticalText:900|JustifyCenter|Borders:Bottom", "VerticalText:900|Background:ABCDEF|JustifyCenter|Borders:Bottom:Right", "VerticalText:900|JustifyCenter|Bold", "VerticalText:900|JustifyCenter|Bold", "VerticalText:900|JustifyCenter|Bold", "VerticalText:900|JustifyCenter|Bold", "VerticalMerge:Restart" };
+
+        List<Question> questions = Question.Get("Financials", "Hourly Labor", 1 /*TODO*/);
+        string serverRate = questions.ByTitle("Server Rate", "0.00");
+        string serverHours = questions.ByTitle("Server Average Number of Hours", "0");
+        string serverShifts = questions.ByTitle("Server Shifts per Day", "0");
+        double serverCost = (double.Parse(serverRate) * double.Parse(serverHours) * double.Parse(serverShifts));
+
+        string hostRate = questions.ByTitle("Host / Hostess Rate", "0.00");
+        string hostHours = questions.ByTitle("Host / Hostess Average Number of Hours", "0");
+        string hostShifts = questions.ByTitle("Host / Hostess Shifts per Day", "0");
+        double hostCost = (double.Parse(hostRate) * double.Parse(hostHours) * double.Parse(hostShifts));
+
+        string busserRate = questions.ByTitle("Busser Rate", "0.00");
+        string busserHours = questions.ByTitle("Busser Average Number of Hours", "0");
+        string busserShifts = questions.ByTitle("Busser Shifts per Day", "0");
+        double busserCost = (double.Parse(busserRate) * double.Parse(busserHours) * double.Parse(busserShifts));
+
+        string bartenderRate = questions.ByTitle("Bartender Rate", "0.00");
+        string bartenderHours = questions.ByTitle("Bartender Average Number of Hours", "0");
+        string bartenderShifts = questions.ByTitle("Bartender Shifts per Day", "0");
+        double bartenderCost = (double.Parse(bartenderRate) * double.Parse(bartenderHours) * double.Parse(bartenderShifts));
+
+        string dishroomRate = questions.ByTitle("Dishroom Rate", "0.00");
+        string dishroomHours = questions.ByTitle("Dishroom Average Number of Hours", "0");
+        string dishroomShifts = questions.ByTitle("Dishroom Shifts per Day", "0");
+        double dishroomCost = (double.Parse(dishroomRate) * double.Parse(dishroomHours) * double.Parse(dishroomShifts));
+
+        string prepCookRate = questions.ByTitle("Prep Cook Rate", "0.00");
+        string prepCookHours = questions.ByTitle("Prep Cook Average Number of Hours", "0");
+        string prepCookShifts = questions.ByTitle("Prep Cook Shifts per Day", "0");
+        double prepCookCost = (double.Parse(prepCookRate) * double.Parse(prepCookHours) * double.Parse(prepCookShifts));
+
+        string lineCookRate = questions.ByTitle("Line Cook Rate", "0.00");
+        string lineCookHours = questions.ByTitle("Line Cook Average Number of Hours", "0");
+        string lineCookShifts = questions.ByTitle("Line Cook Shifts per Day", "0");
+        double lineCookCost = (double.Parse(lineCookRate) * double.Parse(lineCookHours) * double.Parse(lineCookShifts));
+
+        string expoRate = questions.ByTitle("Expo Rate", "0.00");
+        string expoHours = questions.ByTitle("Expo Average Number of Hours", "0");
+        string expoShifts = questions.ByTitle("Expo Shifts per Day", "0");
+        double expoCost = (double.Parse(expoRate) * double.Parse(expoHours) * double.Parse(expoShifts));
+        
+        //TODO: Missing Cashiers
+        double laborCost = serverCost + hostCost + busserCost + bartenderCost + dishroomCost + prepCookCost + lineCookCost + expoCost;
+
+
+        tbl.AddRow(new string[] { "Labor Cost %", "Labor Cost", "Expo", "Line Cooks", "Prep Cooks", "Dishroom", "Kitchen", "Cashiers", "Bartenders", "Bussers", "Host / Hostess", "Servers", "Dining Room", "Total Sales", "Covers", "", "" }, firstStyle, false);
+        tbl.AddRow(new string[] { "", "", expoRate, lineCookRate, prepCookRate, dishroomRate, "", "0.00", bartenderRate, busserRate, hostRate, serverRate, "Rate", "", "", "", "Hourly Labor Projections" }, secondStyle, false);
+
+        for (int i = 0; i < 7; i++)
+        {
+            tbl.AddRow(new string[] { (laborCost * 100 / TotalSalesPerDay[i]).ToString("0.#") + "%", laborCost.ToString("#,##0"), expoHours, lineCookHours, prepCookHours, dishroomHours, "", "0", bartenderHours, busserHours, hostHours, serverHours, "Hours", TotalSalesPerDay[i].ToString("#,##0"), CoversPerDay[i].ToString("#,##0"), GetDay(i), "" }, style, false);
+            tbl.AddRow(new string[] { "", "", expoShifts, lineCookShifts, prepCookShifts, dishroomShifts, "", "0", bartenderShifts, busserShifts, hostShifts, serverShifts, "Shifts", "", "", "", "" }, borderStyle, false);
+        }
+
+        double totalSales = 0;
+        foreach (double sale in TotalSalesPerDay) totalSales += sale;
+        int totalCovers = 0;
+        foreach (int cover in CoversPerDay) totalCovers += cover;
+        tbl.AddRow(new string[] { ((laborCost * 700) / totalSales).ToString("0.#") + "%", (laborCost * 7).ToString("#,##0"), (expoCost * 7).ToString("#,##0"), (lineCookCost * 7).ToString("#,##0"), (prepCookCost * 7).ToString("#,##0"), (dishroomCost * 7).ToString("#,##0"), "", "0", (bartenderCost * 7).ToString("#,##0"), (busserCost * 7).ToString("#,##0"), (hostCost * 7).ToString("#,##0"), (serverCost * 7).ToString("#,##0"), "Labor", totalSales.ToString("#,##0"), totalCovers.ToString("#,###"), "WEEK", "" }, lastStyle, false);
+
+
+    }
+
+    static string GetDay(int i)
+    {
+        string day = "Monday";
+        switch (i)
+        {
+            case 1:
+                day = "Tuesday";
+                break;
+            case 2:
+                day = "Wednesday";
+                break;
+            case 3:
+                day = "Thursday";
+                break;
+            case 4:
+                day = "Friday";
+                break;
+            case 5:
+                day = "Saturday";
+                break;
+            case 6:
+                day = "Sunday";
+                break;
+        }
+        return day;
     }
 
     static Table NewTable(Body body, int columnCt)
@@ -403,18 +498,19 @@ public static class TablePart
             else
                 tc.AppendChild(new Paragraph(new ParagraphProperties(), new Run(new RunProperties(), new Text(cells[i]))));
 
-            if(singleSpace)
+            tr.Append(tc);
+
+            foreach (OpenXmlElement els in tc.Elements())
             {
-                foreach (OpenXmlElement els in tc.Elements())
+                if (els.GetType() == typeof(Paragraph))
                 {
-                    if (els.GetType() == typeof(Paragraph))
-                    {
-                        Paragraph para = (Paragraph)els;
+                    Paragraph para = (Paragraph)els;
+                    if(singleSpace)
                         para.ParagraphProperties.AppendChild(new SpacingBetweenLines() { Line = "240", LineRule = LineSpacingRuleValues.Auto, Before = "0", After = "0" });
-                    }
+                    else
+                        para.ParagraphProperties.AppendChild(new SpacingBetweenLines() { Line = "240", LineRule = LineSpacingRuleValues.Auto, Before = "240", After = "0" });
                 }
             }
-
             if (styles != null && styles.Length > i && !string.IsNullOrEmpty(styles[i]))
             {
                 TableCellProperties props = new TableCellProperties();
@@ -432,6 +528,13 @@ public static class TablePart
                     if (value.Contains("|"))
                         value = value.Substring(0, value.IndexOf("|"));
                     props.RightIndent(value);
+                }
+                if (styles[i].Contains("TopIndent"))
+                {
+                    string value = styles[i].Substring(styles[i].IndexOf("TopIndent:") + 10);
+                    if (value.Contains("|"))
+                        value = value.Substring(0, value.IndexOf("|"));
+                    props.TopIndent(value);
                 }
                 if (styles[i].Contains("Background"))
                 {
@@ -453,11 +556,28 @@ public static class TablePart
                         value = value.Substring(0, value.IndexOf("|"));
                     tc.FontSize(value);
                 }
-                //if (styles[i].Contains("BorderBottom"))
-                //    props.BorderBottom();
+                if (styles[i].Contains("VerticalText"))
+                {
+                    string value = styles[i].Substring(styles[i].IndexOf("VerticalText:") + 13);
+                    if (value.Contains("|"))
+                        value = value.Substring(0, value.IndexOf("|"));
+                    props.VerticalText(value);
+                }
+                if (styles[i].Contains("Borders"))
+                {
+                    string value = styles[i].Substring(styles[i].IndexOf("Borders:") + 8);
+                    if (value.Contains("|"))
+                        value = value.Substring(0, value.IndexOf("|"));
+                    props.Borders(value);
+                }
+                if (styles[i].Contains("VerticalMerge"))
+                {
+                    string value = styles[i].Substring(styles[i].IndexOf("VerticalMerge:") + 14);
+                    if (value.Contains("|"))
+                        value = value.Substring(0, value.IndexOf("|"));
+                    props.VertMerge(value);
+                }
             }
-
-            tr.Append(tc);
         }
 
         table.AppendChild(tr);
@@ -474,15 +594,46 @@ public static class TableCellProps
     {
         prop.Append(new TableCellMargin(new RightMargin { Type = TableWidthUnitValues.Dxa, Width = value }));
     }
+    public static void TopIndent(this TableCellProperties prop, string value)
+    {
+        prop.Append(new TableCellMargin(new TopMargin { Type = TableWidthUnitValues.Dxa, Width = value }));
+    }
     public static void BackgroundColor(this TableCellProperties prop, string color)
     {
         prop.Append(new Shading() { Color = "auto", Fill = color, Val = ShadingPatternValues.Clear });
     }
-    public static void BorderBottom(this TableCellProperties prop)
+    public static void Borders(this TableCellProperties prop, string sides)
     {
         TableCellBorders tblBorders = new TableCellBorders();
-        tblBorders.AppendChild(new BottomBorder() { Val = new EnumValue<BorderValues>(BorderValues.Thick), Color = "000000" });
+        foreach(string side in sides.Split(':'))
+        {
+            if(side == "Top")
+                tblBorders.AppendChild(new TopBorder() { Val = new EnumValue<BorderValues>(BorderValues.Thick), Color = "000000" });
+            if (side == "Right")
+                tblBorders.AppendChild(new RightBorder() { Val = new EnumValue<BorderValues>(BorderValues.Thick), Color = "000000" });
+            if (side == "Bottom")
+                tblBorders.AppendChild(new BottomBorder() { Val = new EnumValue<BorderValues>(BorderValues.Thick), Color = "000000" });
+            if (side == "Left")
+                tblBorders.AppendChild(new LeftBorder() { Val = new EnumValue<BorderValues>(BorderValues.Thick), Color = "000000" });
+
+        }
         prop.Append(tblBorders);
+    }
+    public static void VerticalText(this TableCellProperties prop, string width)
+    {
+        prop.Append(new TextDirection() { Val = TextDirectionValues.TopToBottomRightToLeft });
+        TableRowProperties trProp = new TableRowProperties();
+        uint wd = 1500;
+        uint.TryParse(width, out wd);
+        trProp.Append(new TableRowHeight() { Val = new UInt32Value(wd) });
+        prop.Parent.Parent.Append(trProp);
+    }
+    public static void VertMerge(this TableCellProperties prop, string val)
+    {
+        if(val == "Continue")
+            prop.Append(new VerticalMerge() { Val = MergedCellValues.Continue });
+        else
+            prop.Append(new VerticalMerge() { Val = MergedCellValues.Restart });
     }
 }
 
