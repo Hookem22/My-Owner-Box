@@ -265,4 +265,20 @@ public static class QuestionList
         List<Question> qs = questions.Where(q => q.Title == title).ToList();
         return qs.Count > 0 && qs[0].Answer != null && !string.IsNullOrEmpty(qs[0].Answer.Text) ? qs[0].Answer.Text : emptyValue;
     }
+    public static double BySectionSum(this List<Question> questions, string sectionName = "", int startIndex = 0, int count = 0)
+    {
+        if(!string.IsNullOrEmpty(sectionName))
+            questions = questions.FindAll(delegate(Question q) { return q.Section == sectionName; });
+
+        count = count == 0 ? questions.Count : count + startIndex;
+
+        double sum = 0;
+        for (int i = startIndex; i < count; i++)
+        {
+            double val;
+            if (double.TryParse(questions[i].Answer.Text, out val))
+                sum += val;
+        }
+        return sum;
+    }
 }
