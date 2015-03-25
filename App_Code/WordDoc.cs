@@ -19,12 +19,12 @@ public class WordDoc
 
     static double[] TotalSalesPerDay = new double[7];
     static int[] CoversPerDay = new int[7];
-    static double weeklyFood = 0;
-    static double weeklyLiquor = 0;
-    static double weeklyBeer = 0;
-    static double weeklyWine = 0;
-    static double yearlyTotalSales = 0;
-    static double yearlyHourlyCosts = 0;
+    static double WeeklyFood = 0;
+    static double WeeklyLiquor = 0;
+    static double WeeklyBeer = 0;
+    static double WeeklyWine = 0;
+    static double YearlyTotalSales = 0;
+    static double YearlyHourlyCosts = 0;
 
 
     public static void PrintConcept(MemoryStream mem)
@@ -123,11 +123,6 @@ public class WordDoc
             {
                 tbl.AddRow(new string[] { questions[i].Section, "", "" }, header);
             }
-            else if(i == questions.Count - 1)
-            {
-                tbl.AddRow(new string[] { "", "", sum.ToString("#,##0;(#,##0)") }, sumStyle, false);
-                break;
-            }
             else if (questions[i].Section != questions[i - 1].Section)
             {
                 tbl.AddRow(new string[] { "", "", sum.ToString("#,##0;(#,##0)") }, sumStyle, false);
@@ -145,8 +140,8 @@ public class WordDoc
             tbl.AddRow(new string[] { questions[i].Title, questions[i].Answer.Text, "" }, odd ? detailOdd : detailEven);
 
             odd = !odd;
-
         }
+        tbl.AddRow(new string[] { "", "", sum.ToString("#,##0;(#,##0)") }, sumStyle, false);
     }
 
     public static void FinancialsSalesProjection(WordprocessingDocument wordDocument)
@@ -269,10 +264,10 @@ public class WordDoc
             double dinnerWine = covers * dinnerSums[3];
             tbl.AddRow(new string[] { "", "Dinner", turns.ToString(), covers.ToString(), dinnerFood.ToString("#,##0;(#,##0)"), dinnerLiquor.ToString("#,##0;(#,##0)"), dinnerBeer.ToString("#,##0;(#,##0)"), dinnerWine.ToString("#,##0;(#,##0)"), (dinnerFood + dinnerLiquor + dinnerBeer + dinnerWine).ToString("#,##0;(#,##0)") }, style);
 
-            weeklyFood += breakfastFood + lunchFood + dinnerFood;
-            weeklyLiquor += breakfastLiquor + lunchLiquor + dinnerLiquor;
-            weeklyBeer += breakfastBeer + lunchBeer + dinnerBeer;
-            weeklyWine += breakfastWine + lunchWine + dinnerWine;
+            WeeklyFood += breakfastFood + lunchFood + dinnerFood;
+            WeeklyLiquor += breakfastLiquor + lunchLiquor + dinnerLiquor;
+            WeeklyBeer += breakfastBeer + lunchBeer + dinnerBeer;
+            WeeklyWine += breakfastWine + lunchWine + dinnerWine;
 
             double totalDay = breakfastFood + lunchFood + dinnerFood + breakfastLiquor + lunchLiquor + dinnerLiquor + breakfastBeer + lunchBeer + dinnerBeer + breakfastWine + lunchWine + dinnerWine;
             tbl.AddRow(new string[] { "", "TOTALS", "", "", (breakfastFood + lunchFood + dinnerFood).ToString("#,##0;(#,##0)"), (breakfastLiquor + lunchLiquor + dinnerLiquor).ToString("#,##0;(#,##0)"), (breakfastBeer + lunchBeer + dinnerBeer).ToString("#,##0;(#,##0)"), (breakfastWine + lunchWine + dinnerWine).ToString("#,##0;(#,##0)"), totalDay.ToString("#,##0;(#,##0)") }, style);
@@ -283,7 +278,7 @@ public class WordDoc
         }
 
         string[] totalStyle = new string[] { "JustifyCenter|Bold|FontSize:28", "", "", "", "JustifyRight|RightIndent:100|FontSize:28", "JustifyRight|RightIndent:100|FontSize:28", "JustifyRight|RightIndent:100|FontSize:28", "JustifyRight|RightIndent:100|FontSize:28", "JustifyRight|RightIndent:100|Bold|FontSize:28" };
-        tbl.AddRow(new string[] { "TOTALS", "", "", "", weeklyFood.ToString(), weeklyLiquor.ToString(), weeklyBeer.ToString(), weeklyWine.ToString(), (weeklyFood + weeklyLiquor + weeklyBeer + weeklyWine).ToString() }, totalStyle);
+        tbl.AddRow(new string[] { "TOTALS", "", "", "", WeeklyFood.ToString(), WeeklyLiquor.ToString(), WeeklyBeer.ToString(), WeeklyWine.ToString(), (WeeklyFood + WeeklyLiquor + WeeklyBeer + WeeklyWine).ToString() }, totalStyle);
     }
 
     static void FinancialsHourlyLabor(WordprocessingDocument wordDocument)
@@ -356,7 +351,7 @@ public class WordDoc
         foreach (double sale in TotalSalesPerDay) totalSales += sale;
         int totalCovers = 0;
         foreach (int cover in CoversPerDay) totalCovers += cover;
-        yearlyHourlyCosts = laborCost * 7 * 52;
+        YearlyHourlyCosts = laborCost * 7 * 52;
         tbl.AddRow(new string[] { ToPercent(laborCost * 700 / totalSales), (laborCost * 7).ToString("#,##0"), (expoCost * 7).ToString("#,##0"), (lineCookCost * 7).ToString("#,##0"), (prepCookCost * 7).ToString("#,##0"), (dishroomCost * 7).ToString("#,##0"), "", "0", (bartenderCost * 7).ToString("#,##0"), (busserCost * 7).ToString("#,##0"), (hostCost * 7).ToString("#,##0"), (serverCost * 7).ToString("#,##0"), "Labor", totalSales.ToString("#,##0"), totalCovers.ToString("#,###"), "WEEK", "" }, lastStyle, false);
 
 
@@ -381,14 +376,14 @@ public class WordDoc
 
         tbl.AddRow(new string[] { "", "MONTHLY", "", "ANNUAL", "" }, new string[] { "Background:ABCDEF", "JustifyCenter|Background:ABCDEF|HorizontalMerge:Restart|FontSize:32", "Background:ABCDEF|HorizontalMerge:Continue", "JustifyCenter|Background:ABCDEF|HorizontalMerge:Restart|FontSize:32", "Background:ABCDEF|HorizontalMerge:Continue" });
         
-        double weeklyTotal = weeklyFood + weeklyLiquor + weeklyBeer + weeklyWine;
-        yearlyTotalSales = weeklyTotal * 52;
+        double weeklyTotal = WeeklyFood + WeeklyLiquor + WeeklyBeer + WeeklyWine;
+        YearlyTotalSales = weeklyTotal * 52;
         tbl.AddRow(new string[] { "Sales", "", "", "", "" }, headerStyle);
-        tbl.AddRow(new string[] { "Food", (weeklyFood * 52 / 12).ToString("#,##0"), ToPercent(100 * weeklyFood / weeklyTotal), (weeklyFood * 52).ToString("#,##0"), ToPercent(100 * weeklyFood / weeklyTotal) }, detailStyle);
-        tbl.AddRow(new string[] { "Liquor", (weeklyLiquor * 52 / 12).ToString("#,##0"), ToPercent(100 * weeklyLiquor / weeklyTotal), (weeklyLiquor * 52).ToString("#,##0"), ToPercent(100 * weeklyLiquor / weeklyTotal) }, detailStyle);
-        tbl.AddRow(new string[] { "Beer", (weeklyBeer * 52 / 12).ToString("#,##0"), ToPercent(100 * weeklyBeer / weeklyTotal), (weeklyBeer * 52).ToString("#,##0"), ToPercent(100 * weeklyBeer / weeklyTotal) }, detailStyle);
-        tbl.AddRow(new string[] { "Wine", (weeklyWine * 52 / 12).ToString("#,##0"), ToPercent(100 * weeklyWine / weeklyTotal), (weeklyWine * 52).ToString("#,##0"), ToPercent(100 * weeklyWine / weeklyTotal) }, detailStyle);
-        tbl.AddRow(new string[] { "TOTAL SALES", (yearlyTotalSales / 12).ToString("#,##0"), "100.0%", yearlyTotalSales.ToString("#,##0"), "100.0%" }, totalStyle);
+        tbl.AddRow(new string[] { "Food", (WeeklyFood * 52 / 12).ToString("#,##0"), ToPercent(100 * WeeklyFood / weeklyTotal), (WeeklyFood * 52).ToString("#,##0"), ToPercent(100 * WeeklyFood / weeklyTotal) }, detailStyle);
+        tbl.AddRow(new string[] { "Liquor", (WeeklyLiquor * 52 / 12).ToString("#,##0"), ToPercent(100 * WeeklyLiquor / weeklyTotal), (WeeklyLiquor * 52).ToString("#,##0"), ToPercent(100 * WeeklyLiquor / weeklyTotal) }, detailStyle);
+        tbl.AddRow(new string[] { "Beer", (WeeklyBeer * 52 / 12).ToString("#,##0"), ToPercent(100 * WeeklyBeer / weeklyTotal), (WeeklyBeer * 52).ToString("#,##0"), ToPercent(100 * WeeklyBeer / weeklyTotal) }, detailStyle);
+        tbl.AddRow(new string[] { "Wine", (WeeklyWine * 52 / 12).ToString("#,##0"), ToPercent(100 * WeeklyWine / weeklyTotal), (WeeklyWine * 52).ToString("#,##0"), ToPercent(100 * WeeklyWine / weeklyTotal) }, detailStyle);
+        tbl.AddRow(new string[] { "TOTAL SALES", (YearlyTotalSales / 12).ToString("#,##0"), "100.0%", YearlyTotalSales.ToString("#,##0"), "100.0%" }, totalStyle);
         tbl.AddRow(new string[] { "", "", "", "", "" });
 
         double foodCostPct = double.Parse(questions.ByTitle("Food Cost %", "0"));
@@ -397,22 +392,22 @@ public class WordDoc
         double wineCostPct = double.Parse(questions.ByTitle("Wine Cost %", "0")); //TODO Add Wine Cost %
 
         tbl.AddRow(new string[] { "Cost of Sales", "", "", "", "" }, headerStyle);
-        tbl.AddRow(new string[] { "Food", (foodCostPct / 100 * weeklyFood * 52 / 12).ToString("#,##0"), ToPercent(foodCostPct), (foodCostPct / 100 * weeklyFood * 52).ToString("#,##0"), ToPercent(foodCostPct) }, detailStyle);
-        tbl.AddRow(new string[] { "Liquor", (liquorCostPct / 100 * weeklyLiquor * 52 / 12).ToString("#,##0"), ToPercent(liquorCostPct), (liquorCostPct / 100 * weeklyLiquor * 52).ToString("#,##0"), ToPercent(liquorCostPct) }, detailStyle);
-        tbl.AddRow(new string[] { "Beer", (beerCostPct / 100 * weeklyBeer * 52 / 12).ToString("#,##0"), ToPercent(beerCostPct), (beerCostPct / 100 * weeklyBeer * 52).ToString("#,##0"), ToPercent(beerCostPct) }, detailStyle);
-        tbl.AddRow(new string[] { "Wine", (wineCostPct / 100 * weeklyWine * 52 / 12).ToString("#,##0"), ToPercent(wineCostPct), (wineCostPct / 100 * weeklyWine * 52).ToString("#,##0"), ToPercent(wineCostPct) }, detailStyle);
-        double yearlyCost = (foodCostPct * weeklyFood + liquorCostPct * weeklyLiquor + beerCostPct * weeklyBeer + wineCostPct * weeklyWine) / 100 * 52;
-        double yearlyCostPct = 100 * yearlyCost / yearlyTotalSales;
+        tbl.AddRow(new string[] { "Food", (foodCostPct / 100 * WeeklyFood * 52 / 12).ToString("#,##0"), ToPercent(foodCostPct), (foodCostPct / 100 * WeeklyFood * 52).ToString("#,##0"), ToPercent(foodCostPct) }, detailStyle);
+        tbl.AddRow(new string[] { "Liquor", (liquorCostPct / 100 * WeeklyLiquor * 52 / 12).ToString("#,##0"), ToPercent(liquorCostPct), (liquorCostPct / 100 * WeeklyLiquor * 52).ToString("#,##0"), ToPercent(liquorCostPct) }, detailStyle);
+        tbl.AddRow(new string[] { "Beer", (beerCostPct / 100 * WeeklyBeer * 52 / 12).ToString("#,##0"), ToPercent(beerCostPct), (beerCostPct / 100 * WeeklyBeer * 52).ToString("#,##0"), ToPercent(beerCostPct) }, detailStyle);
+        tbl.AddRow(new string[] { "Wine", (wineCostPct / 100 * WeeklyWine * 52 / 12).ToString("#,##0"), ToPercent(wineCostPct), (wineCostPct / 100 * WeeklyWine * 52).ToString("#,##0"), ToPercent(wineCostPct) }, detailStyle);
+        double yearlyCost = (foodCostPct * WeeklyFood + liquorCostPct * WeeklyLiquor + beerCostPct * WeeklyBeer + wineCostPct * WeeklyWine) / 100 * 52;
+        double yearlyCostPct = 100 * yearlyCost / YearlyTotalSales;
         tbl.AddRow(new string[] { "TOTAL COST OF SALES", (yearlyCost / 12).ToString("#,##0"), ToPercent(yearlyCostPct), (yearlyCost).ToString("#,##0"), ToPercent(yearlyCostPct) }, totalStyle);
-        tbl.AddRow(new string[] { "Gross Profit", ((yearlyTotalSales - yearlyCost) / 12).ToString("#,##0"), ToPercent(100 - yearlyCostPct), (yearlyTotalSales - yearlyCost).ToString("#,##0"), ToPercent(100 - yearlyCostPct) }, sectionTotal);
+        tbl.AddRow(new string[] { "Gross Profit", ((YearlyTotalSales - yearlyCost) / 12).ToString("#,##0"), ToPercent(100 - yearlyCostPct), (YearlyTotalSales - yearlyCost).ToString("#,##0"), ToPercent(100 - yearlyCostPct) }, sectionTotal);
         tbl.AddRow(new string[] { "", "", "", "", "" });
 
         tbl.AddRow(new string[] { "Payroll", "", "", "", "" }, headerStyle);
         tbl.AddRow(new string[] { "Salaries and Wages", "", "", "", "" }, detailStyle);
         double management = questions.BySectionSum("Management Salaries (Annual)");
         tbl.AddRow(new string[] { "Management", (management / 12).ToString("#,##0"), PctOfYearlySales(management), management.ToString("#,##0"), PctOfYearlySales(management) }, detailStyle2);
-        tbl.AddRow(new string[] { "Hourly Employees", (yearlyHourlyCosts / 12).ToString("#,##0"), PctOfYearlySales(yearlyHourlyCosts), yearlyHourlyCosts.ToString("#,##0"), PctOfYearlySales(yearlyHourlyCosts) }, detailStyle2);
-        double totalGrossPay = management + yearlyHourlyCosts;
+        tbl.AddRow(new string[] { "Hourly Employees", (YearlyHourlyCosts / 12).ToString("#,##0"), PctOfYearlySales(YearlyHourlyCosts), YearlyHourlyCosts.ToString("#,##0"), PctOfYearlySales(YearlyHourlyCosts) }, detailStyle2);
+        double totalGrossPay = management + YearlyHourlyCosts;
         tbl.AddRow(new string[] { "Total Salaries and Wages", (totalGrossPay / 12).ToString("#,##0"), PctOfYearlySales(totalGrossPay), totalGrossPay.ToString("#,##0"), PctOfYearlySales(totalGrossPay) }, totalStyle2);
         tbl.AddRow(new string[] { "", "", "", "", "" });
 
@@ -442,14 +437,126 @@ public class WordDoc
         tbl.AddRow(new string[] { "Total Benefits", (totalBenefits / 12).ToString("#,##0"), PctOfYearlySales(totalBenefits), totalBenefits.ToString("#,##0"), PctOfYearlySales(totalBenefits) }, totalStyle2);
         tbl.AddRow(new string[] { "TOTAL PAYROLL", ((totalGrossPay + totalBenefits) / 12).ToString("#,##0"), PctOfYearlySales(totalGrossPay + totalBenefits), (totalGrossPay + totalBenefits).ToString("#,##0"), PctOfYearlySales(totalGrossPay + totalBenefits) }, totalStyle);
         tbl.AddRow(new string[] { "PRIME COST", ((totalGrossPay + totalBenefits + yearlyCost) / 12).ToString("#,##0"), PctOfYearlySales(totalGrossPay + totalBenefits + yearlyCost), (totalGrossPay + totalBenefits + yearlyCost).ToString("#,##0"), PctOfYearlySales(totalGrossPay + totalBenefits + yearlyCost) }, sectionTotal);
-
         tbl.AddRow(new string[] { "", "", "", "", "" });
 
+
+        tbl.AddRow(new string[] { "Other Controllable Expenses", "", "", "", "" }, headerStyle);
+        string[] controllableSections = new string[] { "Direct Operating Expenses", "Music & Entertainment", "Marketing", "Utilities", "General & Administrative", "Repairs and Maintenance" };
+        List<Question> expenses = questions.FindAll(delegate(Question q)
+        {
+            return controllableSections.Contains(q.Section);
+        });
+
+        //TODO Remove Credit card charges question (make invisible)
+        double expenseSum = 0;
+        double sectionSum = 0;
+        for (int i = 0, ii = expenses.Count; i < ii; i++)
+        {
+            if(i == 0)
+            {
+                tbl.AddRow(new string[] { expenses[i].Section, "", "", "", "" }, detailStyle);
+            }
+            else if (expenses[i].Section != expenses[i - 1].Section)
+            {
+                tbl.AddRow(new string[] { "Total " + expenses[i - 1].Section, sectionSum.ToString("#,##0"), PctOfYearlySales(sectionSum * 12), (sectionSum * 12).ToString("#,##0"), PctOfYearlySales(sectionSum * 12) }, totalStyle2);
+                sectionSum = 0;
+                tbl.AddRow(new string[] { "", "", "" });
+                tbl.AddRow(new string[] { expenses[i].Section, "", "", "", "" }, detailStyle);
+            }
+            
+            if(expenses[i].Title == "Credit Card Charges")
+            {
+                double ccPct = 0, ccRate = 0;
+                double.TryParse(questions.ByTitle("Percentages of Credit Card Sales"), out ccPct);
+                double.TryParse(questions.ByTitle("Average Discount Percentage"), out ccRate);
+                expenses[i].Answer.Text = ((ccPct * .01 * ccRate * .01) * YearlyTotalSales / 12).ToString();
+            }
+            int val = 0;
+            if (int.TryParse(expenses[i].Answer.Text, out val))
+            {
+                sectionSum += val;
+                expenseSum += val;
+            }
+            AddExpenseRow(tbl, expenses[i], detailStyle2);
+        }
+        tbl.AddRow(new string[] { "Total " + expenses[expenses.Count - 1].Section, sectionSum.ToString("#,##0"), PctOfYearlySales(sectionSum * 12), (sectionSum * 12).ToString("#,##0"), PctOfYearlySales(sectionSum * 12) }, totalStyle2);
+        double controllableProfit = YearlyTotalSales - yearlyCost - totalGrossPay - expenseSum * 12;
+        tbl.AddRow(new string[] { "CONTROLLABLE PROFIT", (controllableProfit / 12).ToString("#,##0;(#,##0)"), PctOfYearlySales(controllableProfit), controllableProfit.ToString("#,##0;(#,##0)"), PctOfYearlySales(controllableProfit) }, sectionTotal);
+        tbl.AddRow(new string[] { "", "", "", "", "" });
+
+
+        tbl.AddRow(new string[] { "Occupancy Costs and Depreciation", "", "", "", "" }, headerStyle);
+        expenses = questions.FindAll(delegate(Question q) { return q.Section == "Occupancy Costs"; });
+
+        expenseSum = 0;
+        sectionSum = 0;
+        for (int i = 0, ii = expenses.Count; i < ii; i++)
+        {
+            if (i == 0)
+            {
+                tbl.AddRow(new string[] { expenses[i].Section, "", "", "", "" }, detailStyle);
+            }
+            else if (expenses[i].Section != expenses[i - 1].Section)
+            {
+                tbl.AddRow(new string[] { "Total " + expenses[i - 1].Section, sectionSum.ToString("#,##0"), PctOfYearlySales(sectionSum * 12), (sectionSum * 12).ToString("#,##0"), PctOfYearlySales(sectionSum * 12) }, totalStyle2);
+                sectionSum = 0;
+                tbl.AddRow(new string[] { "", "", "" });
+                tbl.AddRow(new string[] { expenses[i].Section, "", "", "", "" }, detailStyle);
+            }
+            YearlyTotalSales = 2258529;
+            if(expenses[i].Title == "Percentage Rent - Percentage amount")
+            {
+                double rentPct = 0, aboveAmount = 0;
+                double.TryParse(expenses[i].Answer.Text, out rentPct);
+                double.TryParse(expenses[i + 1].Answer.Text, out aboveAmount);
+                double monthRent = 0;
+                if(YearlyTotalSales > aboveAmount)
+                    monthRent = (YearlyTotalSales - aboveAmount) * rentPct * .01 / 12;
+
+                sectionSum += monthRent;
+                expenseSum += monthRent;
+                expenses[i].Title = "Percentage Rent";
+                expenses[i].Answer.Text = monthRent.ToString();
+                AddExpenseRow(tbl, expenses[i], detailStyle2);
+                i++;
+                continue;
+            }
+
+            int val = 0;
+            if (int.TryParse(expenses[i].Answer.Text, out val))
+            {
+                sectionSum += val;
+                expenseSum += val;
+            }
+            AddExpenseRow(tbl, expenses[i], detailStyle2);
+        }
+        tbl.AddRow(new string[] { "Total " + expenses[expenses.Count - 1].Section, sectionSum.ToString("#,##0"), PctOfYearlySales(sectionSum * 12), (sectionSum * 12).ToString("#,##0"), PctOfYearlySales(sectionSum * 12) }, totalStyle2);
+
+        //TODO Depreciation
+
+        tbl.AddRow(new string[] { "Total Occupency and Depreciation", expenseSum.ToString("#,##0"), PctOfYearlySales(expenseSum * 12), (expenseSum * 12).ToString("#,##0"), PctOfYearlySales(expenseSum * 12) }, totalStyle2);
+
+        //TODO Loan Financing
+
+        tbl.AddRow(new string[] { "NET INCOME BEFORE INCOME TAXES", (controllableProfit / 12 - expenseSum).ToString("#,##0"), PctOfYearlySales(controllableProfit - expenseSum * 12), (controllableProfit - expenseSum * 12).ToString("#,##0"), PctOfYearlySales(controllableProfit - expenseSum * 12) }, sectionTotal);
+
+
+        tbl.AddRow(new string[] { "CASH FLOW BEFORE INCOME TAXES", (controllableProfit / 12 - expenseSum).ToString("#,##0"), PctOfYearlySales(controllableProfit - expenseSum * 12), (controllableProfit - expenseSum * 12).ToString("#,##0"), PctOfYearlySales(controllableProfit - expenseSum * 12) }, sectionTotal);
+
+
+    }
+
+    static void AddExpenseRow(Table tbl, Question question, string[] style)
+    {
+        double monthly = 0;
+        double.TryParse(question.Answer.Text, out monthly);
+        double yearly = monthly * 12;
+        tbl.AddRow(new string[] { question.Title, monthly.ToString("#,##0"), PctOfYearlySales(yearly), yearly.ToString("#,##0"), PctOfYearlySales(yearly) }, style);
     }
 
     static string PctOfYearlySales(double val)
     {
-        return ToPercent(100 * val / yearlyTotalSales);
+        return ToPercent(100 * val / YearlyTotalSales);
     }
 
     static string ToPercent(double val)
