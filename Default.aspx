@@ -16,8 +16,8 @@
     <script type="text/javascript">
         var currentStep = 0;
         var marginLeft = "-300px";
-        var prices = [29, 35, 39, 45, 49, 55, 59, 65, 69, 75, 79, 85, 89, 95, 99];
-        var price = prices[Math.floor(Math.random() * 11)];
+        //var prices = [29, 35, 39, 45, 49, 55, 59, 65, 69, 75, 79, 85, 89, 95, 99];
+        var price = 45; //prices[Math.floor(Math.random() * 11)];
 
         $(document).ready(function () {
             var mobParam = getParameterByName("id");
