@@ -25,6 +25,7 @@ public class WordDoc
     static double WeeklyWine = 0;
     static double YearlyTotalSales = 0;
     static double YearlyHourlyCosts = 0;
+    static double[] FiveYearSales = new double[5];
     static double[] FiveYearCashFlow = new double[5];
 
     public static void PrintConcept(MemoryStream mem)
@@ -851,6 +852,11 @@ public class WordDoc
         double otherExpensePct = 4;
         double occupancyPct = 4;
 
+        for (int i = 0; i < 5; i++)
+        {
+            FiveYearSales[i] = YearlyTotalSales * Math.Pow(1 + salesPct * .01, i);
+        }
+
         tbl.AddRow(new string[] { "Sales", "", "", "", "" }, headerStyle);
         tbl.AddRow(Add5YearRow("Food", WeeklyFood * 52, salesPct), detailStyle);
         tbl.AddRow(Add5YearRow("Beverage", weeklyBeverage * 52, salesPct), detailStyle);
@@ -1190,10 +1196,10 @@ public class WordDoc
         tbl.AddRow(AddBreakEvenRow("Minimum Hourly Labor", YearlyHourlyCosts * minLabor * .01), detailStyle);
         fixedExpenses += YearlyHourlyCosts * minLabor * .01;
 
-        double totalGrossPay = management + YearlyHourlyCosts;
+        double totalGrossPay = management + (YearlyHourlyCosts * minLabor * .01);
         double totalBenefits = 0;
         double benefitsPct = questions.BySectionSum("Employee Benefits", 0, 5);
-        double yearlyBenefits = benefitsPct * .01 * totalGrossPay * minLabor * .01;
+        double yearlyBenefits = benefitsPct * .01 * totalGrossPay;
         totalBenefits += yearlyBenefits;
 
         double benefitsMonthly = questions.BySectionSum("Employee Benefits", 5, 1);
@@ -1202,7 +1208,7 @@ public class WordDoc
         totalBenefits += yearlyBenefits;
 
         benefitsMonthly = questions.BySectionSum("Employee Benefits", 7);
-        yearlyBenefits = benefitsMonthly * numberEmployees * 12;
+        yearlyBenefits = benefitsMonthly * 12;
         totalBenefits += yearlyBenefits;
 
         tbl.AddRow(AddBreakEvenRow("Employee Benefits", totalBenefits), detailStyle); //TODO Add minimum labor to benefits
@@ -1433,8 +1439,7 @@ public class WordDoc
                     sign = -1;
                 }
                 double.TryParse(getVal, out val);
-                double yearlyTotal = (YearlyTotalSales * Math.Pow(1 + pct / 100, (i - 1) / 2));
-                row[i] = ToPercent(sign * 100 * val / yearlyTotal);
+                row[i] = ToPercent(sign * 100 * val / FiveYearSales[(i / 2) - 1]);
             }
         }
         return row;
