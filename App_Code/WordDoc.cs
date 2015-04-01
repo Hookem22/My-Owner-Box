@@ -409,7 +409,7 @@ public class WordDoc
 
         Table tbl = NewTable(body, 5);
 
-        List<Question> questions = Question.Get("Financials", "Other Expenses", 1 /*TODO*/);
+        List<Question> questions = Question.Get("Financials", "Expenses", 1 /*TODO*/);
         
         string[] headerStyle = new string[] { "LeftIndent:200|Bold" };
         string[] detailStyle = new string[] { "LeftIndent:600", "JustifyRight|RightIndent:600", "JustifyRight|RightIndent:600", "JustifyRight|RightIndent:600", "JustifyRight|RightIndent:600" };
@@ -433,7 +433,7 @@ public class WordDoc
         double foodCostPct = double.Parse(questions.ByTitle("Food Cost %", "0"));
         double liquorCostPct = double.Parse(questions.ByTitle("Liquor Cost %", "0"));
         double beerCostPct = double.Parse(questions.ByTitle("Beer Cost %", "0"));
-        double wineCostPct = 32; // double.Parse(questions.ByTitle("Wine Cost %", "0")); //TODO Add Wine Cost %
+        double wineCostPct = double.Parse(questions.ByTitle("Wine Cost %", "0"));
 
         tbl.AddRow(new string[] { "Cost of Sales", "", "", "", "" }, headerStyle);
         tbl.AddRow(new string[] { "Food", (foodCostPct / 100 * WeeklyFood * 52 / 12).ToString("#,##0"), ToPercent(foodCostPct), (foodCostPct / 100 * WeeklyFood * 52).ToString("#,##0"), ToPercent(foodCostPct) }, detailStyle);
@@ -578,7 +578,7 @@ public class WordDoc
         }
 
         List<Question> capital = Question.Get("Financials", "Capital Budget", 1 /*TODO*/);
-        double building = capital.BySectionSum("Land & Building");
+        double building = capital.BySectionSum("Land and Building");
         building /= 30; //30 Year Depreciation
         double leasehold = capital.ByTitleSum(new string[] { "Construction Contract", "Architect & Engineering", "Legal (lease & incorporation)", "Project Consultant", "Accounting & Tax", "Name, Logo & Graphic Design", "Building Permits", "Other Licenses & Permits", "Landscaping", "Exterior Signs & Decorations", "Resurfacing", "Parking Bumpers", "Parking Lot Striping", "Contingency" });
         leasehold -= capital.ByTitleSum(new string[] { "Landlord Contribution" });
@@ -638,7 +638,7 @@ public class WordDoc
 
         Table tbl = NewTable(body, 5);
 
-        List<Question> questions = Question.Get("Financials", "Other Expenses", 1 /*TODO*/);
+        List<Question> questions = Question.Get("Financials", "Expenses", 1 /*TODO*/);
 
         string[] headerStyle = new string[] { "LeftIndent:200|Bold" };
         string[] detailStyle = new string[] { "LeftIndent:600", "JustifyRight|RightIndent:600", "JustifyRight|RightIndent:600", "JustifyRight|RightIndent:600", "JustifyRight|RightIndent:600" };
@@ -661,7 +661,7 @@ public class WordDoc
         double foodCostPct = double.Parse(questions.ByTitle("Food Cost %", "0"));
         double liquorCostPct = double.Parse(questions.ByTitle("Liquor Cost %", "0"));
         double beerCostPct = double.Parse(questions.ByTitle("Beer Cost %", "0"));
-        double wineCostPct = 32; // double.Parse(questions.ByTitle("Wine Cost %", "0")); //TODO Add Wine Cost %
+        double wineCostPct = double.Parse(questions.ByTitle("Wine Cost %", "0")); 
         double beverageCost = liquorCostPct * .01 * WeeklyLiquor + beerCostPct * .01 * WeeklyBeer + wineCostPct * .01 * WeeklyWine;
         double beverageCostPct = beverageCost / weeklyBeverage;
 
@@ -830,7 +830,7 @@ public class WordDoc
 
         Table tbl = NewTable(body, 11);
 
-        List<Question> questions = Question.Get("Financials", "Other Expenses", 1 /*TODO*/);
+        List<Question> questions = Question.Get("Financials", "Expenses", 1 /*TODO*/);
 
         string[] headerStyle = new string[] { "Bold|FontSize:20|HorizontalMerge:Restart", "HorizontalMerge:Continue", "HorizontalMerge:Continue", "HorizontalMerge:Continue", "HorizontalMerge:Continue", "HorizontalMerge:Restart" };
         string[] detailStyle = new string[] { "LeftIndent:200|FontSize:20", "JustifyRight|RightIndent:10|FontSize:20", "JustifyRight|RightIndent:200|FontSize:20", "JustifyRight|RightIndent:10|FontSize:20", "JustifyRight|RightIndent:200|FontSize:20", "JustifyRight|RightIndent:10|FontSize:20", "JustifyRight|RightIndent:200|FontSize:20", "JustifyRight|RightIndent:10|FontSize:20", "JustifyRight|RightIndent:200|FontSize:20", "JustifyRight|RightIndent:10|FontSize:20", "JustifyRight|RightIndent:200|FontSize:20" };
@@ -866,7 +866,7 @@ public class WordDoc
         double foodCostPct = double.Parse(questions.ByTitle("Food Cost %", "0"));
         double liquorCostPct = double.Parse(questions.ByTitle("Liquor Cost %", "0"));
         double beerCostPct = double.Parse(questions.ByTitle("Beer Cost %", "0"));
-        double wineCostPct = 32; // double.Parse(questions.ByTitle("Wine Cost %", "0")); //TODO Add Wine Cost %
+        double wineCostPct = double.Parse(questions.ByTitle("Wine Cost %", "0"));
         double beverageCost = liquorCostPct * .01 * WeeklyLiquor + beerCostPct * .01 * WeeklyBeer + wineCostPct * .01 * WeeklyWine;
 
         tbl.AddRow(new string[] { "Cost of Sales", "", "", "", "" }, headerStyle);
@@ -1179,7 +1179,7 @@ public class WordDoc
         //TODO: Add Minimum Hourly labor question
         double minLabor = 70;
 
-        List<Question> questions = Question.Get("Financials", "Other Expenses", 1 /*TODO*/);
+        List<Question> questions = Question.Get("Financials", "Expenses", 1 /*TODO*/);
 
         string[] headerStyle = new string[] { "LeftIndent:200|Bold|Background:ABCDEF", "Bold|Background:ABCDEF|JustifyRight|RightIndent:800", "Bold|Background:ABCDEF|JustifyRight|RightIndent:600", "Bold|Background:ABCDEF|JustifyRight|RightIndent:600" };
         string[] detailStyle = new string[] { "LeftIndent:200", "JustifyRight|RightIndent:600", "JustifyRight|RightIndent:600", "JustifyRight|RightIndent:600" };
@@ -1211,7 +1211,7 @@ public class WordDoc
         yearlyBenefits = benefitsMonthly * 12;
         totalBenefits += yearlyBenefits;
 
-        tbl.AddRow(AddBreakEvenRow("Employee Benefits", totalBenefits), detailStyle); //TODO Add minimum labor to benefits
+        tbl.AddRow(AddBreakEvenRow("Employee Benefits", totalBenefits), detailStyle); 
         fixedExpenses += totalBenefits;
 
         string[] controllableSections = new string[] { "Direct Operating Expenses", "Music & Entertainment", "Marketing", "Utilities", "General & Administrative", "Repairs and Maintenance" };
@@ -1294,7 +1294,7 @@ public class WordDoc
         double foodCostPct = double.Parse(questions.ByTitle("Food Cost %", "0"));
         double liquorCostPct = double.Parse(questions.ByTitle("Liquor Cost %", "0"));
         double beerCostPct = double.Parse(questions.ByTitle("Beer Cost %", "0"));
-        double wineCostPct = double.Parse(questions.ByTitle("Wine Cost %", "0")); //TODO Add Wine Cost %
+        double wineCostPct = double.Parse(questions.ByTitle("Wine Cost %", "0"));
         double yearlyCost = (foodCostPct * WeeklyFood + liquorCostPct * WeeklyLiquor + beerCostPct * WeeklyBeer + wineCostPct * WeeklyWine) / 100 * 52;
         double yearlyCostPct = yearlyCost / YearlyTotalSales;
         double hourlyLaborPct = YearlyHourlyCosts * (1 - minLabor * .01) / YearlyTotalSales;

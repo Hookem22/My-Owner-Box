@@ -129,7 +129,7 @@
             }
             else if(header == "Financials")
             {
-                subheaders = ["Basic Info", "Capital Budget", "Sales Projection", "Hourly Labor", "Other Expenses", "Print" ];
+                subheaders = ["Basic Info", "Capital Budget", "Sales Projection", "Hourly Labor", "Expenses", "Investment", "Print" ];
             }
 
             $(".nav.secondary").html("");
