@@ -31,7 +31,7 @@ public partial class Word_Default : System.Web.UI.Page
             }
 
             // Stream it down to the browser
-            Response.AppendHeader("Content-Disposition", "attachment;filename=" + "Testdoc4.docx");
+            Response.AppendHeader("Content-Disposition", "attachment;filename=" + "Testdoc5.docx");
             Response.ContentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
             mem.Position = 0;
             mem.CopyTo(Response.OutputStream);

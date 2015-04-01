@@ -156,9 +156,10 @@
             if (Questions[currentQuestion].ControlType == 7) { //Multi
                 var html = "";
                 for (var i = 0; i < Questions.length; i++) {
+                    var skip = Questions[currentQuestion + i].SkipCondition == "Always" ? "style='display:none;'" : "";
                     if (i == 0) {
                         html += "<div class='multiTextGroup'><h2>" + Questions[currentQuestion].Section + "</h2>";
-                        html += "<div class='multiText'><span>" + Questions[currentQuestion].Title + "</span><input type='text' value='{{Answer}}' /></div>";
+                        html += "<div class='multiText' " + skip + "><span>" + Questions[currentQuestion].Title + "</span><input type='text' value='{{Answer}}' /></div>";
                     }
                     else if (currentQuestion + i == Questions.length || Questions[currentQuestion + i].Page != Questions[currentQuestion + i - 1].Page) {
                         break;
@@ -166,13 +167,13 @@
                     else if (Questions[currentQuestion + i].Section != Questions[currentQuestion + i - 1].Section) {
                         html += "</div><div class='multiTextGroup divider'>";
                         html += "<h2>" + Questions[currentQuestion + i].Section + "</h2>";
-                        html += "<div class='multiText'><span>" + Questions[currentQuestion + i].Title + "</span><input type='text' value='{{Answer}}' /></div>";
+                        html += "<div class='multiText' " + skip + "><span>" + Questions[currentQuestion + i].Title + "</span><input type='text' value='{{Answer}}' /></div>";
                     }
                     else if (!Questions[currentQuestion + i].Title) {
                         html += "<div style='clear:both;'></div>";
                     }
                     else {
-                        html += "<div class='multiText'><span>" + Questions[currentQuestion + i].Title + "</span><input type='text' value='{{Answer}}' /></div>";
+                        html += "<div class='multiText' " + skip + "><span>" + Questions[currentQuestion + i].Title + "</span><input type='text' value='{{Answer}}' /></div>";
                     }
                     var answer = Questions[currentQuestion + i].Answer.Text || "";
                     html = html.replace("{{Answer}}", answer);
