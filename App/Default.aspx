@@ -43,7 +43,7 @@
                 Get();
             });
 
-            $("body").on("click", ".nav.secondary div", function () {
+            $("body").on("click", ".nav.secondary .subheaderList div", function () {
                 if ($(this).hasClass("active"))
                     return;
 
@@ -95,13 +95,52 @@
                 Post("GetTemplate", { questions: Questions }, success);
             });
 
-            $("#ConceptEditDialog textarea").jqte();
-            $("#ConceptEditDialog .jqte_tool.jqte_tool_1 .jqte_tool_label").css("height", "28px");
-            $("#ConceptEditDialog .jqte").css({ width: "700px", margin: "0 auto" });
-            $("#ConceptEditDialog .jqte_editor").css({ height: "600px" });
-            //$("#ConceptEditDialog .jqte_editor").html("hello<br/>world");
+            $(".main").on("click", ".scrollArrow", function () {
+                var left = $(".subheaderList").css("left");
+                left = +left.substring(0, left.indexOf("px"));
+                var leftClick = $(this).hasClass("left");
+                console.log(leftClick);
+                console.log(left);
+                switch (left) {
+                    case -850:
+                        left = leftClick ? -625 : -850;
+                        break;
+                    case -625:
+                        left = leftClick ? -325 : -850;
+                        break;
+                    case -325:
+                        left = leftClick ? 0 : -625;
+                        break;
+                    case 0:
+                        left = leftClick ? 0 : -325;
+                        break;
+                }
+                $(".subheaderList").animate({ left: left + "px" }, 200, function () { });
 
-            $("#ConceptEditDialog textarea").val("Hello world");
+            });
+
+            $(".main").on("click", ".ExampleBtn", function () {
+                if($(this).text() == "Show Examples")
+                {
+                    $(this).text("Hide Examples");
+                    $(".ExampleText").slideDown();
+                    $(".scrollExample").css({ opacity: "" });
+                }
+                else
+                {
+                    $(this).text("Show Examples");
+                    $(".ExampleText").slideUp();
+                    $(".scrollExample").css({ opacity: .01 });
+                }
+            });
+
+            //$("#ConceptEditDialog textarea").jqte();
+            //$("#ConceptEditDialog .jqte_tool.jqte_tool_1 .jqte_tool_label").css("height", "28px");
+            //$("#ConceptEditDialog .jqte").css({ width: "700px", margin: "0 auto" });
+            //$("#ConceptEditDialog .jqte_editor").css({ height: "600px" });
+            ////$("#ConceptEditDialog .jqte_editor").html("hello<br/>world");
+
+            //$("#ConceptEditDialog textarea").val("Hello world");
 
         });
 
@@ -122,22 +161,25 @@
             if(header == "Concept")
             {
                 subheaders = ["Create Your Concept", "Print"];
+                $(".scrollArrow").hide();
             }
             else if (header == "Business Plan")
             {
-                subheaders = ["Summary", "Location"];
+                subheaders = ["Company Description", "Management Team", "Market Analysis", "Marketing Strategy", "Staffing", "Daily Operations", "Software and Controls", "Other Contol Systems", "Inventory", "Accounting"];
+                $(".scrollArrow").show();
             }
             else if(header == "Financials")
             {
-                subheaders = ["Basic Info", "Capital Budget", "Sales Projection", "Hourly Labor", "Expenses", "Investment", "Print" ];
+                subheaders = ["Basic Info", "Capital Budget", "Sales Projection", "Hourly Labor", "Expenses", "Investment", "Print"];
+                $(".scrollArrow").hide();
             }
 
-            $(".nav.secondary").html("");
+            $(".nav.secondary .subheaderList").html("");
             for (var i = 0; i < subheaders.length; i++) {
                 if (i == 0)
-                    $(".nav.secondary").append($("<div>", { class: "active", style: "margin-left:0;", text: subheaders[i] }));
+                    $(".nav.secondary .subheaderList").append($("<div>", { class: "active", style: "margin-left:0;left:0;", text: subheaders[i] }));
                 else
-                    $(".nav.secondary").append($("<div>", { text: subheaders[i] }));
+                    $(".nav.secondary .subheaderList").append($("<div>", { text: subheaders[i] }));
             }
 
             $(".nav.secondary div").css("color", "white");
@@ -184,30 +226,62 @@
             }
             else {
                 var question = Questions[currentQuestion];
-                var html = question.Html;
+                var html = "<div class='businessPlanContent'>";
+                html += "<h2>" + question.Section + "</h2>";
+                var examples = question.Title.split("{Example}");
+                var title = examples.length ? examples[0] : question.Title;
+
+                html += "<div class='instructions'>" + title + "</div>";
+                if (examples.length > 0) {
+                    html += "<div class='ExampleBtn'>Show Examples</div>";
+
+                    html += "<div style='display:none;' class='ExampleText'>"
+                    html += "<img class='scrollExample left' src='https://cdn3.iconfinder.com/data/icons/faticons/32/arrow-left-01-64.png' />";
+                    html += "<div>" + examples[1] + "</div>";
+                    html += "<img class='scrollExample right' src='https://cdn3.iconfinder.com/data/icons/faticons/32/arrow-right-01-64.png' />";
+                    html += "</div>";
+                        
+                }
+
+                html = html.split("{Break}").join("<br/><br/>");
+                
+
                 var answer = question.Answer.Text || "";
-                html = html.replace("{{Answer}}", answer);
+                html += "<textarea class='AnswerControl'>" + answer + "</textarea>";
+                html += "</div>";
 
                 $(".fromDb").html(html);
 
-                if (question.ControlType == 3) { //Select
-                    $(".AnswerControl").val(answer);
-                }
-                else if (question.ControlType == 4) { //Checkbox
-                    $(answer.split(", ")).each(function () {
-                        $(".AnswerControl[value='" + this + "']").prop("checked", true);
-                    });
-                }
-                else if (question.ControlType == 5) { //Radio
-                    $(answer.split(", ")).each(function () {
-                        $("input[name='AnswerControl'][value='" + this + "']").prop("checked", true);
-                    });
-                }
-                else if (question.ControlType == 6) { //List
-                    $(answer.split(", ").reverse()).each(function () {
-                        AddItem(this);
-                    });
-                }
+                //$(".businessPlanContent .AnswerControl").jqte();
+                //$(".businessPlanContent .jqte_tool.jqte_tool_1 .jqte_tool_label").css("height", "28px");
+                //$(".businessPlanContent .jqte").css({ width: "634px" });
+                //$(".businessPlanContent .jqte_editor").css({ height: "300px" });
+
+                //var question = Questions[currentQuestion];
+                //var html = question.Html;
+                //var answer = question.Answer.Text || "";
+                //html = html.replace("{{Answer}}", answer);
+
+                //$(".fromDb").html(html);
+
+                //if (question.ControlType == 3) { //Select
+                //    $(".AnswerControl").val(answer);
+                //}
+                //else if (question.ControlType == 4) { //Checkbox
+                //    $(answer.split(", ")).each(function () {
+                //        $(".AnswerControl[value='" + this + "']").prop("checked", true);
+                //    });
+                //}
+                //else if (question.ControlType == 5) { //Radio
+                //    $(answer.split(", ")).each(function () {
+                //        $("input[name='AnswerControl'][value='" + this + "']").prop("checked", true);
+                //    });
+                //}
+                //else if (question.ControlType == 6) { //List
+                //    $(answer.split(", ").reverse()).each(function () {
+                //        AddItem(this);
+                //    });
+                //}
             }
             
         }
@@ -391,10 +465,14 @@
             </div>
         </div>
         <div class="main">
+           <img class="scrollArrow left" style="float:left;" src="https://cdn4.iconfinder.com/data/icons/miu/22/circle_back_arrow-24.png" />
            <div class="nav secondary">
-                <div class="active" style="margin-left:0;">Create Your Concept</div>
-                <div>Print</div>
+               <div class="subheaderList">
+                    <div class="active" style="margin-left:0;">Create Your Concept</div>
+                    <div>Print</div>
+               </div>
             </div>
+            <img class="scrollArrow right" style="float:right;" src="https://cdn4.iconfinder.com/data/icons/miu/22/circle_next_arrow_disclosure-24.png" />
             <div class="fromDb" style="margin-left:5%;">
                 <div class="multiTextGroup">
                     <h2>Sources of Cash</h2>

@@ -93,9 +93,34 @@
     background-color: #FFF;
             
 }
+.nav.secondary
+{
+    position: relative;
+    height: 24px;
+    overflow: hidden;
+    float: left;
+    width: 660px;
+    margin-bottom: 23px;
+}
+.nav.secondary .subheaderList
+{
+    position: absolute;
+    
+}
+.scrollArrow
+{
+    opacity:.3;
+    display: none;
+}
+.scrollArrow:hover
+{
+    opacity:.6;
+    cursor: pointer;
+}
 .nav.secondary div
 {
-    margin: 0 14px;
+    margin: 0 14px 6px;
+    position: relative;
 }
 .main .title
 {
@@ -280,6 +305,88 @@
 {
     border: 1px solid #09D!important;
 }
+.businessPlanContent
+{
+
+}
+.businessPlanContent .instructions
+{
+    margin: 0 60px 1em 0;
+}
+.businessPlanContent .AnswerControl
+{
+    width: 646px;
+    height: 300px;
+    margin: 1em 0 2em;
+}
+.businessPlanContent .ExampleBtn
+{
+    background: #F19F00;
+    color: white;
+    padding: 4px 16px;
+    width: 142px;
+    border-radius: 15px;
+    border: 2px solid #F19F00;
+    margin-bottom: 1em;
+}
+.businessPlanContent .ExampleBtn:hover
+{
+    background: white;
+    color: #F19F00;
+    cursor: pointer;
+}
+.businessPlanContent .ExampleText
+{
+    margin: 0 60px 1em 0;
+    padding: 2em 6em;
+    background: #eee;
+    float: left;
+    border-bottom: 20px solid #0082c3;
+}
+.businessPlanContent .ExampleText div
+{
+    float: left;
+}
+.businessPlanContent textarea
+{
+    webkit-box-shadow: 0 0 25px 2px rgba(52,184,244,.3);
+    -moz-box-shadow: 0 0 25px 2px rgba(52,184,244,.3);
+    box-shadow: 0 0 25px 2px rgba(52,184,244,.3);
+    border: none;
+    padding: 1em 3em;
+    font-size: 16px;
+}
+.businessPlanContent .textHeader
+{
+    width: 646px;
+    height: 20px;
+    background: #F8F8F8;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+.businessPlanContent textarea:hover, .businessPlanContent textarea:focus 
+{
+    border: 1px solid #09D!important;
+}
+.scrollExample
+{
+    position: absolute;
+    opacity: .8;
+}
+.scrollExample:hover
+{
+    opacity: 1;
+    cursor: pointer;
+}
+.scrollExample.left
+{
+    margin: 15px 0 0 -70px;
+}
+.scrollExample.right
+{
+    margin: 15px 0 0 0;
+}
+
 
 
  

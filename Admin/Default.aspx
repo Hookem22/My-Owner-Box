@@ -25,9 +25,6 @@
         }
         .EditDialog div
         {
-            float: left;
-            width: 140px;
-            margin: .5em 0;
         }
         .EditDialog input, .EditDialog textarea
         {
@@ -54,6 +51,13 @@
 
         $(document).ready(function () {
             
+            //$("#ConceptEditDialog textarea").jqte();
+            //$("#ConceptEditDialog .jqte_tool.jqte_tool_1 .jqte_tool_label").css("height", "28px");
+            //$("#ConceptEditDialog .jqte").css({ width: "700px", margin: "0 auto" });
+            //$("#ConceptEditDialog .jqte_toolbar").css({ width: "initial" });
+            //$("#ConceptEditDialog .jqte_tool").css({ width: "initial" });
+            //$("#ConceptEditDialog .jqte_editor").css({ height: "300px", width: "700px" });
+
             Get();
 
             $(".nav.primary div").not(".addQuestion").click(function () {
@@ -141,7 +145,7 @@
                 subheaders = ["Create Your Concept"];
             }
             else if (header == "Business Plan") {
-                subheaders = ["Summary", "Location"];
+                subheaders = ["Company Description", "Management Team", "Market Analysis", "Marketing Strategy", "Staffing", "Daily Operations", "Software and Controls", "Other Contol Systems", "Inventory", "Accounting"];
             }
             else if (header == "Financials") {
                 subheaders = ["Basic Info", "Capital Budget", "Sales Projection", "Hourly Labor", "Expenses", "Investment", "Print"];
@@ -188,7 +192,7 @@
 <body>
     <form id="form1" runat="server">
         <div class="modal-backdrop"></div>
-        <div id="ConceptEditDialog" class="modal-dialog" style="position:fixed;">
+        <div id="ConceptEditDialog" class="modal-dialog" style="position:absolute;">
             <div class="dialogClose">X</div>
             <h3>Add Question</h3>
             <div class="EditDialog">
@@ -208,15 +212,15 @@
                     <option value="6">List</option>
                     <option value="7">MultiTextbox</option>
                 </select><br />
-                <div>Page</div>
+                <div style="float:left;width: 140px;margin: .5em 0;">Page</div>
                 <input type="text" id="Page" /><br />
-                <div>Section Header</div>
+                <div style="float:left;width: 140px;margin: .5em 0;">Section Header</div>
                 <input type="text" id="Section" /><br />
-                <div>Question</div>
+                <div style="float:left;width: 140px;margin: .5em 0;">Question</div>
                 <textarea id="Title"></textarea><br />
-                <div>Options</div>
+                <div style="float:left;width: 140px;margin: .5em 0;">Options</div>
                 <input type="text" id="Options" /><br />
-                <div>Skip Condition</div>
+                <div style="float:left;width: 140px;margin: .5em 0;">Skip Condition</div>
                 <input type="text" id="SkipCondition" /><br />
             </div>
             <div class="saveBtn btn" style="margin: 2em 50px;">Save</div>
@@ -237,7 +241,7 @@
             </div>
         </div>
         <div class="main">
-            <div class="nav secondary">
+            <div class="nav secondary" style="height:inherit;width:inherit;">
                 <div class="active" style="margin-left:0;">Create Your Concept</div>
             </div>
             <div class="fromDb" style="margin-top:20px;">
