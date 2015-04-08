@@ -203,11 +203,6 @@
                     var skip = Questions[currentQuestion + i].SkipCondition == "Always" ? "style='display:none;'" : "";
                     if (i == 0) {
                         html += "<div class='multiTextGroup'><h2>" + Questions[currentQuestion].Section + "</h2>";
-                        html += "<div class='multiText' " + skip + "><div style='float:left;'>" + Questions[currentQuestion].Title + "</div>";
-                        if (Questions[currentQuestion + i].Options) {
-                            html += "<div class='questionMarkWrapper'><img class='questionMark' src='https://cdn0.iconfinder.com/data/icons/super-mono-reflection/blue/question_blue.png' /><div><div>" + Questions[currentQuestion].Options + "</div></div></div>";
-                        }
-                        html += "<input type='text' value='{{Answer}}' /></div>";
                     }
                     else if (currentQuestion + i == Questions.length || Questions[currentQuestion + i].Page != Questions[currentQuestion + i - 1].Page) {
                         break;
@@ -215,22 +210,27 @@
                     else if (Questions[currentQuestion + i].Section != Questions[currentQuestion + i - 1].Section) {
                         html += "</div><div class='multiTextGroup divider'>";
                         html += "<h2>" + Questions[currentQuestion + i].Section + "</h2>";
-                        html += "<div class='multiText' " + skip + "><div>" + Questions[currentQuestion + i].Title + "</div>";
-                        if (Questions[currentQuestion + i].Options)
-                            html += "<img class='questionMark' src='https://cdn0.iconfinder.com/data/icons/super-mono-reflection/blue/question_blue.png' />"
-                        html += "<input type='text' value='{{Answer}}' /></div>";
                     }
                     else if (!Questions[currentQuestion + i].Title) {
                         html += "<div style='clear:both;'></div>";
                     }
-                    else {
-                        html += "<div class='multiText' " + skip + "><div>" + Questions[currentQuestion + i].Title + "</div>";
-                        if (Questions[currentQuestion + i].Options)
-                            html += "<img class='questionMark' src='https://cdn0.iconfinder.com/data/icons/super-mono-reflection/blue/question_blue.png' />"
-                        html += "<input type='text' value='{{Answer}}' /></div>";
+
+                    html += "<div class='multiText' " + skip + "><div style='float:left;'>" + Questions[currentQuestion + i].Title + "</div>";
+                    if (Questions[currentQuestion + i].Help) {
+                        var even = i % 2 ? "class='even'" : "";
+                        var help = Questions[currentQuestion + i].Help;
+                        if (help.indexOf("{") >= 0 && help.indexOf("}") >= 0)
+                        {
+                            var link = help.substring(help.indexOf("{") + 1);
+                            link = link.substring(0, link.indexOf("}"));
+                            help = help.substring(0, help.indexOf("{"));
+                            var id = Questions[currentQuestion + i].Id;
+                            help += "<a onclick='OpenHelp(" + id + ");'>" + link + "</a>";
+                        }
+                        html += "<div class='questionMarkWrapper'><img class='questionMark' src='https://cdn0.iconfinder.com/data/icons/super-mono-reflection/blue/question_blue.png' /><div " + even + "><div>" + help + "</div></div></div>";
                     }
                     var answer = Questions[currentQuestion + i].Answer.Text || "";
-                    html = html.replace("{{Answer}}", answer);
+                    html += "<input type='text' value='" + answer + "' /></div>";
                 }
                 html += "</div>";
                 $(".fromDb").html(html);
@@ -416,16 +416,36 @@
             Post("SaveAnswer", { answer: question.Answer }, success);
         }
 
+        function OpenHelp(id)
+        {
+            for (var i = 0; i < Questions.length; i++) {
+                if (Questions[i].Id == id) {
+                    var question = Questions[i];
+                }
+            }
+            $(".modal-dialog h3").html(question.Title);
+            var help = question.Help.substring(question.Help.indexOf("}") + 1);
+            while (help.indexOf("<") == 0)
+            {
+                help = help.substring(help.indexOf(">") + 1);
+            }
+            $(".dialogContent").html(help);
+
+            $(".modal-dialog").show();
+            $(".modal-backdrop").show();
+        }
+
     </script>
 </head>
 <body>
     <form id="form1" runat="server">
         <input type="hidden" runat="server" id="CurrentUserId" />
         <div class="modal-backdrop"></div>
-        <div id="ConceptEditDialog" class="modal-dialog">
+        <div class="modal-dialog">
             <div class="dialogClose">X</div>
             <h3>Edit your Restaurant Concept</h3>
             <div class="dialogContent"></div>
+            <div class="dialogFooter"></div>
         </div>
         <div class="header">
             <div style="width:1000px;margin:0 auto;">

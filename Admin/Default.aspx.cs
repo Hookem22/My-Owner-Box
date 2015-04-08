@@ -36,6 +36,7 @@ public partial class Admin_Default : System.Web.UI.Page
     public static int SaveQuestion(Question question)
     {
         question.Title = question.Title.Replace("\n", "<br/>");
+        question.Help = question.Help.Replace("\n", "<br/>");
         question.Save();
         return question.Id;
     }

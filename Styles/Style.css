@@ -59,6 +59,7 @@ textarea
     background-color: #000;
     opacity: .5;
     display: none;
+    z-index: 999;
 }
 .modal-dialog
 {
@@ -81,6 +82,18 @@ textarea
     cursor: pointer;
     position: relative;
     font-family:Helvetica,Arial,san-serif;
+}
+.dialogContent
+{
+    padding: 1em 50px 3em;
+    max-height: 450px;
+    overflow-y: scroll;
+}
+.dialogFooter
+{
+    display: none;
+    height: 20px;
+    background: #999;
 }
 .mainnav {
     background: #F19F00;

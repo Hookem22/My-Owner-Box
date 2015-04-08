@@ -90,12 +90,12 @@
             });
 
             $(".saveBtn").click(function () {
-                var question = { Id: $("#Id").val() || 0, Type: $("#Type").val(), Sheet: $("#Sheet").val(), Page: $("#Page").val(), Section: $("#Section").val(), Title: $("#Title").val(), Options: $("#Options").val(), SkipCondition: $("#SkipCondition").val() }
+                var question = { Id: $("#Id").val() || 0, Type: $("#Type").val(), Sheet: $("#Sheet").val(), Page: $("#Page").val(), Section: $("#Section").val(), Title: $("#Title").val(), Help: $("#Help").val(), SkipCondition: $("#SkipCondition").val() }
                 //var question = { Id: 0 };
                 var success = function (questionId) {
                     console.log(questionId);
                     $("#Title").val("");
-                    $("#Options").val("");
+                    $("#Help").val("");
                     Get();
                 };
                 Post("SaveQuestion", { question: question }, success)
@@ -112,7 +112,7 @@
 
         function PopulateTable() {
             var table = "<table>";
-            table += "<tr><th>Id</th><th>Sheet</th><th>Page</th><th>Section</th><th>Question</th><th>Options</th><th>SkipCondition</th><th></th></tr>";
+            table += "<tr><th>Id</th><th>Sheet</th><th>Page</th><th>Section</th><th>Question</th><th>Help</th><th>SkipCondition</th><th></th></tr>";
             $(Questions).each(function () {
                 if(this.Type == $(".nav.primary .active").text())
                 {
@@ -125,7 +125,10 @@
                         table += "<td>" + this.Title.substring(0, 20) + "..." + "</td>";
                     else
                         table += "<td>" + this.Title + "</td>";
-                    table += "<td>" + this.Options + "</td>";
+                    if (this.Help && this.Help.length > 20)
+                        table += "<td>" + this.Help.substring(0, 20) + "..." + "</td>";
+                    else
+                        table += "<td>" + this.Help + "</td>";
                     table += "<td>" + this.SkipCondition + "</td>";
                     table += "<td><div class='btn blueBtn' style='font-size:14px;margin:3px;' onclick='Edit(" + this.Id + ");'>Edit</div></td>";
                     //table += "<td><div class='btn blueBtn' style='font-size:14px;margin:3px;' onclick='Delete(" + this.Id + ");'>Delete</div></td>";
@@ -173,9 +176,10 @@
                     $("#Sheet").val(this.Sheet);
                     $("#Page").val(this.Page);
                     $("#Section").val(this.Section);
-                    var title = this.Title.split("<br/>").join("\n")
+                    var title = this.Title.split("<br/>").join("\n");
                     $("#Title").val(title);
-                    $("#Options").val(this.Options);
+                    var help = this.Help.split("<br/>").join("\n");
+                    $("#Help").val(help);
                     $("#SkipCondition").val(this.SkipCondition);
                     return 0;
                 }
@@ -209,8 +213,8 @@
                 <input type="text" id="Section" /><br />
                 <div style="float:left;width: 140px;margin: .5em 0;">Question</div>
                 <textarea id="Title"></textarea><br />
-                <div style="float:left;width: 140px;margin: .5em 0;">Options</div>
-                <textarea id="Options"></textarea><br />
+                <div style="float:left;width: 140px;margin: .5em 0;">Help</div>
+                <textarea id="Help"></textarea><br />
                 <div style="float:left;width: 140px;margin: .5em 0;">Skip Condition</div>
                 <input type="text" id="SkipCondition" /><br />
             </div>

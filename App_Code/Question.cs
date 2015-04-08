@@ -19,7 +19,7 @@ public class Question : BaseClass<Question>
 
     public string Title { get; set; }
 
-    public string Options { get; set; }
+    public string Help { get; set; }
 
     public string Type { get; set; }
 
@@ -71,7 +71,7 @@ public class Question : BaseClass<Question>
 
             int ID = rdr.GetOrdinal("Id");
             int TITLE = rdr.GetOrdinal("Title");
-            int OPTIONS = rdr.GetOrdinal("Options");
+            int HELP = rdr.GetOrdinal("Help");
             int TYPE = rdr.GetOrdinal("Type");
             int SHEET = rdr.GetOrdinal("Sheet");
             int PAGE = rdr.GetOrdinal("Page");
@@ -86,7 +86,7 @@ public class Question : BaseClass<Question>
                 all.Add(question);
                 question.Id = rdr.IsDBNull(ID) ? 0 : rdr.GetInt32(ID);
                 question.Title = rdr.IsDBNull(TITLE) ? "" : rdr.GetString(TITLE);
-                question.Options = rdr.IsDBNull(OPTIONS) ? "" : rdr.GetString(OPTIONS);
+                question.Help = rdr.IsDBNull(HELP) ? "" : rdr.GetString(HELP);
                 question.Type = rdr.IsDBNull(TYPE) ? "" : rdr.GetString(TYPE);
                 question.Sheet = rdr.IsDBNull(SHEET) ? "" : rdr.GetString(SHEET);
                 question.Page = rdr.IsDBNull(PAGE) ? "" : rdr.GetString(PAGE);

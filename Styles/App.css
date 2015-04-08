@@ -253,7 +253,7 @@
     background: #73D3FF;
     color: #FFF;
 }
-#ConceptEditDialog h3
+.modal-dialog h3
 {
     padding: 1em 50px;
     font-size: 22px;
@@ -408,8 +408,10 @@
     display: none;
     position: absolute;
     background: transparent;
-    padding-bottom: 40px;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
     bottom: 0px;
+    min-width: 500px;
 }
 .questionMarkWrapper:hover > div
 {
@@ -421,7 +423,7 @@
     position: relative;
     padding: 1em;
     border-bottom: 1px solid #999;
-    background: #f3f3f3;
+    background: #fff;
     box-shadow: 0 1px 1px #999;
     left: -16px;
 }
@@ -448,9 +450,27 @@
 .questionMarkWrapper > div > div:after {
     bottom: -15px;
     left: 17px;
-    border-top-color: #f3f3f3;
+    border-top-color: #fff;
     border-width: 15px;
 }
+.questionMarkWrapper > div.even {
+    left: -300px;
+}
+.questionMarkWrapper > div.even > div:before {
+    left: 315px;
+}
+.questionMarkWrapper > div.even > div:after {
+    left: 316px;
+}
 
+.questionMarkWrapper a:hover
+{
+    text-decoration: underline;
+    cursor: pointer;
+}
+.questionMarkWrapper a:hover, .questionMarkWrapper a:focus, .questionMarkWrapper a:visited
+{
+    color: #0082c3;
+}
 
  
