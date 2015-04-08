@@ -21,9 +21,10 @@ public class Question : BaseClass<Question>
 
     public string Help { get; set; }
 
-    public string Type { get; set; }
+    public int SheetId { get; set; }
 
-    public string Sheet { get; set; }
+    [NonDB]
+    public Sheet QuestionSheet { get; set; }
 
     public string Page { get; set; }
 
@@ -72,8 +73,9 @@ public class Question : BaseClass<Question>
             int ID = rdr.GetOrdinal("Id");
             int TITLE = rdr.GetOrdinal("Title");
             int HELP = rdr.GetOrdinal("Help");
-            int TYPE = rdr.GetOrdinal("Type");
+            int SHEETID = rdr.GetOrdinal("SheetId");
             int SHEET = rdr.GetOrdinal("Sheet");
+            int HEADER = rdr.GetOrdinal("Header");
             int PAGE = rdr.GetOrdinal("Page");
             int SECTION = rdr.GetOrdinal("Section");
             int SKIPCONDITION = rdr.GetOrdinal("SkipCondition");
@@ -87,8 +89,11 @@ public class Question : BaseClass<Question>
                 question.Id = rdr.IsDBNull(ID) ? 0 : rdr.GetInt32(ID);
                 question.Title = rdr.IsDBNull(TITLE) ? "" : rdr.GetString(TITLE);
                 question.Help = rdr.IsDBNull(HELP) ? "" : rdr.GetString(HELP);
-                question.Type = rdr.IsDBNull(TYPE) ? "" : rdr.GetString(TYPE);
-                question.Sheet = rdr.IsDBNull(SHEET) ? "" : rdr.GetString(SHEET);
+                question.SheetId = rdr.IsDBNull(SHEETID) ? 0 : rdr.GetInt32(SHEETID);
+                question.QuestionSheet = new Sheet();
+                question.QuestionSheet.Id = rdr.IsDBNull(SHEETID) ? 0 : rdr.GetInt32(SHEETID);
+                question.QuestionSheet.Header = rdr.IsDBNull(HEADER) ? "" : rdr.GetString(HEADER);
+                question.QuestionSheet.Name = rdr.IsDBNull(SHEET) ? "" : rdr.GetString(SHEET);
                 question.Page = rdr.IsDBNull(PAGE) ? "" : rdr.GetString(PAGE);
                 question.Section = rdr.IsDBNull(SECTION) ? "" : rdr.GetString(SECTION);
                 question.SkipCondition = rdr.IsDBNull(SKIPCONDITION) ? "" : rdr.GetString(SKIPCONDITION);

@@ -80,17 +80,17 @@
                 $(this).addClass("active");
 
                 Get();
-                $("#Sheet").val($(".nav.secondary div.active").html());
             });
 
             $(".addQuestion").click(function () {
                 $(".modal-dialog").show();
                 $(".modal-backdrop").show();
-                $(".EditDialog input, .EditDialog textarea").val("");
+                $(".EditDialog input").not("#SheetId").val("");
+                $(".EditDialog textarea").val("");
             });
 
             $(".saveBtn").click(function () {
-                var question = { Id: $("#Id").val() || 0, Type: $("#Type").val(), Sheet: $("#Sheet").val(), Page: $("#Page").val(), Section: $("#Section").val(), Title: $("#Title").val(), Help: $("#Help").val(), SkipCondition: $("#SkipCondition").val() }
+                var question = { Id: $("#Id").val() || 0, Type: $("#Type").val(), SheetId: $("#SheetId").val(), Page: $("#Page").val(), Section: $("#Section").val(), Title: $("#Title").val(), Help: $("#Help").val(), SkipCondition: $("#SkipCondition").val() }
                 //var question = { Id: 0 };
                 var success = function (questionId) {
                     console.log(questionId);
@@ -105,6 +105,8 @@
         function Get() {
             var success = function (questions) {
                 Questions = questions;
+                if (questions.length)
+                    $("#SheetId").val(questions[0].SheetId);
                 PopulateTable();
             };
             Post("Get", { header: $(".nav.primary .active").html(), category: $(".nav.secondary .active").html(), userId:0 }, success);
@@ -112,13 +114,12 @@
 
         function PopulateTable() {
             var table = "<table>";
-            table += "<tr><th>Id</th><th>Sheet</th><th>Page</th><th>Section</th><th>Question</th><th>Help</th><th>SkipCondition</th><th></th></tr>";
+            table += "<tr><th>Id</th><th>Page</th><th>Section</th><th>Question</th><th>Help</th><th>SkipCondition</th><th></th></tr>";
             $(Questions).each(function () {
-                if(this.Type == $(".nav.primary .active").text())
+                if(this.QuestionSheet.Header == $(".nav.primary .active").text())
                 {
                     table += "<tr>";
                     table += "<td>" + this.Id + "</td>";
-                    table += "<td>" + this.Sheet + "</td>";
                     table += "<td>" + this.Page + "</td>";
                     table += "<td>" + this.Section + "</td>";
                     if (this.Title && this.Title.length > 20)
@@ -162,10 +163,6 @@
                     $(".nav.secondary").append($("<div>", { text: subheaders[i] }));
             }
             
-            $('#Sheet').html("");
-            $.each(subheaders, function () {
-                $('#Sheet').append($('<option>', { value: this }).text(this));
-            });
         }
 
         function Edit(id)
@@ -173,7 +170,7 @@
             $(Questions).each(function () {
                 if (this.Id == id) {
                     $("#Id").val(this.Id);
-                    $("#Sheet").val(this.Sheet);
+                    $("#SheetId").val(this.SheetId);
                     $("#Page").val(this.Page);
                     $("#Section").val(this.Section);
                     var title = this.Title.split("<br/>").join("\n");
@@ -200,13 +197,7 @@
             <h3>Add Question</h3>
             <div class="EditDialog">
                 <input type="hidden" id="Id" />
-                <select id="Type">
-                    <option>Concept</option>
-                    <option>Business Plan</option>
-                    <option>Financials</option>
-                </select>
-                <select id="Sheet"></select>
-                <br />
+                <input type="hidden" id="SheetId" />
                 <div style="float:left;width: 140px;margin: .5em 0;">Page</div>
                 <input type="text" id="Page" /><br />
                 <div style="float:left;width: 140px;margin: .5em 0;">Section Header</div>
