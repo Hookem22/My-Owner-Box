@@ -45,10 +45,11 @@ public class WordDoc
 
             body.AddHeader("Restaurant Concept");
 
-            foreach(string text in Concept.GetDoc())
-            {
-                body.AddParagraph(text);
-            }
+            //Concept deleted, get from questions
+            //foreach(string text in Concept.GetDoc())
+            //{
+            //    body.AddParagraph(text);
+            //}
             
 
         }
