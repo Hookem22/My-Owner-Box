@@ -197,7 +197,7 @@
                 $(".fromDb").html("");
                 return;
             }
-            if (Questions[currentQuestion].Type == "Financials") {
+            if (Questions[currentQuestion].QuestionSheet.Header == "Financials") {
                 var html = "";
                 for (var i = 0; i < Questions.length; i++) {
                     var skip = Questions[currentQuestion + i].SkipCondition == "Always" ? "style='display:none;'" : "";
@@ -215,7 +215,7 @@
                         html += "<div style='clear:both;'></div>";
                     }
 
-                    html += "<div class='multiText' " + skip + "><div style='float:left;'>" + Questions[currentQuestion + i].Title + "</div>";
+                    html += "<div class='multiText' " + skip + "><div style='float:left;max-width:290px'>" + Questions[currentQuestion + i].Title + "</div>";
                     if (Questions[currentQuestion + i].Help) {
                         var even = i % 2 ? "class='even'" : "";
                         var help = Questions[currentQuestion + i].Help;
