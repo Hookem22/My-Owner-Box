@@ -31,139 +31,137 @@ public class Question : BaseClass<Question>
 
     public string SkipCondition { get; set; }
 
-    public ControlTypes ControlType { get; set; }
-
     [NonDB]
     public Answer Answer { get; set; }
 
-    [NonDB]
-    public string Html
-    {
-        get
-        {
-            string html = "";
+    //[NonDB]
+    //public string Html
+    //{
+    //    get
+    //    {
+    //        string html = "";
 
-            if (ControlType != ControlTypes.MultiTextbox)
-            {
-                if (!string.IsNullOrEmpty(Title))
-                    html += string.Format("<div class='title'>{0}</div>", Title);
-                //if(!string.IsNullOrEmpty(Subtitle))
-                //    html += string.Format("<div class='subtitle'>{0}</div>", Subtitle);
+    //        if (ControlType != ControlTypes.MultiTextbox)
+    //        {
+    //            if (!string.IsNullOrEmpty(Title))
+    //                html += string.Format("<div class='title'>{0}</div>", Title);
+    //            //if(!string.IsNullOrEmpty(Subtitle))
+    //            //    html += string.Format("<div class='subtitle'>{0}</div>", Subtitle);
 
-                html += "<div class='content'>";
-                switch (ControlType)
-                {
-                    case ControlTypes.Textbox:
-                        if (!string.IsNullOrEmpty(Options))
-                        {
-                            string options = "";
-                            foreach (string option in Options.Split('|'))
-                            {
-                                options += option + ", ";
-                            }
-                            if (!string.IsNullOrEmpty(options))
-                                options = options.Substring(0, options.Length - 2);
+    //            html += "<div class='content'>";
+    //            switch (ControlType)
+    //            {
+    //                case ControlTypes.Textbox:
+    //                    if (!string.IsNullOrEmpty(Options))
+    //                    {
+    //                        string options = "";
+    //                        foreach (string option in Options.Split('|'))
+    //                        {
+    //                            options += option + ", ";
+    //                        }
+    //                        if (!string.IsNullOrEmpty(options))
+    //                            options = options.Substring(0, options.Length - 2);
 
-                            html += string.Format("<input class='AnswerControl' type='text' placeholder='{0}' value='{1}' />", options, "{{Answer}}");
-                        }
-                        else
-                        {
-                            html += "<input class='AnswerControl' type='text' value='{{Answer}}' />";
-                        }
-                        break;
-                    case ControlTypes.Textarea:
-                        html += "<textarea class='AnswerControl'>{{Answer}}</textarea>";
-                        html += "<div class='textarea'><ul><li style='text-align:center;margin-bottom: .5em;'>Examples: </li>";
-                        foreach (string option in Options.Split('|'))
-                            html += string.Format("<li>{0}</li>", option);
+    //                        html += string.Format("<input class='AnswerControl' type='text' placeholder='{0}' value='{1}' />", options, "{{Answer}}");
+    //                    }
+    //                    else
+    //                    {
+    //                        html += "<input class='AnswerControl' type='text' value='{{Answer}}' />";
+    //                    }
+    //                    break;
+    //                case ControlTypes.Textarea:
+    //                    html += "<textarea class='AnswerControl'>{{Answer}}</textarea>";
+    //                    html += "<div class='textarea'><ul><li style='text-align:center;margin-bottom: .5em;'>Examples: </li>";
+    //                    foreach (string option in Options.Split('|'))
+    //                        html += string.Format("<li>{0}</li>", option);
 
-                        html += "</ul></div>";
-                        break;
-                    case ControlTypes.Select:
-                        html += "<select class='AnswerControl'>";
-                        foreach (string option in Options.Split('|'))
-                            html += string.Format("<option>{0}</option>", option);
+    //                    html += "</ul></div>";
+    //                    break;
+    //                case ControlTypes.Select:
+    //                    html += "<select class='AnswerControl'>";
+    //                    foreach (string option in Options.Split('|'))
+    //                        html += string.Format("<option>{0}</option>", option);
 
-                        html += "</select>";
-                        break;
-                    case ControlTypes.Checkbox:
-                        foreach (string option in Options.Split('|'))
-                            html += string.Format("<input type='checkbox' class='AnswerControl' value='{0}'><div class='checkbox'>{0}</div>", option);
-                        break;
-                    case ControlTypes.Radio:
-                        foreach (string option in Options.Split('|'))
-                            html += string.Format("<input type='radio' name='AnswerControl' value='{0}'><div class='radio'>{0}</div>", option);
+    //                    html += "</select>";
+    //                    break;
+    //                case ControlTypes.Checkbox:
+    //                    foreach (string option in Options.Split('|'))
+    //                        html += string.Format("<input type='checkbox' class='AnswerControl' value='{0}'><div class='checkbox'>{0}</div>", option);
+    //                    break;
+    //                case ControlTypes.Radio:
+    //                    foreach (string option in Options.Split('|'))
+    //                        html += string.Format("<input type='radio' name='AnswerControl' value='{0}'><div class='radio'>{0}</div>", option);
 
-                        break;
-                    case ControlTypes.List:
-                        if (!string.IsNullOrEmpty(Options))
-                        {
-                            string options = "";
-                            foreach (string option in Options.Split('|'))
-                            {
-                                options += option + ", ";
-                            }
-                            options = options.Substring(0, options.Length - 2);
-                            html += string.Format("<input class='ListControl' type='text' placeholder='{0}' /><span class='glyphicon glyphicon-plus-sign' ></span>", options);
-                        }
-                        else
-                        {
-                            html += "<input class='ListControl' type='text' /><span class='glyphicon glyphicon-plus-sign'></span>";
-                        }
-                        break;
-                }
-                html += "</div>";
-            }
-            else
-            {
-                html = "";
+    //                    break;
+    //                case ControlTypes.List:
+    //                    if (!string.IsNullOrEmpty(Options))
+    //                    {
+    //                        string options = "";
+    //                        foreach (string option in Options.Split('|'))
+    //                        {
+    //                            options += option + ", ";
+    //                        }
+    //                        options = options.Substring(0, options.Length - 2);
+    //                        html += string.Format("<input class='ListControl' type='text' placeholder='{0}' /><span class='glyphicon glyphicon-plus-sign' ></span>", options);
+    //                    }
+    //                    else
+    //                    {
+    //                        html += "<input class='ListControl' type='text' /><span class='glyphicon glyphicon-plus-sign'></span>";
+    //                    }
+    //                    break;
+    //            }
+    //            html += "</div>";
+    //        }
+    //        else
+    //        {
+    //            html = "";
 
 
-                //if (!string.IsNullOrEmpty(CardHeader))
-                //    html += string.Format("<h1>{0}</h1>", CardHeader);
+    //            //if (!string.IsNullOrEmpty(CardHeader))
+    //            //    html += string.Format("<h1>{0}</h1>", CardHeader);
 
-                //html += "<div class='multiTextGroup'>";
-                //html += string.Format("<h2>{0}</h2>", Header);
-                //for (int i = 0, ii = Questions.Count; i < ii; i++)
-                //{
-                //    if (i > 0 && Questions[i].Header != Questions[i - 1].Header)
-                //    {
-                //        html += string.Format("</div><div class='multiTextGroup divider'><h2>{0}</h2>", Questions[i].Header);
-                //    }
-                //    string options = "";
-                //    foreach (string option in Questions[i].Options)
-                //    {
-                //        options += option + ", ";
-                //    }
-                //    if (!string.IsNullOrEmpty(options))
-                //        options = options.Substring(0, options.Length - 2);
+    //            //html += "<div class='multiTextGroup'>";
+    //            //html += string.Format("<h2>{0}</h2>", Header);
+    //            //for (int i = 0, ii = Questions.Count; i < ii; i++)
+    //            //{
+    //            //    if (i > 0 && Questions[i].Header != Questions[i - 1].Header)
+    //            //    {
+    //            //        html += string.Format("</div><div class='multiTextGroup divider'><h2>{0}</h2>", Questions[i].Header);
+    //            //    }
+    //            //    string options = "";
+    //            //    foreach (string option in Questions[i].Options)
+    //            //    {
+    //            //        options += option + ", ";
+    //            //    }
+    //            //    if (!string.IsNullOrEmpty(options))
+    //            //        options = options.Substring(0, options.Length - 2);
 
-                //    if (string.IsNullOrEmpty(Questions[i].Title))
-                //        html += "<div class='multiText' style='width:100%;'></div>";
-                //    else
-                //        html += string.Format("<div class='multiText'><span>{0}</span><input type='text' value='{1}' placeholder='{2}' /></div>", Questions[i].Title, "{{Answer}}", options);
-                //}
-                //html += "</div>";
-            }
-            return html;
+    //            //    if (string.IsNullOrEmpty(Questions[i].Title))
+    //            //        html += "<div class='multiText' style='width:100%;'></div>";
+    //            //    else
+    //            //        html += string.Format("<div class='multiText'><span>{0}</span><input type='text' value='{1}' placeholder='{2}' /></div>", Questions[i].Title, "{{Answer}}", options);
+    //            //}
+    //            //html += "</div>";
+    //        }
+    //        return html;
 
-        }
-    }
+    //    }
+    //}
 
 
     #endregion
 
-    public enum ControlTypes
-    {
-        None = 0,
-        Textbox = 1,
-        Textarea = 2,
-        Select = 3,
-        Checkbox = 4,
-        Radio = 5,
-        List = 6,
-        MultiTextbox = 7
-    }
+    //public enum ControlTypes
+    //{
+    //    None = 0,
+    //    Textbox = 1,
+    //    Textarea = 2,
+    //    Select = 3,
+    //    Checkbox = 4,
+    //    Radio = 5,
+    //    List = 6,
+    //    MultiTextbox = 7
+    //}
 
     //public static List<Question> Get(string header, string category)
     //{
@@ -203,7 +201,7 @@ public class Question : BaseClass<Question>
             SqlCommand cmdGet = new SqlCommand("Question_Get", conn);
             cmdGet.CommandType = CommandType.StoredProcedure;
             cmdGet.Parameters.Add(new SqlParameter("@UserId", userId));
-            cmdGet.Parameters.Add(new SqlParameter("@ControlType", header));
+            cmdGet.Parameters.Add(new SqlParameter("@Header", header));
             cmdGet.Parameters.Add(new SqlParameter("@Sheet", category));
 
             rdr = cmdGet.ExecuteReader();
@@ -216,7 +214,6 @@ public class Question : BaseClass<Question>
             int PAGE = rdr.GetOrdinal("Page");
             int SECTION = rdr.GetOrdinal("Section");
             int SKIPCONDITION = rdr.GetOrdinal("SkipCondition");
-            int CONTROLTYPE = rdr.GetOrdinal("ControlType");
             int ANSWERID = rdr.GetOrdinal("AnswerId");
             int TEXT = rdr.GetOrdinal("Text");
 
@@ -232,7 +229,6 @@ public class Question : BaseClass<Question>
                 question.Page = rdr.IsDBNull(PAGE) ? "" : rdr.GetString(PAGE);
                 question.Section = rdr.IsDBNull(SECTION) ? "" : rdr.GetString(SECTION);
                 question.SkipCondition = rdr.IsDBNull(SKIPCONDITION) ? "" : rdr.GetString(SKIPCONDITION);
-                question.ControlType = rdr.IsDBNull(CONTROLTYPE) ? ControlTypes.None : (ControlTypes)rdr.GetInt32(CONTROLTYPE);
                 question.Answer = new Answer();
                 question.Answer.Id = rdr.IsDBNull(ANSWERID) ? 0 : rdr.GetInt32(ANSWERID);
                 question.Answer.UserId = userId;

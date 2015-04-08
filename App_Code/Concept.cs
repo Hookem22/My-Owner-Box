@@ -14,61 +14,61 @@ public class Concept
 
     public static string[] GetDoc()
     {
-        string html = GetTemplate();
+        string html = ""; // GetTemplate();
         html = html.Replace("<br/><br/>", "|");
         return html.Split('|');
     }
 
-    public static string GetTemplate()
-    {
-        List<Question> questions = Question.Get("Concept", "Create Your Concept", 1);
+    //public static string GetTemplate()
+    //{
+    //    List<Question> questions = Question.Get("Concept", "Create Your Concept", 1);
 
-        string html = ConceptTemplate;
+    //    string html = ConceptTemplate;
 
-        string replace = questions.ByTitle("Will you serve alcohol?") == "Yes" ? ConceptAlcohol : "";
-        html = html.Replace("[Alcohol]", replace);
+    //    string replace = questions.ByTitle("Will you serve alcohol?") == "Yes" ? ConceptAlcohol : "";
+    //    html = html.Replace("[Alcohol]", replace);
 
-        replace = questions.ByTitle("Which of these will you serve?").Contains("Breakfast") ? ConceptBreakfast : "";
-        html += replace;
+    //    replace = questions.ByTitle("Which of these will you serve?").Contains("Breakfast") ? ConceptBreakfast : "";
+    //    html += replace;
 
-        replace = questions.ByTitle("Which of these will you serve?").Contains("Lunch") ? ConceptLunch : "";
-        html += replace;
+    //    replace = questions.ByTitle("Which of these will you serve?").Contains("Lunch") ? ConceptLunch : "";
+    //    html += replace;
 
-        replace = questions.ByTitle("Which of these will you serve?").Contains("Dinner") ? ConceptDinner : "";
-        html += replace;
+    //    replace = questions.ByTitle("Which of these will you serve?").Contains("Dinner") ? ConceptDinner : "";
+    //    html += replace;
 
-        html = html.Replace("{Name of Restaurant}", "Bob's Restaurant");
+    //    html = html.Replace("{Name of Restaurant}", "Bob's Restaurant");
 
-        foreach (Question question in questions)
-        {
-            if (!string.IsNullOrEmpty(question.Answer.Text))
-            {
-                if ((question.ControlType == Question.ControlTypes.Checkbox || question.ControlType == Question.ControlTypes.List) && question.Answer.Text.Contains(", "))
-                {
-                    string[] items = question.Answer.Text.Split(',');
-                    if (items.Length == 2)
-                    {
-                        question.Answer.Text = items[0].Trim() + " and " + items[1].Trim();
-                    }
-                    else
-                    {
-                        question.Answer.Text = "";
-                        for (int i = 0; i < items.Length; i++)
-                        {
-                            if (i > 0 && i == items.Length - 1)
-                                question.Answer.Text += "and " + items[i] + ", ";
-                            else
-                                question.Answer.Text += items[i] + ", ";
-                        }
-                        question.Answer.Text = question.Answer.Text.Substring(0, question.Answer.Text.Length - 2);
-                    }
-                }
-                html = html.Replace("{" + question.Title + "}", question.Answer.Text.ToLower());
-            }
-        }
+    //    foreach (Question question in questions)
+    //    {
+    //        if (!string.IsNullOrEmpty(question.Answer.Text))
+    //        {
+    //            if ((question.ControlType == Question.ControlTypes.Checkbox || question.ControlType == Question.ControlTypes.List) && question.Answer.Text.Contains(", "))
+    //            {
+    //                string[] items = question.Answer.Text.Split(',');
+    //                if (items.Length == 2)
+    //                {
+    //                    question.Answer.Text = items[0].Trim() + " and " + items[1].Trim();
+    //                }
+    //                else
+    //                {
+    //                    question.Answer.Text = "";
+    //                    for (int i = 0; i < items.Length; i++)
+    //                    {
+    //                        if (i > 0 && i == items.Length - 1)
+    //                            question.Answer.Text += "and " + items[i] + ", ";
+    //                        else
+    //                            question.Answer.Text += items[i] + ", ";
+    //                    }
+    //                    question.Answer.Text = question.Answer.Text.Substring(0, question.Answer.Text.Length - 2);
+    //                }
+    //            }
+    //            html = html.Replace("{" + question.Title + "}", question.Answer.Text.ToLower());
+    //        }
+    //    }
 
-        return html;
-    }
+    //    return html;
+    //}
 
     #region Templates
 

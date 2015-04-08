@@ -99,22 +99,13 @@
                 var left = $(".subheaderList").css("left");
                 left = +left.substring(0, left.indexOf("px"));
                 var leftClick = $(this).hasClass("left");
-                console.log(leftClick);
-                console.log(left);
-                switch (left) {
-                    case -850:
-                        left = leftClick ? -625 : -850;
-                        break;
-                    case -625:
-                        left = leftClick ? -325 : -850;
-                        break;
-                    case -325:
-                        left = leftClick ? 0 : -625;
-                        break;
-                    case 0:
-                        left = leftClick ? 0 : -325;
-                        break;
-                }
+                if(left <= -770)
+                    left = leftClick ? -508 : -770;
+                else if(left <= -508)
+                    left = leftClick ? 0 : -770;
+                else if(left <= 0)
+                    left = leftClick ? 0 : -508;
+
                 $(".subheaderList").animate({ left: left + "px" }, 200, function () { });
 
             });
@@ -134,13 +125,24 @@
                 }
             });
 
-            //$("#ConceptEditDialog textarea").jqte();
-            //$("#ConceptEditDialog .jqte_tool.jqte_tool_1 .jqte_tool_label").css("height", "28px");
-            //$("#ConceptEditDialog .jqte").css({ width: "700px", margin: "0 auto" });
-            //$("#ConceptEditDialog .jqte_editor").css({ height: "600px" });
-            ////$("#ConceptEditDialog .jqte_editor").html("hello<br/>world");
+            $(".main").on("click", ".scrollExample", function () {
+                if (Examples.length < 2)
+                    return;
 
-            //$("#ConceptEditDialog textarea").val("Hello world");
+                if ($(this).hasClass("left"))
+                {
+                    currentExample--;
+                    if (currentExample < 1)
+                        currentExample = Examples.length - 1;
+                }
+                else
+                {
+                    currentExample++;
+                    if (currentExample > Examples.length - 1)
+                        currentExample = 1;
+                }
+                $(".ExampleText div").html(Examples[currentExample]);
+            });
 
         });
 
@@ -182,9 +184,9 @@
                     $(".nav.secondary .subheaderList").append($("<div>", { text: subheaders[i] }));
             }
 
-            $(".nav.secondary div").css("color", "white");
+            $(".nav.secondary div").css({ color: "white", "border-color": "white", left: "0" });
             setTimeout(function () {
-                $(".nav.secondary div").css("color", "");
+                $(".nav.secondary div").css({ color: "", "border-color": "" });
              }, 200);
 
         }
@@ -195,13 +197,17 @@
                 $(".fromDb").html("");
                 return;
             }
-            if (Questions[currentQuestion].ControlType == 7) { //Multi
+            if (Questions[currentQuestion].Type == "Financials") {
                 var html = "";
                 for (var i = 0; i < Questions.length; i++) {
                     var skip = Questions[currentQuestion + i].SkipCondition == "Always" ? "style='display:none;'" : "";
                     if (i == 0) {
                         html += "<div class='multiTextGroup'><h2>" + Questions[currentQuestion].Section + "</h2>";
-                        html += "<div class='multiText' " + skip + "><span>" + Questions[currentQuestion].Title + "</span><input type='text' value='{{Answer}}' /></div>";
+                        html += "<div class='multiText' " + skip + "><div style='float:left;'>" + Questions[currentQuestion].Title + "</div>";
+                        if (Questions[currentQuestion + i].Options) {
+                            html += "<div class='questionMarkWrapper'><img class='questionMark' src='https://cdn0.iconfinder.com/data/icons/super-mono-reflection/blue/question_blue.png' /><div><div>" + Questions[currentQuestion].Options + "</div></div></div>";
+                        }
+                        html += "<input type='text' value='{{Answer}}' /></div>";
                     }
                     else if (currentQuestion + i == Questions.length || Questions[currentQuestion + i].Page != Questions[currentQuestion + i - 1].Page) {
                         break;
@@ -209,13 +215,19 @@
                     else if (Questions[currentQuestion + i].Section != Questions[currentQuestion + i - 1].Section) {
                         html += "</div><div class='multiTextGroup divider'>";
                         html += "<h2>" + Questions[currentQuestion + i].Section + "</h2>";
-                        html += "<div class='multiText' " + skip + "><span>" + Questions[currentQuestion + i].Title + "</span><input type='text' value='{{Answer}}' /></div>";
+                        html += "<div class='multiText' " + skip + "><div>" + Questions[currentQuestion + i].Title + "</div>";
+                        if (Questions[currentQuestion + i].Options)
+                            html += "<img class='questionMark' src='https://cdn0.iconfinder.com/data/icons/super-mono-reflection/blue/question_blue.png' />"
+                        html += "<input type='text' value='{{Answer}}' /></div>";
                     }
                     else if (!Questions[currentQuestion + i].Title) {
                         html += "<div style='clear:both;'></div>";
                     }
                     else {
-                        html += "<div class='multiText' " + skip + "><span>" + Questions[currentQuestion + i].Title + "</span><input type='text' value='{{Answer}}' /></div>";
+                        html += "<div class='multiText' " + skip + "><div>" + Questions[currentQuestion + i].Title + "</div>";
+                        if (Questions[currentQuestion + i].Options)
+                            html += "<img class='questionMark' src='https://cdn0.iconfinder.com/data/icons/super-mono-reflection/blue/question_blue.png' />"
+                        html += "<input type='text' value='{{Answer}}' /></div>";
                     }
                     var answer = Questions[currentQuestion + i].Answer.Text || "";
                     html = html.replace("{{Answer}}", answer);
@@ -228,60 +240,27 @@
                 var question = Questions[currentQuestion];
                 var html = "<div class='businessPlanContent'>";
                 html += "<h2>" + question.Section + "</h2>";
-                var examples = question.Title.split("{Example}");
-                var title = examples.length ? examples[0] : question.Title;
+                Examples = question.Title.split("{Example}");
+                currentExample = 1;
+                var title = Examples.length ? Examples[0] : question.Title;
 
                 html += "<div class='instructions'>" + title + "</div>";
-                if (examples.length > 0) {
+                if (Examples.length > 0) {
                     html += "<div class='ExampleBtn'>Show Examples</div>";
 
                     html += "<div style='display:none;' class='ExampleText'>"
                     html += "<img class='scrollExample left' src='https://cdn3.iconfinder.com/data/icons/faticons/32/arrow-left-01-64.png' />";
-                    html += "<div>" + examples[1] + "</div>";
+                    html += "<div>" + Examples[currentExample] + "</div>";
                     html += "<img class='scrollExample right' src='https://cdn3.iconfinder.com/data/icons/faticons/32/arrow-right-01-64.png' />";
                     html += "</div>";
                         
                 }
-
-                html = html.split("{Break}").join("<br/><br/>");
-                
 
                 var answer = question.Answer.Text || "";
                 html += "<textarea class='AnswerControl'>" + answer + "</textarea>";
                 html += "</div>";
 
                 $(".fromDb").html(html);
-
-                //$(".businessPlanContent .AnswerControl").jqte();
-                //$(".businessPlanContent .jqte_tool.jqte_tool_1 .jqte_tool_label").css("height", "28px");
-                //$(".businessPlanContent .jqte").css({ width: "634px" });
-                //$(".businessPlanContent .jqte_editor").css({ height: "300px" });
-
-                //var question = Questions[currentQuestion];
-                //var html = question.Html;
-                //var answer = question.Answer.Text || "";
-                //html = html.replace("{{Answer}}", answer);
-
-                //$(".fromDb").html(html);
-
-                //if (question.ControlType == 3) { //Select
-                //    $(".AnswerControl").val(answer);
-                //}
-                //else if (question.ControlType == 4) { //Checkbox
-                //    $(answer.split(", ")).each(function () {
-                //        $(".AnswerControl[value='" + this + "']").prop("checked", true);
-                //    });
-                //}
-                //else if (question.ControlType == 5) { //Radio
-                //    $(answer.split(", ")).each(function () {
-                //        $("input[name='AnswerControl'][value='" + this + "']").prop("checked", true);
-                //    });
-                //}
-                //else if (question.ControlType == 6) { //List
-                //    $(answer.split(", ").reverse()).each(function () {
-                //        AddItem(this);
-                //    });
-                //}
             }
             
         }
@@ -446,11 +425,10 @@
         <div id="ConceptEditDialog" class="modal-dialog">
             <div class="dialogClose">X</div>
             <h3>Edit your Restaurant Concept</h3>
-            <textarea></textarea>
-            <div class="saveBtn btn" style="margin: 2em 50px;">Save</div>
+            <div class="dialogContent"></div>
         </div>
         <div class="header">
-            <div style="width:800px;margin:0 auto;">
+            <div style="width:1000px;margin:0 auto;">
                 <img src="../img/logoshadow.png" class="logo" />
                 <div class="myOwnerBox">My Owner Box</div>
                 <div style="float: right;margin: 19px 60px 0 0;"><a href="../Word">My Account</a></div>

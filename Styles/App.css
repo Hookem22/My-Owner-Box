@@ -60,7 +60,7 @@
 {
     font-weight: 100;
     font-size: 16px;
-    width:800px;
+    width:1000px;
     margin: 0 auto;
 }
 .nav.primary div
@@ -83,7 +83,7 @@
 }
 .main
 {
-    width:800px;
+    width:1000px;
     clear: both;
     margin: 0 auto 40px;
     padding: 26px 30px;
@@ -96,10 +96,10 @@
 .nav.secondary
 {
     position: relative;
-    height: 24px;
+    height: 30px;
     overflow: hidden;
     float: left;
-    width: 660px;
+    width: 890px;
     margin-bottom: 23px;
 }
 .nav.secondary .subheaderList
@@ -255,19 +255,21 @@
 }
 #ConceptEditDialog h3
 {
-    margin: 1em 50px;
+    padding: 1em 50px;
     font-size: 22px;
     color: #666;
+    border-bottom: 1px solid #ccc;
 }
 .multiTextGroup
 {
     float: left;
-    margin-bottom: 30px;
-    padding-top: 10px;
+    margin: 0 110px 30px 10px;
+    padding: 10px 0 0 40px;
 }
 .multiTextGroup.divider
 {
     border-top: 4px solid #E0F0F8;
+    padding-top: 30px;
 }
 .multiTextGroup h2
 {
@@ -275,17 +277,17 @@
     font-size: 22px;
     font-weight: 200;
     text-align: left;
+    margin-top: 0;
 }
 .multiText
 {
     text-align: left;
-    width: 320px;
+    width: 350px;
     float: left;
     margin: 8px 16px 8px 0;
 }
 .multiText span
 {
-    font-size: 14px;
     color: #333;
     font-weight: 400;
 
@@ -305,6 +307,16 @@
 {
     border: 1px solid #09D!important;
 }
+.questionMark
+{
+    height: 24px;
+    margin-left: 4px;
+    margin-top: -1px;
+}
+.questionMark:hover
+{
+    cursor: pointer;
+}
 .businessPlanContent
 {
 
@@ -315,7 +327,7 @@
 }
 .businessPlanContent .AnswerControl
 {
-    width: 646px;
+    width: 833px;
     height: 300px;
     margin: 1em 0 2em;
 }
@@ -324,10 +336,10 @@
     background: #F19F00;
     color: white;
     padding: 4px 16px;
-    width: 142px;
+    width: 155px;
     border-radius: 15px;
     border: 2px solid #F19F00;
-    margin-bottom: 1em;
+    margin: 2em 0 1em;
 }
 .businessPlanContent .ExampleBtn:hover
 {
@@ -352,7 +364,7 @@
     webkit-box-shadow: 0 0 25px 2px rgba(52,184,244,.3);
     -moz-box-shadow: 0 0 25px 2px rgba(52,184,244,.3);
     box-shadow: 0 0 25px 2px rgba(52,184,244,.3);
-    border: none;
+    border: 1px solid #fff;
     padding: 1em 3em;
     font-size: 16px;
 }
@@ -386,7 +398,59 @@
 {
     margin: 15px 0 0 0;
 }
+.questionMarkWrapper
+{
+    position: relative;
+    float: left;
+}
+.questionMarkWrapper > div
+{
+    display: none;
+    position: absolute;
+    background: transparent;
+    padding-bottom: 40px;
+    bottom: 0px;
+}
+.questionMarkWrapper:hover > div
+{
+    display: block;
+}
+.questionMarkWrapper > div > div {
 
+    /* Styling block element, not required */
+    position: relative;
+    padding: 1em;
+    border-bottom: 1px solid #999;
+    background: #f3f3f3;
+    box-shadow: 0 1px 1px #999;
+    left: -16px;
+}
+/* Required for Down Triangle */
+.questionMarkWrapper > div > div:before, .questionMarkWrapper > div > div:after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-color: transparent;
+    border-bottom: 0;
+}
+/* Stroke */
+.questionMarkWrapper > div > div:before {
+    bottom: -16px;
+    left: 16px;
+
+    /* If 1px darken stroke slightly */
+    border-top-color: #777;
+    border-width: 16px;
+}
+/* Fill */
+.questionMarkWrapper > div > div:after {
+    bottom: -15px;
+    left: 17px;
+    border-top-color: #f3f3f3;
+    border-width: 15px;
+}
 
 
  

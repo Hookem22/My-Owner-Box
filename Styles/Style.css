@@ -19,8 +19,8 @@ html, body, form {
 }
 body {
     font-family: "KlinicSlab","Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size: 14px;
-    line-height: 20px;
+    font-size: 16px;
+    line-height: 24px;
     color: #333333;
     margin: 0;
     padding: 0;
@@ -63,11 +63,12 @@ textarea
 .modal-dialog
 {
     position: absolute;
-    width: 800px;
+    width: 575px;
     z-index: 1000;
     background: white;
     left: 50%;
-    margin-left: -400px;
+    margin-left: -288px;
+    margin-top: 75px;
     display: none;
 }
 .dialogClose

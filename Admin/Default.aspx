@@ -90,7 +90,7 @@
             });
 
             $(".saveBtn").click(function () {
-                var question = { Id: $("#Id").val() || 0, Type: $("#Type").val(), Sheet: $("#Sheet").val(), Page: $("#Page").val(), Section: $("#Section").val(), ControlType: $("#ControlType").val(), Title: $("#Title").val(), Options: $("#Options").val(), SkipCondition: $("#SkipCondition").val() }
+                var question = { Id: $("#Id").val() || 0, Type: $("#Type").val(), Sheet: $("#Sheet").val(), Page: $("#Page").val(), Section: $("#Section").val(), Title: $("#Title").val(), Options: $("#Options").val(), SkipCondition: $("#SkipCondition").val() }
                 //var question = { Id: 0 };
                 var success = function (questionId) {
                     console.log(questionId);
@@ -172,10 +172,9 @@
                     $("#Id").val(this.Id);
                     $("#Sheet").val(this.Sheet);
                     $("#Page").val(this.Page);
-                    console.log(this.ControlType);
-                    $("#ControlType").val(this.ControlType);
                     $("#Section").val(this.Section);
-                    $("#Title").val(this.Title);
+                    var title = this.Title.split("<br/>").join("\n")
+                    $("#Title").val(title);
                     $("#Options").val(this.Options);
                     $("#SkipCondition").val(this.SkipCondition);
                     return 0;
@@ -203,15 +202,7 @@
                     <option>Financials</option>
                 </select>
                 <select id="Sheet"></select>
-                <select id="ControlType">
-                    <option value="1">Textbox</option>
-                    <option value="2">Textarea</option>
-                    <option value="3">Select</option>
-                    <option value="4">Checkbox</option>
-                    <option value="5">Radio</option>
-                    <option value="6">List</option>
-                    <option value="7">MultiTextbox</option>
-                </select><br />
+                <br />
                 <div style="float:left;width: 140px;margin: .5em 0;">Page</div>
                 <input type="text" id="Page" /><br />
                 <div style="float:left;width: 140px;margin: .5em 0;">Section Header</div>
@@ -219,14 +210,14 @@
                 <div style="float:left;width: 140px;margin: .5em 0;">Question</div>
                 <textarea id="Title"></textarea><br />
                 <div style="float:left;width: 140px;margin: .5em 0;">Options</div>
-                <input type="text" id="Options" /><br />
+                <textarea id="Options"></textarea><br />
                 <div style="float:left;width: 140px;margin: .5em 0;">Skip Condition</div>
                 <input type="text" id="SkipCondition" /><br />
             </div>
             <div class="saveBtn btn" style="margin: 2em 50px;">Save</div>
         </div>
         <div class="header">
-            <div style="width:800px;margin:0 auto;">
+            <div style="width:1000px;margin:0 auto;">
                 <img src="../img/logoshadow.png" class="logo" />
                 <div class="myOwnerBox">My Owner Box</div>
                 <div style="float: right;margin: 19px 60px 0 0;">Admin</div>
