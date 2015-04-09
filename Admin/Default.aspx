@@ -90,15 +90,29 @@
             });
 
             $(".saveBtn").click(function () {
-                var question = { Id: $("#Id").val() || 0, Type: $("#Type").val(), SheetId: $("#SheetId").val(), Page: $("#Page").val(), Section: $("#Section").val(), Title: $("#Title").val(), Help: $("#Help").val(), SkipCondition: $("#SkipCondition").val() }
-                //var question = { Id: 0 };
-                var success = function (questionId) {
-                    console.log(questionId);
-                    $("#Title").val("");
-                    $("#Help").val("");
-                    Get();
-                };
-                Post("SaveQuestion", { question: question }, success)
+                if ($("#Id").val() == "-1") //Save Section Overview
+                {
+                    var sheet = { Id: $("#SheetId").val(), Name: "", Header:"", Overview: $("#Title").val() };
+                    var success = function (sheetId) {
+                        console.log(sheetId);
+                        $("#Title").val("");
+                        $("#Help").val("");
+                        Get();
+                    };
+                    Post("SaveSheet", { sheet: sheet }, success);
+                }
+                else
+                {
+                    var question = { Id: $("#Id").val() || 0, Type: $("#Type").val(), SheetId: $("#SheetId").val(), Page: $("#Page").val(), Section: $("#Section").val(), Title: $("#Title").val(), Help: $("#Help").val(), SkipCondition: $("#SkipCondition").val() }
+                    var success = function (questionId) {
+                        console.log(questionId);
+                        $("#Title").val("");
+                        $("#Help").val("");
+                        Get();
+                    };
+                    Post("SaveQuestion", { question: question }, success);
+                }
+
             });
         });
 

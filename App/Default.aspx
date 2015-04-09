@@ -197,6 +197,23 @@
                 $(".fromDb").html("");
                 return;
             }
+            if (currentQuestion == 0 && Questions[currentQuestion].Title)
+            {
+                var question = Questions[currentQuestion];
+                var html = "<div class='businessPlanContent'>";
+                html += "<h2 style='text-align:center;margin-bottom:.5em;'>" + $(".nav.secondary div.active").html() + "</h2>";
+                html += "<h3 style='text-align:center;'>" + question.Section + "</h3>";
+                html += "<div class='instructions' style='margin: 2em 1em;'>" + question.Title + "</div>";
+                html += "</div>";
+
+                $(".fromDb").html(html);
+                return;
+            }
+            else if (currentQuestion == 0)
+            {
+                currentQuestion++;
+            }
+
             if (Questions[currentQuestion].QuestionSheet.Header == "Financials") {
                 var html = "";
                 for (var i = 0; i < Questions.length; i++) {
@@ -471,7 +488,7 @@
                </div>
             </div>
             <img class="scrollArrow right" style="float:right;" src="https://cdn4.iconfinder.com/data/icons/miu/22/circle_next_arrow_disclosure-24.png" />
-            <div class="fromDb" style="margin-left:5%;">
+            <div class="fromDb" style="margin:5%;">
                 <div class="multiTextGroup">
                     <h2>Sources of Cash</h2>
                     <div class="multiText">

@@ -321,6 +321,10 @@
 {
 
 }
+.businessPlanContent h2
+{
+    margin-bottom: 1em;
+}
 .businessPlanContent .instructions
 {
     margin: 0 60px 1em 0;

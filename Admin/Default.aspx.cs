@@ -40,4 +40,13 @@ public partial class Admin_Default : System.Web.UI.Page
         question.Save();
         return question.Id;
     }
+
+    [WebMethod]
+    public static int SaveSheet(Sheet sheet)
+    {
+        Sheet newSheet = Sheet.LoadById(sheet.Id);
+        newSheet.Overview = sheet.Overview.Replace("\n", "<br/>");
+        newSheet.Save();
+        return newSheet.Id;
+    }
 }
