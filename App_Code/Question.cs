@@ -58,7 +58,7 @@ public class Question : BaseClass<Question>
         List<Sheet> sheets = Sheet.LoadByPropName("Name", category);
         if(sheets.Count > 0)
         {
-            Question overview = new Question() { Id = -1, SheetId = sheets[0].Id, Page = "", Section = "Overview", Title = sheets[0].Overview ?? "", QuestionSheet = sheets[0], Help = "", SkipCondition = "", Answer = new Answer() { Id = 0, QuestionId = -1, Text = "", UserId = userId } };
+            Question overview = new Question() { Id = -1, SheetId = sheets[0].Id, Page = "", Section = "Overview", Title = sheets[0].Overview ?? "", Help = sheets[0].Summary ?? "", QuestionSheet = sheets[0], SkipCondition = "", Answer = new Answer() { Id = 0, QuestionId = -1, Text = "", UserId = userId } };
             all.Add(overview);
         }
 

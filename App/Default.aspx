@@ -217,7 +217,10 @@
             if (Questions[currentQuestion].QuestionSheet.Header == "Financials") {
                 var html = "";
                 for (var i = 0; i < Questions.length; i++) {
-                    var skip = Questions[currentQuestion + i].SkipCondition == "Always" ? "style='display:none;'" : "";
+                    if (!Questions[currentQuestion + i])
+                        break;
+
+                    var style = Questions[currentQuestion + i].SkipCondition == "Always" ? "display:none;" : "";
                     if (i == 0) {
                         html += "<div class='multiTextGroup'><h2>" + Questions[currentQuestion].Section + "</h2>";
                     }
@@ -231,10 +234,17 @@
                     else if (!Questions[currentQuestion + i].Title) {
                         html += "<div style='clear:both;'></div>";
                     }
+                    var even = i % 2 ? "class='even'" : "";
+                    style += even && !Questions[currentQuestion + i].Options ? "" : "clear:left;";
+                    //if (Questions[currentQuestion + i].Title.length <= 36 && ((even && Questions[currentQuestion + i - 1] && Questions[currentQuestion + i - 1].Title.length > 36)
+                    //    || !even && Questions[currentQuestion + i + 1] && Questions[currentQuestion + i + 1].Title.length > 36))
 
-                    html += "<div class='multiText' " + skip + "><div style='float:left;max-width:290px'>" + Questions[currentQuestion + i].Title + "</div>";
+                    //var addMargin = ["Petty Cash", "Graphic Design"];
+                    //if (addMargin.indexOf(Questions[currentQuestion + i].Title) >= 0)
+                    //    style += "margin-top:31px;";
+ 
+                    html += "<div class='multiText' style='" + style + "'><div style='float:left;max-width:290px'>" + Questions[currentQuestion + i].Title + "</div>";
                     if (Questions[currentQuestion + i].Help) {
-                        var even = i % 2 ? "class='even'" : "";
                         var help = Questions[currentQuestion + i].Help;
                         if (help.indexOf("{") >= 0 && help.indexOf("}") >= 0)
                         {

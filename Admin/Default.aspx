@@ -92,7 +92,7 @@
             $(".saveBtn").click(function () {
                 if ($("#Id").val() == "-1") //Save Section Overview
                 {
-                    var sheet = { Id: $("#SheetId").val(), Name: "", Header:"", Overview: $("#Title").val() };
+                    var sheet = { Id: $("#SheetId").val(), Name: "", Header:"", Overview: $("#Title").val(), Summary: $("#Help").val() };
                     var success = function (sheetId) {
                         console.log(sheetId);
                         $("#Title").val("");
