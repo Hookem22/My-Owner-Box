@@ -162,7 +162,7 @@
             var header = $(".nav.primary div.active").html();
             if(header == "Concept")
             {
-                subheaders = ["Create Your Concept", "Print"];
+                subheaders = ["Create Your Concept"];
                 $(".scrollArrow").hide();
             }
             else if (header == "Business Plan")
@@ -172,7 +172,7 @@
             }
             else if(header == "Financials")
             {
-                subheaders = ["Basic Info", "Capital Budget", "Sales Projection", "Hourly Labor", "Expenses", "Investment", "Print"];
+                subheaders = ["Basic Info", "Capital Budget", "Sales Projection", "Hourly Labor", "Expenses", "Investment"];
                 $(".scrollArrow").hide();
             }
 
@@ -197,12 +197,13 @@
                 $(".fromDb").html("");
                 return;
             }
+            //Overview
             if (currentQuestion == 0 && Questions[currentQuestion].Title)
             {
-                var question = Questions[currentQuestion];
+                var question = Questions[0];
                 var html = "<div class='businessPlanContent'>";
-                html += "<h2 style='text-align:center;margin-bottom:.5em;'>" + $(".nav.secondary div.active").html() + "</h2>";
-                html += "<h3 style='text-align:center;'>" + question.Section + "</h3>";
+                html += "<h2 style='text-align:center;margin-bottom:.5em;'>" + $(".nav.primary div.active").html() + "</h2>";
+                html += "<h3 style='text-align:center;'>Overview</h3>";
                 html += "<div class='instructions' style='margin: 2em 1em;'>" + question.Title + "</div>";
                 html += "</div>";
 
@@ -212,6 +213,19 @@
             else if (currentQuestion == 0)
             {
                 currentQuestion++;
+            }
+
+            //Summary
+            if (!Questions[currentQuestion] && Questions[currentQuestion - 1] && Questions[0].Help) {
+                var question = Questions[0];
+                var html = "<div class='businessPlanContent'>";
+                html += "<h2 style='text-align:center;margin-bottom:.5em;'>" + $(".nav.secondary div.active").html() + "</h2>";
+                html += "<h3 style='text-align:center;'>Summary</h3>";
+                html += "<div class='instructions' style='margin: 2em 1em;'>" + question.Help + "</div>";
+                html += "</div>";
+
+                $(".fromDb").html(html);
+                return;
             }
 
             if (Questions[currentQuestion].QuestionSheet.Header == "Financials") {
@@ -305,6 +319,19 @@
                 currentQuestion--;
             }
 
+            //Previous Section
+            if (currentQuestion < 0 || (currentQuestion == 0 && !Questions[0].Title)) {
+                var header = $(".nav.secondary div.active").prev();
+                if (header && header.length) {
+                    header.click();
+                }
+                else {
+                    header = $(".nav.primary div.active").prev();
+                    header.click();
+                }
+                return;
+            }
+
             PrevScreen();
         }
 
@@ -321,6 +348,19 @@
             }
             while (Questions[currentQuestion] && Questions[currentQuestion].Page && Questions[currentQuestion].Page == Questions[currentQuestion - 1].Page) {
                 currentQuestion++;
+            }
+
+            //Next Section
+            if (!Questions[currentQuestion] && (!Questions[currentQuestion - 1] || !Questions[0].Help)) {
+                var header = $(".nav.secondary div.active").next();
+                if (header && header.length) {
+                    header.click();
+                }
+                else {
+                    header = $(".nav.primary div.active").next();
+                    header.click();
+                }
+                return;
             }
 
             NextScreen();
@@ -386,6 +426,9 @@
 
         function SaveAnswer()
         {
+            if (!Questions[currentQuestion])
+                return;
+
             var answer = "";
             if ($(".multiText input").length > 0) { //Multi
                 var answerText = [];
@@ -494,7 +537,6 @@
            <div class="nav secondary">
                <div class="subheaderList">
                     <div class="active" style="margin-left:0;">Create Your Concept</div>
-                    <div>Print</div>
                </div>
             </div>
             <img class="scrollArrow right" style="float:right;" src="https://cdn4.iconfinder.com/data/icons/miu/22/circle_next_arrow_disclosure-24.png" />
