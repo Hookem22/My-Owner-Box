@@ -52,3 +52,10 @@ $(function () {
         $(".modal-backdrop").hide();
     });
 });
+function RemoveFrontBreaks(text)
+{
+    while (text.indexOf("<") == 0) {
+        text = text.substring(text.indexOf(">") + 1);
+    }
+    return text;
+}

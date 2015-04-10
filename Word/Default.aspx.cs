@@ -13,23 +13,29 @@ public partial class Word_Default : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
+        int userId = 0;
+        if (!string.IsNullOrEmpty(Request.QueryString["u"]))
+        {
+            int.TryParse(Request.QueryString["u"], out userId);
+        }
         string header = "";
         if (!string.IsNullOrEmpty(Request.QueryString["header"]))
         {
             header = Request.QueryString["header"];
         }
-        
         using (MemoryStream mem = new MemoryStream())
         {
-            if (header == "Concept")
+            using (WordprocessingDocument wordDocument = WordprocessingDocument.Create(mem, WordprocessingDocumentType.Document, true))
             {
-                WordDoc.PrintConcept(mem);
-            }
-            else
-            {
-                WordDoc.Financials(mem);
-            }
+                MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
 
+                // Create the document structure and add some text.
+                mainPart.Document = new Document();
+                Body body = mainPart.Document.AppendChild(new Body());
+
+                WordDoc.Print(wordDocument, header, userId);
+            }
+            
             // Stream it down to the browser
             Response.AppendHeader("Content-Disposition", "attachment;filename=" + "Testdoc5.docx");
             Response.ContentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";

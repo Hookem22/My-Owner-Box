@@ -146,7 +146,7 @@
                     if (currentExample > Examples.length - 1)
                         currentExample = 1;
                 }
-                $(".ExampleText div").html(Examples[currentExample]);
+                $(".ExampleText div").html(RemoveFrontBreaks(Examples[currentExample]));
             });
 
             $(".main").on("click", ".printContent img", function () {
@@ -160,11 +160,11 @@
                 for (var i = 0; i < imgs.length; i++)
                 {
                     if ($(imgs[i]).attr("src").indexOf("Unchecked") < 0)
-                        header += i + "|";
+                        header += i;
                 }
                 if (header)
                 {
-                    window.open("/Word?header=" + header);
+                    window.open("/Word?header=" + header + "&u=" + currentUserId);
                 }
                 else
                 {
@@ -236,8 +236,7 @@
                     header = para.substring(para.indexOf("{") + 1);
                     header = header.substring(0, header.indexOf("}"));
                     para = para.substring(para.indexOf("}") + 1);
-                    while (para.indexOf("<") == 0)
-                        para = para.substring(para.indexOf(">") + 1);
+                    para = RemoveFrontBreaks(para);
                 }
                 html += "<h2 style='text-align:center;margin-bottom:.5em;'>" + header + "</h2>";
                 html += "<div class='instructions' style='margin: 2em 1em;'>" + para + "</div>";
@@ -261,8 +260,7 @@
                     header = para.substring(para.indexOf("{") + 1);
                     header = header.substring(0, header.indexOf("}"));
                     para = para.substring(para.indexOf("}") + 1);
-                    while (para.indexOf("<") == 0)
-                        para = para.substring(para.indexOf(">") + 1);
+                    para = RemoveFrontBreaks(para);
                 }
                 html += "<h2 style='text-align:center;margin-bottom:.5em;'>" + header + "</h2>";
                 html += "<div class='instructions' style='margin: 2em 1em;'>" + para + "</div>";
@@ -335,7 +333,7 @@
 
                     html += "<div style='display:none;' class='ExampleText'>"
                     html += "<img class='scrollExample left' src='https://cdn3.iconfinder.com/data/icons/faticons/32/arrow-left-01-64.png' />";
-                    html += "<div>" + Examples[currentExample] + "</div>";
+                    html += "<div>" + RemoveFrontBreaks(Examples[currentExample]) + "</div>";
                     html += "<img class='scrollExample right' src='https://cdn3.iconfinder.com/data/icons/faticons/32/arrow-right-01-64.png' />";
                     html += "</div>";
                         
@@ -352,21 +350,35 @@
 
         function PopulatePrint()
         {
-            $(".nav.secondary .subheaderList").html("");
-            var question = Questions[0];
-            var html = "<div class='printContent'>";
-            html += "<h2 style='text-align:center;margin-bottom:.5em;'>Print Business Plan</h2>";
-            html += "<div style='margin: 1em 6em 2em 8em;float:left;'>";
-            html += "<div><img src='../img/Checked.png' />Concept</div>";
-            html += "<div><img src='../img/Checked.png' />Business Plan</div>";
-            html += "<div><img src='../img/Checked.png' />Financials</div>";
-            html += "</div>";
-            html += "<div class='printBtn'>Print Now</div>";
-            html += "</div>";
-            html += "<div style='clear:both;'></div>";
+            $(".main").animate({ "margin-left": "0" }, 200, function () {
+                $(".main").fadeOut(100, function () {
+                    
+                    $(".nav.secondary .subheaderList").html("");
+                    var question = Questions[0];
+                    var html = "<div class='printContent'>";
+                    html += "<h2 style='text-align:center;margin-bottom:.5em;'>Print Business Plan</h2>";
+                    html += "<div style='margin: 1em 6em 2em 8em;float:left;'>";
+                    html += "<div><img src='../img/Checked.png' />Concept</div>";
+                    html += "<div><img src='../img/Checked.png' />Business Plan</div>";
+                    html += "<div><img src='../img/Checked.png' />Financials</div>";
+                    html += "</div>";
+                    html += "<div class='printBtn'>Print Now</div>";
+                    html += "</div>";
+                    html += "<div style='clear:both;'></div>";
 
-            $(".fromDb").html(html);
-            $(".btnSection").hide();
+                    $(".fromDb").html(html);
+                    $(".btnSection").hide();
+
+                    var margin = ($(window).width() - 800) / 2;
+                    $(".main").css("margin-left", margin + 100 + "px");
+                    $(".main").fadeIn(100, function () {
+                        $(".main").css("margin-left", "auto");
+                        $("#AnswerControl").focus();
+                    });
+                });
+            });
+
+
 
         }
 
@@ -490,7 +502,7 @@
 
         function SaveAnswer()
         {
-            if (!Questions[currentQuestion])
+            if (!Questions[currentQuestion] || Questions[currentQuestion].Id < 0)
                 return;
 
             var answer = "";
@@ -559,10 +571,7 @@
             }
             $(".modal-dialog h3").html(question.Title);
             var help = question.Help.substring(question.Help.indexOf("}") + 1);
-            while (help.indexOf("<") == 0)
-            {
-                help = help.substring(help.indexOf(">") + 1);
-            }
+            help = RemoveFrontBreaks(help);
             $(".dialogContent").html(help);
 
             $(".modal-dialog").show();

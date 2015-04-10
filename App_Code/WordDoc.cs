@@ -30,63 +30,108 @@ public class WordDoc
     static double[] FiveYearCashFlow = new double[5];
     static double Principal = 0;
 
-    public static void PrintConcept(MemoryStream mem)
+    public static void Print(WordprocessingDocument wordDocument, string header, int userId)
     {
-        // Create Document
-        using (WordprocessingDocument wordDocument = WordprocessingDocument.Create(mem,
-        WordprocessingDocumentType.Document, true))
+        currentUserId = userId;
+
+        //TODO: Print title page
+
+        if (header.Contains("0"))
         {
-            // Add a main document part. 
-            MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
+            PrintConcept(wordDocument);
+        }
+        if (header.Contains("1"))
+        {
+            if (header.Contains("0"))
+                wordDocument.MainDocumentPart.Document.Body.AddPageBreak();
 
-            // Create the document structure and add some text.
-            mainPart.Document = new Document();
-            Body body = mainPart.Document.AppendChild(new Body());
+            PrintBusinessPlan(wordDocument);
+        }
+        if (header.Contains("2"))
+        {
+            if (header.Contains("1"))
+                wordDocument.MainDocumentPart.Document.Body.AddPageBreak();
 
-            body.AddHeader("Restaurant Concept");
+            Financials(wordDocument);
+        }
+    }
 
-            //Concept deleted, get from questions
-            //foreach(string text in Concept.GetDoc())
-            //{
-            //    body.AddParagraph(text);
-            //}
+    static void PrintConcept(WordprocessingDocument wordDocument)
+    {
+        Body body = wordDocument.MainDocumentPart.Document.Body;
+        body.AddHeader("Restaurant Concept");
+
+        List<Question> questions = Question.Get("Concept", null, currentUserId, false);
+
+        foreach(Question question in questions)
+        {
+            if(question.Answer != null && !string.IsNullOrEmpty(question.Answer.Text))
+            {
+                //body.AddSectionHeader(question.Section);
+                body.AddParagraph(question.Answer.Text);
+            }
+        }
+    }
+
+    static void PrintBusinessPlan(WordprocessingDocument wordDocument)
+    {
+        Body body = wordDocument.MainDocumentPart.Document.Body;
+        List<Question> questions = Question.Get("Business Plan", null, currentUserId, false);
+
+        for (int i = 0; i < questions.Count; i++)
+        {
+            Question question = questions[i];
+            if (i == 0 || question.SheetId != questions[i - 1].SheetId)
+            {
+                int j = 0;
+                while (question.SheetId == questions[i + j].SheetId)
+                {
+                    if (questions[i + j].Answer != null && !string.IsNullOrEmpty(questions[i + j].Answer.Text))
+                    {
+                        if(i > 0)
+                            body.AddPageBreak();
+
+                        body.AddHeader(question.QuestionSheet.Name);
+                        break;
+                    }
+                    j++;
+                }
+            }
             
-
+            if (question.Answer != null && !string.IsNullOrEmpty(question.Answer.Text))
+            {
+                if ((i == 0 || questions[i].SheetId == questions[i - 1].SheetId) || (i >= questions.Count - 1 || questions[i].SheetId == questions[i + 1].SheetId))
+                    body.AddSectionHeader(question.Section);
+                
+                body.AddParagraph(question.Answer.Text);
+            }
         }
     }
 
-    public static void Financials(MemoryStream mem)
+    static void Financials(WordprocessingDocument wordDocument)
     {
-        using (WordprocessingDocument wordDocument = WordprocessingDocument.Create(mem, WordprocessingDocumentType.Document, true))
-        {
-            MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
-
-            // Create the document structure and add some text.
-            mainPart.Document = new Document();
-            Body body = mainPart.Document.AppendChild(new Body());
-
-            FinancialsOverview(wordDocument);
-            body.AddPageBreak();
-            FinancialsCapitalBudget(wordDocument);
-            body.AddPageBreak();
-            FinancialsSalesProjection(wordDocument);
-            body.AddPageBreak();
-            FinancialsHourlyLabor(wordDocument);
-            body.AddPageBreak();
-            FinancialsIncomeDetailed(wordDocument);
-            body.AddPageBreak();
-            FinancialsIncomeSummary(wordDocument);
-            body.AddPageBreak();
-            FinancialsIncome5Year(wordDocument);
-            body.AddPageBreak();
-            FinancialsInvestmentReturn(wordDocument);
-            body.AddPageBreak();
-            FinancialsBreakEven(wordDocument);
-
-        }
+        Body body = wordDocument.MainDocumentPart.Document.Body;
+        
+        FinancialsOverview(wordDocument);
+        body.AddPageBreak();
+        FinancialsCapitalBudget(wordDocument);
+        body.AddPageBreak();
+        FinancialsSalesProjection(wordDocument);
+        body.AddPageBreak();
+        FinancialsHourlyLabor(wordDocument);
+        body.AddPageBreak();
+        FinancialsIncomeDetailed(wordDocument);
+        body.AddPageBreak();
+        FinancialsIncomeSummary(wordDocument);
+        body.AddPageBreak();
+        FinancialsIncome5Year(wordDocument);
+        body.AddPageBreak();
+        FinancialsInvestmentReturn(wordDocument);
+        body.AddPageBreak();
+        FinancialsBreakEven(wordDocument);
     }
 
-    public static void FinancialsOverview(WordprocessingDocument wordDocument)
+    static void FinancialsOverview(WordprocessingDocument wordDocument)
     {
         Body body = wordDocument.MainDocumentPart.Document.Body;
 
@@ -97,7 +142,7 @@ public class WordDoc
         string[] detailStyle = new string[] { "LeftIndent:400", "JustifyRight|RightIndent:1000" };
         string[] totalStyle = new string[] { "Bold|Background:ABCDEF", "Background:ABCDEF", "Background:ABCDEF|JustifyRight|RightIndent:1000|Bold" };
 
-        List<Question> questions = Question.Get("Financials", "Capital Budget", currentUserId);
+        List<Question> questions = Question.Get("Financials", "Capital Budget", currentUserId, false);
         double totalSum = 0;
         double sectionSum = 0;
         List<string[]> usesRows = new List<string[]>();
@@ -119,7 +164,7 @@ public class WordDoc
             }
         }
 
-        List<Question> basicInfo = Question.Get("Financials", "Basic Info", currentUserId);
+        List<Question> basicInfo = Question.Get("Financials", "Basic Info", currentUserId, false);
         double equityCapital = basicInfo.ByTitleSum(new string[] { "Equity Capital" });
         
         tbl.AddRow(new string[] { "SOURCES OF CASH", "", "" }, new string[] { "Bold" });
@@ -139,7 +184,7 @@ public class WordDoc
 
     }
 
-    public static void FinancialsCapitalBudget(WordprocessingDocument wordDocument)
+    static void FinancialsCapitalBudget(WordprocessingDocument wordDocument)
     {       
         Body body = wordDocument.MainDocumentPart.Document.Body;
 
@@ -154,7 +199,7 @@ public class WordDoc
         bool odd = true;
         int sum = 0;
 
-        List<Question> questions = Question.Get("Financials", "Capital Budget", currentUserId);
+        List<Question> questions = Question.Get("Financials", "Capital Budget", currentUserId, false);
         for (int i = 0, ii = questions.Count; i < ii; i++)
         {
             if(i == 0)
@@ -188,7 +233,7 @@ public class WordDoc
         tbl.AddRow(new string[] { "", "", sum.ToString("#,##0;(#,##0)") }, sumStyle, false);
     }
 
-    public static void FinancialsSalesProjection(WordprocessingDocument wordDocument)
+    static void FinancialsSalesProjection(WordprocessingDocument wordDocument)
     {
         Body body = wordDocument.MainDocumentPart.Document.Body;
         
@@ -221,7 +266,7 @@ public class WordDoc
         double beerSum = 0;
         double wineSum = 0;
 
-        List<Question> questions = Question.Get("Financials", "Sales Projection", currentUserId);
+        List<Question> questions = Question.Get("Financials", "Sales Projection", currentUserId, false);
         //if breakfast
         tbl.AddRow(new string[] { meal, "Average|Price Point", "% Ordered", "Average|Food", "Average|Beverage", "Average|Check" }, header);
         tbl.AddRow(new string[] { "Food" }, new string[] { "Bold" });
@@ -270,7 +315,7 @@ public class WordDoc
         double foodSum = 0;
         double bevSum = 0;
 
-        List<Question> questions = Question.Get("Financials", "Sales Projection", currentUserId);
+        List<Question> questions = Question.Get("Financials", "Sales Projection", currentUserId, false);
         tbl.AddRow(new string[] { "", "", "Table|Turns", "Covers", "Food", "Liquor", "Beer", "Wine", "Total" }, header);
         
         double numberSeats = 150;
@@ -345,7 +390,7 @@ public class WordDoc
         string[] borderStyle = new string[] { "VerticalText:650|Bold|JustifyCenter|VerticalMerge:Continue", "VerticalText:650|Bold|JustifyCenter|VerticalMerge:Continue", "VerticalText:650|JustifyCenter|Borders:Left:Bottom", "VerticalText:650|Background:ABCDEF|JustifyCenter|Borders:Bottom", "VerticalText:650|JustifyCenter|Borders:Bottom", "VerticalText:650|Background:ABCDEF|JustifyCenter|Borders:Bottom", "VerticalText:650|Bold|JustifyCenter|Borders:Bottom", "VerticalText:650|Background:ABCDEF|JustifyCenter|Borders:Bottom", "VerticalText:650|JustifyCenter|Borders:Bottom", "VerticalText:650|Background:ABCDEF|JustifyCenter|Borders:Bottom", "VerticalText:650|JustifyCenter|Borders:Bottom", "VerticalText:650|Background:ABCDEF|JustifyCenter|Borders:Bottom:Right", "VerticalText:650|JustifyCenter|Bold", "VerticalMerge:Continue", "VerticalMerge:Continue", "VerticalMerge:Continue", "VerticalMerge:Continue" };
         string[] lastStyle = new string[] { "VerticalText:900|Bold|JustifyCenter", "VerticalText:900|Bold|JustifyCenter", "VerticalText:900|JustifyCenter|Borders:Left:Bottom", "VerticalText:900|Background:ABCDEF|JustifyCenter|Borders:Bottom", "VerticalText:900|JustifyCenter|Borders:Bottom", "VerticalText:900|Background:ABCDEF|JustifyCenter|Borders:Bottom", "VerticalText:900|Bold|JustifyCenter|Borders:Bottom", "VerticalText:900|Background:ABCDEF|JustifyCenter|Borders:Bottom", "VerticalText:900|JustifyCenter|Borders:Bottom", "VerticalText:900|Background:ABCDEF|JustifyCenter|Borders:Bottom", "VerticalText:900|JustifyCenter|Borders:Bottom", "VerticalText:900|Background:ABCDEF|JustifyCenter|Borders:Bottom:Right", "VerticalText:900|JustifyCenter|Bold", "VerticalText:900|JustifyCenter|Bold", "VerticalText:900|JustifyCenter|Bold", "VerticalText:900|JustifyCenter|Bold", "VerticalMerge:Restart" };
 
-        List<Question> questions = Question.Get("Financials", "Hourly Labor", currentUserId);
+        List<Question> questions = Question.Get("Financials", "Hourly Labor", currentUserId, false);
         string serverRate = questions.ByTitle("Server Rate", "0.00");
         string serverHours = questions.ByTitle("Server Average Number of Hours", "0");
         string serverShifts = questions.ByTitle("Server Shifts per Day", "0");
@@ -417,7 +462,7 @@ public class WordDoc
 
         Table tbl = NewTable(body, 5);
 
-        List<Question> questions = Question.Get("Financials", "Expenses", currentUserId);
+        List<Question> questions = Question.Get("Financials", "Expenses", currentUserId, false);
         
         string[] headerStyle = new string[] { "LeftIndent:200|Bold" };
         string[] detailStyle = new string[] { "LeftIndent:600", "JustifyRight|RightIndent:600", "JustifyRight|RightIndent:600", "JustifyRight|RightIndent:600", "JustifyRight|RightIndent:600" };
@@ -584,7 +629,7 @@ public class WordDoc
             }
         }
 
-        List<Question> capital = Question.Get("Financials", "Capital Budget", currentUserId);
+        List<Question> capital = Question.Get("Financials", "Capital Budget", currentUserId, false);
         double building = capital.BySectionSum("Land and Building");
         building /= 30; //30 Year Depreciation
         double leasehold = capital.ByTitleSum(new string[] { "Construction Contract", "Architect & Engineering", "Legal (lease & incorporation)", "Project Consultant", "Accounting & Tax", "Name, Logo & Graphic Design", "Building Permits", "Other Licenses & Permits", "Landscaping", "Exterior Signs & Decorations", "Resurfacing", "Parking Bumpers", "Parking Lot Striping", "Contingency" });
@@ -645,7 +690,7 @@ public class WordDoc
 
         Table tbl = NewTable(body, 5);
 
-        List<Question> questions = Question.Get("Financials", "Expenses", currentUserId);
+        List<Question> questions = Question.Get("Financials", "Expenses", currentUserId, false);
 
         string[] headerStyle = new string[] { "LeftIndent:200|Bold" };
         string[] detailStyle = new string[] { "LeftIndent:600", "JustifyRight|RightIndent:600", "JustifyRight|RightIndent:600", "JustifyRight|RightIndent:600", "JustifyRight|RightIndent:600" };
@@ -780,7 +825,7 @@ public class WordDoc
         tbl.AddRow(AddIncomeRow(expenses[expenses.Count - 1].Section, sectionSum * 12), detailStyle);
 
 
-        List<Question> capital = Question.Get("Financials", "Capital Budget", currentUserId);
+        List<Question> capital = Question.Get("Financials", "Capital Budget", currentUserId, false);
         double building = capital.BySectionSum("Land & Building");
         building /= 30; //30 Year Depreciation
         double leasehold = capital.ByTitleSum(new string[] { "Construction Contract", "Architect & Engineering", "Legal (lease & incorporation)", "Project Consultant", "Accounting & Tax", "Name, Logo & Graphic Design", "Building Permits", "Other Licenses & Permits", "Landscaping", "Exterior Signs & Decorations", "Resurfacing", "Parking Bumpers", "Parking Lot Striping", "Contingency" });
@@ -836,7 +881,7 @@ public class WordDoc
 
         Table tbl = NewTable(body, 11);
 
-        List<Question> questions = Question.Get("Financials", "Expenses", currentUserId);
+        List<Question> questions = Question.Get("Financials", "Expenses", currentUserId, false);
 
         string[] headerStyle = new string[] { "Bold|FontSize:20|HorizontalMerge:Restart", "HorizontalMerge:Continue", "HorizontalMerge:Continue", "HorizontalMerge:Continue", "HorizontalMerge:Continue", "HorizontalMerge:Restart" };
         string[] detailStyle = new string[] { "LeftIndent:200|FontSize:20", "JustifyRight|RightIndent:10|FontSize:20", "JustifyRight|RightIndent:200|FontSize:20", "JustifyRight|RightIndent:10|FontSize:20", "JustifyRight|RightIndent:200|FontSize:20", "JustifyRight|RightIndent:10|FontSize:20", "JustifyRight|RightIndent:200|FontSize:20", "JustifyRight|RightIndent:10|FontSize:20", "JustifyRight|RightIndent:200|FontSize:20", "JustifyRight|RightIndent:10|FontSize:20", "JustifyRight|RightIndent:200|FontSize:20" };
@@ -851,7 +896,7 @@ public class WordDoc
         double weeklyBeverage = WeeklyLiquor + WeeklyBeer + WeeklyWine;
         YearlyTotalSales = weeklyTotal * 52;
 
-        List<Question> investmentQuestions = Question.Get("Financials", "Investment", currentUserId);
+        List<Question> investmentQuestions = Question.Get("Financials", "Investment", currentUserId, false);
         double salesPct = investmentQuestions.ByTitleSum(new string[] { "Sales % Increase" });
         double costPct = salesPct;
         double salaryPct = investmentQuestions.ByTitleSum(new string[] { "Salary % Increase" });
@@ -984,7 +1029,7 @@ public class WordDoc
         string[] occupancyRow = Add5YearRow("Occupancy", sectionSum * 12, occupancyPct);
         tbl.AddRow(occupancyRow, detailStyle);
 
-        List<Question> capital = Question.Get("Financials", "Capital Budget", currentUserId);
+        List<Question> capital = Question.Get("Financials", "Capital Budget", currentUserId, false);
         double building = capital.BySectionSum("Land & Building");
         building /= 30; //30 Year Depreciation
         double leasehold = capital.ByTitleSum(new string[] { "Construction Contract", "Architect & Engineering", "Legal (lease & incorporation)", "Project Consultant", "Accounting & Tax", "Name, Logo & Graphic Design", "Building Permits", "Other Licenses & Permits", "Landscaping", "Exterior Signs & Decorations", "Resurfacing", "Parking Bumpers", "Parking Lot Striping", "Contingency" });
@@ -1098,7 +1143,7 @@ public class WordDoc
 
         Table tbl = NewTable(body, 6);
 
-        List<Question> investmentQuestions = Question.Get("Financials", "Investment", currentUserId);
+        List<Question> investmentQuestions = Question.Get("Financials", "Investment", currentUserId, false);
         double distributeYear1 = investmentQuestions.ByTitleSum(new string[] { "Year 1 Percentage" });
         double distributeYear2 = investmentQuestions.ByTitleSum(new string[] { "Year 2 Percentage" });
         double distributeYear3 = investmentQuestions.ByTitleSum(new string[] { "Year 3 Percentage" });
@@ -1109,7 +1154,7 @@ public class WordDoc
         double cashBeforePayback = investmentQuestions.ByTitleSum(new string[] { "Cash Distribtion % Before Investor Payback" });
         double cashAfterPayback = investmentQuestions.ByTitleSum(new string[] { "Cash Distribtion % After Investor Payback" });
         
-        List<Question> basicInfo = Question.Get("Financials", "Basic Info", currentUserId);
+        List<Question> basicInfo = Question.Get("Financials", "Basic Info", currentUserId, false);
         double initialInvestment = basicInfo.ByTitleSum(new string[] { "Equity Capital" });
         double totalInvestment = initialInvestment;
 
@@ -1186,10 +1231,10 @@ public class WordDoc
 
         Table tbl = NewTable(body, 4);
 
-        List<Question> investmentQuestions = Question.Get("Financials", "Investment", currentUserId);
+        List<Question> investmentQuestions = Question.Get("Financials", "Investment", currentUserId, false);
         double minLabor = investmentQuestions.ByTitleSum(new string[] { "Minimum Hourly Labor Percentage" });
 
-        List<Question> questions = Question.Get("Financials", "Expenses", currentUserId);
+        List<Question> questions = Question.Get("Financials", "Expenses", currentUserId, false);
 
         string[] headerStyle = new string[] { "LeftIndent:200|Bold|Background:ABCDEF", "Bold|Background:ABCDEF|JustifyRight|RightIndent:800", "Bold|Background:ABCDEF|JustifyRight|RightIndent:600", "Bold|Background:ABCDEF|JustifyRight|RightIndent:600" };
         string[] detailStyle = new string[] { "LeftIndent:200", "JustifyRight|RightIndent:600", "JustifyRight|RightIndent:600", "JustifyRight|RightIndent:600" };
@@ -1584,17 +1629,37 @@ public static class BodyPart
         run.AppendChild(new Break());
     }
 
-    public static void AddParagraph(this Body body, string text)
+    public static void AddSectionHeader(this Body body, string text)
     {
         Paragraph para = body.AppendChild(new Paragraph());
         ParagraphProperties paraProperties = para.AppendChild(new ParagraphProperties());
 
         Run run = para.AppendChild(new Run());
         RunProperties runProperties = run.AppendChild(new RunProperties());
-        runProperties.Append(new FontSize() { Val = new StringValue("24") });
+
+        runProperties.Append(new FontSize() { Val = new StringValue("34") });
 
         run.AppendChild(new Text(text));
         run.AppendChild(new Break());
+    }
+
+    public static void AddParagraph(this Body body, string paragraph)
+    {
+        paragraph = paragraph.Replace("\n\n", "\n");
+        string[] texts = paragraph.Split('\n');
+        foreach(string text in texts)
+        {
+            Paragraph para = body.AppendChild(new Paragraph());
+            ParagraphProperties paraProperties = para.AppendChild(new ParagraphProperties());
+
+            Run run = para.AppendChild(new Run());
+            RunProperties runProperties = run.AppendChild(new RunProperties());
+            runProperties.Append(new FontSize() { Val = new StringValue("24") });
+
+            run.AppendChild(new Text(text));
+            run.AppendChild(new Break());
+        }
+
     }
 
     public static void AddLineBreak(this Body body)

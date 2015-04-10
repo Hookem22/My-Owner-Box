@@ -50,18 +50,20 @@ public class Question : BaseClass<Question>
     //    return questions;
     //}
 
-    public static List<Question> Get(string header, string category, int userId = 0)
+    public static List<Question> Get(string header, string category, int userId = 0, bool getOverview = true)
     {
         List<Question> all = new List<Question>();
 
         //Overview
-        List<Sheet> sheets = Sheet.LoadByPropName("Name", category);
-        if(sheets.Count > 0)
+        if (getOverview)
         {
-            Question overview = new Question() { Id = -1, SheetId = sheets[0].Id, Page = "", Section = "Overview", Title = sheets[0].Overview ?? "", Help = sheets[0].Summary ?? "", QuestionSheet = sheets[0], SkipCondition = "", Answer = new Answer() { Id = 0, QuestionId = -1, Text = "", UserId = userId } };
-            all.Add(overview);
+            List<Sheet> sheets = Sheet.LoadByPropName("Name", category);
+            if (sheets.Count > 0)
+            {
+                Question overview = new Question() { Id = -1, SheetId = sheets[0].Id, Page = "", Section = "Overview", Title = sheets[0].Overview ?? "", Help = sheets[0].Summary ?? "", QuestionSheet = sheets[0], SkipCondition = "", Answer = new Answer() { Id = 0, QuestionId = -1, Text = "", UserId = userId } };
+                all.Add(overview);
+            }
         }
-
         SqlConnection conn = null;
         SqlDataReader rdr = null;
 
