@@ -39,8 +39,13 @@
                 $(this).siblings().removeClass("active");
                 $(this).addClass("active");
                 
-                PopulateSubheaders();
-                Get();
+                if ($(this).text() == "Print") {
+                    PopulatePrint();
+                }
+                else {
+                    PopulateSubheaders();
+                    Get();
+                }
             });
 
             $("body").on("click", ".nav.secondary .subheaderList div", function () {
@@ -144,6 +149,28 @@
                 $(".ExampleText div").html(Examples[currentExample]);
             });
 
+            $(".main").on("click", ".printContent img", function () {
+                var src = $(this).attr("src").indexOf("Unchecked") >= 0 ? "../img/Checked.png" : "../img/Unchecked.png";
+                $(this).attr("src", src);
+            });
+
+            $(".main").on("click", ".printBtn", function () {
+                var header = "";
+                var imgs = $(".printContent img");
+                for (var i = 0; i < imgs.length; i++)
+                {
+                    if ($(imgs[i]).attr("src").indexOf("Unchecked") < 0)
+                        header += i + "|";
+                }
+                if (header)
+                {
+                    window.open("/Word?header=" + header);
+                }
+                else
+                {
+                    alert("Bad");
+                }
+            });
         });
 
         function Get()
@@ -158,6 +185,7 @@
 
         function PopulateSubheaders()
         {
+            $(".btnSection").show();
             var subheaders = [];
             var header = $(".nav.primary div.active").html();
             if(header == "Concept")
@@ -202,9 +230,17 @@
             {
                 var question = Questions[0];
                 var html = "<div class='businessPlanContent'>";
-                html += "<h2 style='text-align:center;margin-bottom:.5em;'>" + $(".nav.primary div.active").html() + "</h2>";
-                html += "<h3 style='text-align:center;'>Overview</h3>";
-                html += "<div class='instructions' style='margin: 2em 1em;'>" + question.Title + "</div>";
+                var header = $(".nav.primary div.active").html();
+                var para = question.Title;
+                if (para.indexOf("{") >= 0 && para.indexOf("}") >= 0) {
+                    header = para.substring(para.indexOf("{") + 1);
+                    header = header.substring(0, header.indexOf("}"));
+                    para = para.substring(para.indexOf("}") + 1);
+                    while (para.indexOf("<") == 0)
+                        para = para.substring(para.indexOf(">") + 1);
+                }
+                html += "<h2 style='text-align:center;margin-bottom:.5em;'>" + header + "</h2>";
+                html += "<div class='instructions' style='margin: 2em 1em;'>" + para + "</div>";
                 html += "</div>";
 
                 $(".fromDb").html(html);
@@ -219,9 +255,17 @@
             if (!Questions[currentQuestion] && Questions[currentQuestion - 1] && Questions[0].Help) {
                 var question = Questions[0];
                 var html = "<div class='businessPlanContent'>";
-                html += "<h2 style='text-align:center;margin-bottom:.5em;'>" + $(".nav.secondary div.active").html() + "</h2>";
-                html += "<h3 style='text-align:center;'>Summary</h3>";
-                html += "<div class='instructions' style='margin: 2em 1em;'>" + question.Help + "</div>";
+                var header = $(".nav.secondary div.active").html();
+                var para = question.Help;
+                if (para.indexOf("{") >= 0 && para.indexOf("}") >= 0) {
+                    header = para.substring(para.indexOf("{") + 1);
+                    header = header.substring(0, header.indexOf("}"));
+                    para = para.substring(para.indexOf("}") + 1);
+                    while (para.indexOf("<") == 0)
+                        para = para.substring(para.indexOf(">") + 1);
+                }
+                html += "<h2 style='text-align:center;margin-bottom:.5em;'>" + header + "</h2>";
+                html += "<div class='instructions' style='margin: 2em 1em;'>" + para + "</div>";
                 html += "</div>";
 
                 $(".fromDb").html(html);
@@ -304,6 +348,26 @@
                 $(".fromDb").html(html);
             }
             
+        }
+
+        function PopulatePrint()
+        {
+            $(".nav.secondary .subheaderList").html("");
+            var question = Questions[0];
+            var html = "<div class='printContent'>";
+            html += "<h2 style='text-align:center;margin-bottom:.5em;'>Print Business Plan</h2>";
+            html += "<div style='margin: 1em 6em 2em 8em;float:left;'>";
+            html += "<div><img src='../img/Checked.png' />Concept</div>";
+            html += "<div><img src='../img/Checked.png' />Business Plan</div>";
+            html += "<div><img src='../img/Checked.png' />Financials</div>";
+            html += "</div>";
+            html += "<div class='printBtn'>Print Now</div>";
+            html += "</div>";
+            html += "<div style='clear:both;'></div>";
+
+            $(".fromDb").html(html);
+            $(".btnSection").hide();
+
         }
 
         function BackClicked()
@@ -529,6 +593,7 @@
                 <div class="active" style="margin-left:40px;">Concept</div>
                 <div>Business Plan</div>
                 <div>Financials</div>
+                <div>Print</div>
                 <div class="restaurantName">Restaurant Name</div>
             </div>
         </div>
