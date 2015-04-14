@@ -1,4 +1,5 @@
 ﻿using OfficeOpenXml;
+using Stripe;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -15,7 +16,11 @@ public partial class App_Default : System.Web.UI.Page
         if (ConfigurationManager.AppSettings["IsProduction"] == "true")
             Response.Redirect("http://myownerbox.com");
 
-        CurrentUserId.Value = "1";
+        Users user = HttpContext.Current.Session["CurrentUser"] as Users;
+        if (user == null || user.Id == 0)
+            Response.Redirect("http://myownerbox.com");
+
+        CurrentUserId.Value = user.Id.ToString();
     }
 
     [WebMethod]
@@ -51,10 +56,25 @@ public partial class App_Default : System.Web.UI.Page
         return answers;
     }
 
-    //[WebMethod]
-    //public static string GetTemplate(List<Question> questions)
-    //{
-    //    return Question.GetTemplate(questions, Question.CategoryTypes.Concept);
-    //}
+    [WebMethod]
+    public static string CancelAccount(int userId)
+    {
+        Users user = Users.LoadById(userId);
+        try
+        {
+            var subscriptionService = new StripeSubscriptionService();
+            string planId = user.Annual ? "MyOwnerBoxAnnual" : "MyOwnerBoxMonthly";
+            subscriptionService.Cancel(user.StripeCustomerId, planId);
+
+            user.Cancelled = true;
+            user.Save();
+        }
+        catch(Exception ex)
+        {
+            return "Error: " + ex.Message;
+        }
+        return "";
+    }
+
 
 }

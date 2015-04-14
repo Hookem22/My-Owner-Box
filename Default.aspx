@@ -57,9 +57,8 @@
             });
 
             $(".questions").on("click", ".answer .buyBtn", function (event) {
-                var type = "MyOwnerBox Purchase: ";
-                type += $(this).hasClass("annual") ? "Annual" : "Monthly";
-                NextQuestion(type);
+                Annual = $(this).hasClass("annual");
+                NextQuestion();
             });
 
             $(".questions").on('keyup', 'input[type=text]', function (e) {
@@ -73,10 +72,33 @@
                 var body = EscapeString($(".contact #Body").val());
                 SendEmail(subject, body);
             });
+
+            $(".questions").on("click", ".creditCard img", function (event) {
+                $(".creditCard img").attr("src", "img/UncheckedRadio.png");
+                $(this).attr("src", "img/CheckedRadio.png");
+                var price = $(this).hasClass("monthly") ? "$45 per month" : "$264 per year";
+                $(".creditCard .price").html(price);
+
+            });
         });
 
-        function NextQuestion(type)
+        function NextQuestion()
         {
+            if (currentStep >= 9)//Validation
+            {
+                if(currentStep == 9)
+                {
+                    if (!ValidateSignUp())
+                        return;
+                }
+                if(currentStep == 10)
+                {
+                    ValidateCC();
+                    return;
+                }
+            }
+
+
             var lastQuestion = currentStep % 2
             var lastQuestionId = "question" + lastQuestion;
             $("#" + lastQuestionId).animate({ left: "-100%" }, 500, function () {
@@ -86,8 +108,11 @@
 
             var subject = "User Click";
             var body = $("#" + lastQuestionId + " .question span").html() + "<br/><br/>";
-            if (type)
-                body += type;
+            if (currentStep == 8)
+            {
+                var type = Annual ? "Annual" : "Monthly";
+                body += "MyOwnerBox Purchase: " + type;
+            }                
             else
                 body += $("#" + lastQuestionId + " input").val();
 
@@ -102,15 +127,12 @@
             switch(currentStep)
             {
                 case 1:
-                    //question = "Good place to start.<br/> So what kind of restaurant is this?";
-                    //template = '<div class="question"><span>{{Question}}</span></div><div class="answer" style="padding: 2em 0;text-align: center;width:470px;"><a class="blueBtn">Brick and Morter</a><a class="blueBtn" style="padding: 5px 65px;">Trailer</a></div>';
-                    //template = template.replace("{{Question}}", question);
-                    //break;
                     question = "Good place to start.<br /> What do you want to call it?";
                     template = template.replace("{{Question}}", question);
                     template = template.replace("<input", "<input placeholder='Restaurant Name' ");
                     break;
                 case 2:
+                    restaurantName = $(".answer input").val();
                     question = "Cool! What kind of food are you making?";
                     template = template.replace("{{Question}}", question);
                     template = template.replace("<input", "<input placeholder='Italian, Tex Mex, BBQ, etc.' ");
@@ -130,34 +152,59 @@
                     template = '<div class="question"><span>{{Question}}</span></div><div class="answer"><h2>The fastest, easiest way to start your restaurant</h2><ul><li>1.) <span style="font-weight:bold;">Organize</span> your ideas</li><li>2.) <span style="font-weight:bold;">Step by Step</span> guides</li><li>3.) <span style="font-weight:bold;">Create</span> your concept and business plan</li></ul><a class="button nextBtn" >Next</a></div>';
                     template = template.replace("{{Question}}", question);
                     break;
-                //case 6:
-                //    question = "Here's how it works:<br/>We're going to help you get answers.";
-                //    template = '<div class="question"><span>{{Question}}</span></div><div class="answer withImg"><h2></h2><img src="img/yelp.png" /><a class="button" >Next</a></div>';
-                //    template = template.replace("{{Question}}", question);
-                //    break;
                 case 6:
                     question = "At the end, you'll end up<br/>with a pitch and a plan.";
-                    template = '<div class="question"><span>{{Question}}</span></div><div class="answer withImg"><img src="img/businessplan.png" /><a class="button nextBtn" >Next</a></div>';
+                    template = '<div class="question"><span>{{Question}}</span></div><div class="answer withImg"><img src="img/businessplan.png" /><a class="button nextBtn" style="margin-left:16px;" >Next</a></div>';
                     template = template.replace("{{Question}}", question);
                     break;
                 case 7:
                     template = '<div class="tagline"><span>Ready to Get Started?</span></div><a class="pitchButton" onclick="NextQuestion()">Yes, I am</a></div>';
                     break;
                 case 8:
-                    template = '<div class="answer price" style="margin-top:-60px;"><div style="padding: 23px 4px 23px 35px;float: left;border-right: 1px solid #aaa;"><div style="margin: -18px 0 8px -18px;color: #F19F00;font-weight: bold;">SAVE 50% ANNUALLY</div><span style="font-size:2em;vertical-align: top;">$</span><span id="annualPrice" style="font-size:4em;">{{AnnualPrice}}</span><span>/mo</span><br /><span style="font-size: .9em;">Billed Annually</span></div><div class="startToday"><div class="button buyBtn annual">Start Today</div><div class="underMinute">&nbsp;Sign up in under a minute</div></div></div><div class="answer price" style="border:none;"><div style="padding: 28px 38px;float: left;border-right: 1px solid #aaa;"><span style="font-size:2em;vertical-align: top;">$</span><span id="monthlyPrice" style="font-size:3.8em;">{{MonthlyPrice}}</span><span>/mo</span><br /><span style="font-size: .9em;">Billed Monthly</span></div><div class="startToday"><div class="button buyBtn" style="background: white;color: #F19F00;border: 2px solid #F19F00;">Start Today</div><div class="underMinute">&nbsp;Sign up in under a minute</div></div></div>';
+                    template = '<div class="answer price" style="margin-top:-60px;"><div style="padding: 23px 4px 8px 35px;float: left;border-right: 1px solid #aaa;"><div style="margin: -18px 0 8px -18px;color: #F19F00;font-weight: bold;">SAVE 50% ANNUALLY</div><span style="font-size:2em;vertical-align: top;">$</span><span id="annualPrice" style="font-size:4em;">{{AnnualPrice}}</span><span>/mo</span><br /><span style="font-size: .9em;">Billed Annually</span></div><div class="startToday"><div class="button buyBtn annual">Start Today</div><div class="underMinute">&nbsp;Sign up in under a minute</div></div></div><div class="answer price" style="border:none;"><div style="padding: 28px 38px 18px;float: left;border-right: 1px solid #aaa;"><span style="font-size:2em;vertical-align: top;">$</span><span id="monthlyPrice" style="font-size:3.8em;">{{MonthlyPrice}}</span><span>/mo</span><br /><span style="font-size: .9em;">Billed Monthly</span></div><div class="startToday"><div class="button buyBtn" style="background: white;color: #F19F00;border: 2px solid #F19F00;">Start Today</div><div class="underMinute">&nbsp;Sign up in under a minute</div></div></div>';
                     template = template.replace("{{MonthlyPrice}}", price).replace("{{AnnualPrice}}", Math.floor(price / 2));
                     break;
                 case 9:
-                    question = "Perfect. We are currently in private beta.<br/>Enter your email for an invitation<br/> to My Owner Box.";
-                    template = template.replace("{{Question}}", question);
-                    template = template.replace("<input", "<input placeholder='Email' ");
-                    template = template.replace("Next</a></div>", "Request</a></div>");
+                    template = '<div class="question"><span>Sign Up</span></div><div class="answer signUp">';
+                    template += '<div>Name</div><input type="text" id="Name" />';
+                    template += '<div>Email</div><input type="text" id="Email" />';
+                    template += '<div>Password</div><input type="password" id="Password" />';
+                    template += '<div>Confirm Password</div><input type="password" id="ConfirmPassword" />';
+                    template += '<a class="button nextBtn" style="margin-left: 16px;" >Continue</a></div>';
                     break;
-                default:
-                    question = "Thank you for signing up.<br/>We will email you soon."
-                    template = '<div class="question"><span>{{Question}}</span></div>';
-                    template = template.replace("{{Question}}", question);
+                case 10:
+                    template = '<div class="question"><span>Sign Up</span></div><div class="answer signUp creditCard">';
+                    template += '<div class="annualHeader">Annual Subscription - $22/month (billed $264/yr)</div>';
+                    if (Annual)
+                    {
+                        template += '<div class="price">$264 per year</div>';
+                        template += '<div style="margin-bottom:8px;"><img class="annual" src="img/CheckedRadio.png" />Annual<img class="monthly" src="img/UncheckedRadio.png" style="margin-left:24px;" />Monthly</div>';
+                    }
+                    else
+                    {
+                        template += '<div class="price">$45 per month</div>';
+                        template += '<div style="margin-bottom:8px;"><img class="annual" src="img/UncheckedRadio.png" />Annual<img class="monthly" src="img/CheckedRadio.png" style="margin-left:24px;" />Monthly</div>';
+                    }
+                    //var name = User.Name;
+                    //template += '<div>Cardholder Name</div><input type="text" id="Name" value="' + name + '" />';
+                    template += '<input type="text" id="CardNumber" placeholder="Credit Card Number" />';
+                    //template += '<br/><div style="width:155px;float:left;">&nbsp;&nbsp;MM&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;YY</div><div>CVC</div>';
+                    template += '<br/><input type="text" id="Month" style="width:36px;margin-right:8px;" placeholder="MM" /><input type="text" id="Year" placeholder="YY" style="width:32px;" /><input type="text" id="CVC" placeholder="CVC" style="width:50px;margin:0 0 1.2em 23px" />';
+                    template += '<div class="error"></div>';
+                    template += '<br/><a class="button nextBtn" >Create My Account</a></div>';
                     break;
+
+                //case 9:
+                //    question = "Perfect. We are currently in private beta.<br/>Enter your email for an invitation<br/> to My Owner Box.";
+                //    template = template.replace("{{Question}}", question);
+                //    template = template.replace("<input", "<input placeholder='Email' ");
+                //    template = template.replace("Next</a></div>", "Request</a></div>");
+                //    break;
+                //default:
+                //    question = "Thank you for signing up.<br/>We will email you soon."
+                //    template = '<div class="question"><span>{{Question}}</span></div>';
+                //    template = template.replace("{{Question}}", question);
+                //    break;
             }
 
             $("body").css("overflow-x", "hidden");
@@ -174,13 +221,87 @@
 
         }
 
+        function ValidateSignUp()
+        {
+            $(".signUp input").removeClass("error");
+            var valid = true;
+            if (!$("#Name").val()) {
+                $("#Name").addClass("error");
+                valid = false;
+            }
+            if (!$("#Email").val()) {
+                $("#Email").addClass("error");
+                valid = false;
+            }
+            if (!$("#Password").val()) {
+                $("#Password").addClass("error");
+                valid = false;
+            }
+            if (!$("#ConfirmPassword").val()) {
+                $("#ConfirmPassword").addClass("error");
+                valid = false;
+            }
+            if ($("#Password").val() != $("#ConfirmPassword").val()) {
+                $("#Password").addClass("error");
+                $("#ConfirmPassword").addClass("error");
+                valid = false;
+            }
+            if (!valid)
+                return false;
+            else
+                User = { Name: $("#Name").val(), Email: $("#Email").val(), Password: $("#Password").val() };
+
+            return true;
+        }
+
+        function ValidateCC()
+        {
+            $(".error").html("");
+            $(".signUp input").removeClass("error");
+            var valid = true;
+            if (!$("#CardNumber").val()) {
+                $("#CardNumber").addClass("error");
+                valid = false;
+            }
+            if (!$("#Month").val()) {
+                $("#Month").addClass("error");
+                valid = false;
+            }
+            if (!$("#Year").val()) {
+                $("#Year").addClass("error");
+                valid = false;
+            }
+            if (!$("#CVC").val()) {
+                $("#CVC").addClass("error");
+                valid = false;
+            }
+            if (!valid)
+                return;
+
+            User.Annual = $("img.annual").attr("src") == "img/CheckedRadio.png";
+
+            var creditCard = { CardNumber: $("#CardNumber").val(), CardExpirationMonth: $("#Month").val(), CardExpirationYear: $("#Year").val(), Cvc: $("#CVC").val() };
+            User.CreditCard = creditCard;
+
+            var success = function (error) {
+                if (error) {
+                    $(".error").html(error);
+                }
+                else
+                {
+                    window.location.href = "/App";
+                }
+            };
+            Post("CreateUser", { user: User, restaurantName: restaurantName }, success)
+        }
+
         function SendEmail(subject, body) {
             body += "%3Cbr/%3E%3Cbr/%3EPrice $" + price;
             body += "%3Cbr/%3E%3Cbr/%3E" + new Date();
 
-            Post("Default.aspx/SendEmail", { subject: subject, body: body });
+            Post("SendEmail", { subject: subject, body: body });
         }
-
+        
     </script>
 </head>
 <body>

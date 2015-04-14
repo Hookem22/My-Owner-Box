@@ -66,11 +66,21 @@
             });
 
             $("body").on("click", ".main .backBtn", function () {
+                if ($(this).hasClass("clicked"))
+                    return;
+
+                $(this).addClass("clicked");
                 BackClicked();
+                $(this).removeClass("clicked");
             });
 
             $("body").on("click", ".main .nextBtn", function () {
+                if ($(this).hasClass("clicked"))
+                    return;
+
+                $(this).addClass("clicked");
                 NextClicked();
+                $(this).removeClass("clicked");
             });
 
             $(".main").on('keyup', 'input', function (e) {
@@ -212,7 +222,7 @@
                     $(".nav.secondary .subheaderList").append($("<div>", { text: subheaders[i] }));
             }
 
-            $(".nav.secondary div").css({ color: "white", "border-color": "white", left: "0" });
+            $(".nav.secondary div").css({ color: "white", "border-color": "white" });
             setTimeout(function () {
                 $(".nav.secondary div").css({ color: "", "border-color": "" });
              }, 200);
@@ -399,6 +409,9 @@
             if (currentQuestion < 0 || (currentQuestion == 0 && !Questions[0].Title)) {
                 var header = $(".nav.secondary div.active").prev();
                 if (header && header.length) {
+                    if ($(header).text() == "Staffing")
+                        $(".subheaderList").animate({ left: "0px" }, 200, function () { });
+
                     header.click();
                 }
                 else {
@@ -430,6 +443,9 @@
             if (!Questions[currentQuestion] && (!Questions[currentQuestion - 1] || !Questions[0].Help)) {
                 var header = $(".nav.secondary div.active").next();
                 if (header && header.length) {
+                    if ($(header).text() == "Daily Operations")
+                        $(".subheaderList").animate({ left: "-770px" }, 200, function () { });
+
                     header.click();
                 }
                 else {

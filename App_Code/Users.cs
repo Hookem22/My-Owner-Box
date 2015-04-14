@@ -20,6 +20,28 @@ public class Users : BaseClass<Users>
 
     public string Password { get; set; }
 
+    public bool Annual { get; set; }
+
+    public bool Cancelled { get; set; }
+
+    public string StripeCustomerId { get; set; }
+
+    public DateTime Joined { get; set; }
+
+    [NonDB]
+    public CreditCard CreditCard { get; set; }
+
     #endregion
 
+}
+
+public class CreditCard
+{
+    public string CardNumber { get; set; }
+
+    public string CardExpirationMonth { get; set; }
+
+    public string CardExpirationYear { get; set; }
+
+    public string Cvc { get; set; }
 }

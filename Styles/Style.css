@@ -47,6 +47,16 @@ a:hover
 input
 {
     font-family: "KlinicSlab","Helvetica Neue",Helvetica,Arial,sans-serif;
+    padding: 6px 12px;
+    font-size: 16px;
+    line-height: 1.42857143;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
 }
 textarea
 {
@@ -192,7 +202,7 @@ textarea
 .answer
 {
     padding: 16px 0 16px 30px;
-    width: 400px;
+    width: 420px;
     margin: 16px auto;
     border-radius: 15px;
     border: 4px solid #F19F00;
@@ -407,7 +417,7 @@ textarea
 .answer .buyBtn
 {
     width: 120px;
-    font-size:1.5em;
+    font-size:1.4em;
     line-height:2em;
     margin-bottom: .2em;
 }
@@ -415,4 +425,56 @@ textarea
 {
     float:left;
     padding: 15px 0 0 63px;
+}
+.answer.signUp input
+{
+    font-size: 20px;
+    width: 220px;
+    margin: 0 20px .5em 0;
+}
+.answer.signUp
+{
+    color: #333333;
+    width: 460px;
+}
+.signUp .nextBtn
+{
+    padding: 6px 30px;
+    font-size: 20px;
+}
+.answer.signUp.creditCard
+{
+    width: 364px;
+    padding: 40px 0 40px 84px;
+}
+.creditCard .annualHeader
+{
+    background: cornflowerblue;
+    color: white;
+    margin: -40px 0px 12px -84px;
+    border-radius: 9px 9px 0 0;
+    padding: 4px 22px;
+}
+.creditCard img
+{
+    float: none;
+    height: 24px;
+    margin: 0 4px -6px 0;
+}
+.creditCard img:hover
+{
+    cursor: pointer;
+}
+.creditCard .price
+{
+    font-size: 26px;
+    margin-bottom: 16px;
+}
+.creditCard .error
+{
+    margin: -16px 0 12px;
+    color: #bd1a00;
+}
+input[type="text"].error, input[type="password"].error, textarea.error, select.error {
+  border-color: #c70307;
 }

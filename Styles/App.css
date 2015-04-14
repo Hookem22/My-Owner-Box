@@ -232,7 +232,7 @@
     transition: all 100ms;
     width: 100px;
 }
-.main .backBtn:hover
+.main .backBtn:hover, .main .backBtn.clicked
 {
     background: #C1C1C1;
 }
@@ -248,7 +248,7 @@
     width: 100px;
     float: right;
 }
-.main .nextBtn:hover, .saveBtn:hover
+.main .nextBtn:hover, .saveBtn:hover, .main .nextBtn.clicked
 {
     background: #73D3FF;
     color: #FFF;
