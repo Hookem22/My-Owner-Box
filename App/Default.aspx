@@ -29,8 +29,13 @@
 
         $(document).ready(function () {
             currentUserId = +$("#CurrentUserId").val();
+            $(".fromDb .instructions").html($("#ConceptOverview").val());
 
-            Get();
+            var success = function (questions) {
+                currentQuestion = 0;
+                Questions = questions;
+            };
+            Post("Get", { header: "Concept", category: "", userId: currentUserId }, success);
 
             $(".nav.primary div").not(".restaurantName").click(function () {
                 if ($(this).hasClass("active"))
@@ -38,13 +43,22 @@
 
                 $(this).siblings().removeClass("active");
                 $(this).addClass("active");
-                
+                $(".nav.secondary .subheaderList div.active").css({ "border-color": "#0082c3", "color": "#1a384b" });
+                $(".nav.secondary .subheaderList div").removeClass("active");
+
                 if ($(this).text() == "Print") {
                     PopulatePrint();
                 }
                 else {
-                    PopulateSubheaders();
+                    $(".businessPlanContent").addClass("last");
                     Get();
+                    populateSubs = setInterval(function () {
+                        if (!$(".businessPlanContent").hasClass("last") && $(".printContent").length == 0) {
+                            clearInterval(populateSubs);
+                            PopulateSubheaders();
+                        }
+                    }, 100);
+                    
                 }
             });
 
@@ -190,7 +204,20 @@
                 Questions = questions;
                 NextScreen();
             };
-            Post("Get", { header: $(".nav.primary .active").html(), category: $(".nav.secondary .active").html(), userId:currentUserId }, success);
+
+            var header = $(".nav.primary .active").html();
+            var category = $(".nav.secondary .active").html() || "";
+            if (!category)
+            {
+                if (header == "Concept")
+                    category = "Create Your Concept";
+                else if (header == "Business Plan")
+                    category = "Management Team";
+                else if (header == "Financials")
+                    category = "Basic Info";
+            }
+
+            Post("Get", { header: header, category: category, userId: currentUserId }, success);
         }
 
         function PopulateSubheaders()
@@ -202,16 +229,20 @@
             {
                 subheaders = ["Create Your Concept"];
                 $(".scrollArrow").hide();
+                $(".nav.secondary .subheaderList").css({ left: "50px" });
             }
             else if (header == "Business Plan")
             {
-                subheaders = ["Company Description", "Management Team", "Market Analysis", "Marketing Strategy", "Staffing", "Daily Operations", "Software and Controls", "Other Contol Systems", "Inventory", "Accounting"];
+                subheaders = ["Management Team", "Market Analysis", "Company Description", "Marketing Strategy", "Staffing", "Daily Operations", "Software and Controls", "Other Contol Systems", "Inventory", "Accounting"];
                 $(".scrollArrow").show();
+                $(".nav.secondary .subheaderList").css({ left: "0px" });
             }
             else if(header == "Financials")
             {
                 subheaders = ["Basic Info", "Capital Budget", "Sales Projection", "Hourly Labor", "Expenses", "Investment"];
                 $(".scrollArrow").hide();
+                $(".nav.secondary .subheaderList").css({ left: "50px" });
+
             }
 
             $(".nav.secondary .subheaderList").html("");
@@ -221,11 +252,6 @@
                 else
                     $(".nav.secondary .subheaderList").append($("<div>", { text: subheaders[i] }));
             }
-
-            $(".nav.secondary div").css({ color: "white", "border-color": "white" });
-            setTimeout(function () {
-                $(".nav.secondary div").css({ color: "", "border-color": "" });
-             }, 200);
 
         }
 
@@ -364,6 +390,8 @@
                 $(".main").fadeOut(100, function () {
                     
                     $(".nav.secondary .subheaderList").html("");
+                    $(".scrollArrow").hide();
+
                     var question = Questions[0];
                     var html = "<div class='printContent'>";
                     html += "<h2 style='text-align:center;margin-bottom:.5em;'>Print Business Plan</h2>";
@@ -599,6 +627,7 @@
 <body>
     <form id="form1" runat="server">
         <input type="hidden" runat="server" id="CurrentUserId" />
+        <input type="hidden" runat="server" id="ConceptOverview" />
         <div class="modal-backdrop"></div>
         <div class="modal-dialog">
             <div class="dialogClose">X</div>
@@ -626,63 +655,16 @@
            <img class="scrollArrow left" style="float:left;" src="https://cdn4.iconfinder.com/data/icons/miu/22/circle_back_arrow-24.png" />
            <div class="nav secondary">
                <div class="subheaderList">
-                    <div class="active" style="margin-left:0;">Create Your Concept</div>
+                    <div class="active" style="margin-left:0;left:50px;">Create Your Concept</div>
                </div>
             </div>
             <img class="scrollArrow right" style="float:right;" src="https://cdn4.iconfinder.com/data/icons/miu/22/circle_next_arrow_disclosure-24.png" />
             <div class="fromDb" style="margin:5%;">
-                <div class="multiTextGroup">
-                    <h2>Sources of Cash</h2>
-                    <div class="multiText">
-                        <span>Equity Contributions</span>
-                        <input type="text" />
-                    </div>
-                    <div class="multiText">
-                        <span>Loan Financing</span>
-                        <input type="text" />
-                    </div>
-                </div>
-                <div class="multiTextGroup divider">
-                    <h2>Uses of Cash</h2>
-                    <div class="multiText">
-                        <span>Land and Building</span>
-                        <input type="text" />
-                    </div>
-                    <div class="multiText">
-                        <span>Leasehold Improvements</span>
-                        <input type="text" />
-                    </div>
-                    <div class="multiText">
-                        <span>Bar / Kitchen Equipment</span>
-                        <input type="text" />
-                    </div>
-                    <div class="multiText">
-                        <span>Bar / Dining Room Furniture</span>
-                        <input type="text" />
-                    </div>
-                    <div class="multiText">
-                        <span>Professional Services</span>
-                        <input type="text" />
-                    </div>
-                    <div class="multiText">
-                        <span>Organizational & Development</span>
-                        <input type="text" />
-                    </div>
-                    <div class="multiText">
-                        <span>Interior Finishes & Equipment</span>
-                        <input type="text" />
-                    </div>
-                    <div class="multiText">
-                        <span>Exterior Finishes & Equipment</span>
-                        <input type="text" />
-                    </div>
-                    <div class="multiText">
-                        <span>Pre-Opening Expenses</span>
-                        <input type="text" />
-                    </div>
-                    <div class="multiText">
-                        <span>Working Capital & Contingency</span>
-                        <input type="text" />
+                <div class="businessPlanContent">
+                    <h2 style="text-align:center;margin-bottom:.5em;">Concept</h2>
+                    <div class="instructions" style="margin: 2em 1em;">
+                        This will hopefully be the most enjoyable and important portion of your effort to open your own restaurant. In this section, you're going to sell the concept of your restaurant.  
+                        <br><br>You ready?<br>
                     </div>
                 </div>
             </div>

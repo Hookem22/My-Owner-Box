@@ -16,11 +16,16 @@ public partial class App_Default : System.Web.UI.Page
         if (ConfigurationManager.AppSettings["IsProduction"] == "true")
             Response.Redirect("http://myownerbox.com");
 
-        Users user = HttpContext.Current.Session["CurrentUser"] as Users;
-        if (user == null || user.Id == 0)
-            Response.Redirect("http://myownerbox.com");
+        //Users user = HttpContext.Current.Session["CurrentUser"] as Users;
+        //if (user == null || user.Id == 0)
+        //    Response.Redirect("http://myownerbox.com");
 
-        CurrentUserId.Value = user.Id.ToString();
+        CurrentUserId.Value = "1";// user.Id.ToString();
+        List<Question> questions = Question.Get("Concept", "Create Your Concept", 1);
+        if(questions.Count > 0)
+        {
+            ConceptOverview.Value = questions[0].Title;
+        }
     }
 
     [WebMethod]

@@ -163,10 +163,10 @@
                 subheaders = ["Create Your Concept"];
             }
             else if (header == "Business Plan") {
-                subheaders = ["Company Description", "Management Team", "Market Analysis", "Marketing Strategy", "Staffing", "Daily Operations", "Software and Controls", "Other Contol Systems", "Inventory", "Accounting"];
+                subheaders = ["Management Team", "Market Analysis", "Company Description", "Marketing Strategy", "Staffing", "Daily Operations", "Software and Controls", "Other Contol Systems", "Inventory", "Accounting"];
             }
             else if (header == "Financials") {
-                subheaders = ["Basic Info", "Capital Budget", "Sales Projection", "Hourly Labor", "Expenses", "Investment", "Print"];
+                subheaders = ["Basic Info", "Capital Budget", "Sales Projection", "Hourly Labor", "Expenses", "Investment"];
             }
 
             $(".nav.secondary").html("");
