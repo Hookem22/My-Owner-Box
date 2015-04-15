@@ -32,19 +32,6 @@ public partial class Default : System.Web.UI.Page
         return error;
     }
 
-    [WebMethod]
-    public static void SendEmail(string subject, string body)
-    {
-        if (ConfigurationManager.AppSettings["IsProduction"] != "true")
-            return;
-        
-        body = body.Replace("%20", " ").Replace("%3Cbr%3E", "<br/>").Replace("%3Cbr/%3E", "<br/>");
-        Email email1 = new Email("MyOwnerBox@MyOwnerBox.com", "myownerbox@gmail.com", subject, body);
-        email1.Send();
-        Email email2 = new Email("MyOwnerBox@MyOwnerBox.com", "williamallenparks@gmail.com", subject, body);
-        email2.Send();
-    }
-
     static string BuyPlan(Users user)
     {
         var myCustomer = new StripeCustomerCreateOptions();
@@ -92,5 +79,44 @@ public partial class Default : System.Web.UI.Page
 
         return "";
     }
+
+    [WebMethod]
+    public static string Login(string email, string password)
+    {
+        List<Users> users = Users.LoadByPropName("Email", email);
+        if (users.Count == 0 || users[0].Id == 0 || users[0].Password != password)
+            return "Incorrect email or password";
+
+        HttpContext.Current.Session["CurrentUser"] = users[0];
+        return "";
+    }
+
+    [WebMethod]
+    public static string SendPassword(string email)
+    {
+        List<Users> users = Users.LoadByPropName("Email", email);
+        if (users.Count == 0 || users[0].Id == 0)
+            return "We do not have that email on file.";
+
+        string body = string.Format("Your password for MyOwnerBox.com is: {0}<br/><br/>Thanks, <br/>My Owner Box Team", users[0].Password);
+        Email message = new Email("MyOwnerBox@MyOwnerBox.com", email, "My Owner Box Password", body);
+        message.Send();
+
+        return "";
+    }
+
+    [WebMethod]
+    public static void SendEmail(string subject, string body)
+    {
+        if (ConfigurationManager.AppSettings["IsProduction"] != "true")
+            return;
+
+        body = body.Replace("%20", " ").Replace("%3Cbr%3E", "<br/>").Replace("%3Cbr/%3E", "<br/>");
+        Email email1 = new Email("MyOwnerBox@MyOwnerBox.com", "myownerbox@gmail.com", subject, body);
+        email1.Send();
+        Email email2 = new Email("MyOwnerBox@MyOwnerBox.com", "williamallenparks@gmail.com", subject, body);
+        email2.Send();
+    }
+
 
 }

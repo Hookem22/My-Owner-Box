@@ -59,3 +59,28 @@ function RemoveFrontBreaks(text)
     }
     return text;
 }
+function MessageBox(message, height, width)
+{
+    if (!$(".messageDialog").length)
+    {
+        var html = '<div class="messageDialog">';
+        html += '<div class="dialogClose" style="margin:10px -30px 0 0;" onclick="$(\'.messageDialog\').hide();$(\'.modal-backdrop\').hide();">X</div>';
+        html += '<div class="messageContent" style="padding: 2em 1em 1em;">' + message + '</div>';
+        html += '<div class="messageError error"></div>';
+        html += '<div class="btn" onclick="$(\'.messageDialog\').hide();$(\'.modal-backdrop\').hide();">Ok</div>';
+        html += '</div>';
+        $("body").append(html);
+    }
+    else
+    {
+        $(".messageContent").html(message);
+    }
+
+    if (height)
+        $(".messageDialog").css({ height: height + "px" });
+    if (width)
+        $(".messageDialog").css({ width: width + "px", "margin-left": (width / -2) + "px" });
+
+    $(".messageDialog").show();
+    $(".modal-backdrop").show();
+}

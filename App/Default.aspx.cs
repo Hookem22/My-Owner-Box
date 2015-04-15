@@ -13,16 +13,15 @@ public partial class App_Default : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (ConfigurationManager.AppSettings["IsProduction"] == "true")
+        Users user = HttpContext.Current.Session["CurrentUser"] as Users;
+        if (user == null || user.Id == 0)
             Response.Redirect("http://myownerbox.com");
 
-        //Users user = HttpContext.Current.Session["CurrentUser"] as Users;
-        //if (user == null || user.Id == 0)
-        //    Response.Redirect("http://myownerbox.com");
-
-        Users user = Users.LoadById(1);
         CurrentUserId.Value = user.Id.ToString();
         UserName.Value = user.Name;
+        TimeSpan span = DateTime.Now - user.Joined;
+        if (span.Days <= 0)
+            NewUser.Value = "true";
 
         List<Restaurant> restaurants = Restaurant.LoadByPropName("UserId", user.Id.ToString());
         if (restaurants.Count > 0)

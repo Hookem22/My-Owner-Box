@@ -80,6 +80,11 @@
                 $(".creditCard .price").html(price);
 
             });
+
+            $(".forgotPassword").click(function () {
+                $(".loginDialog").hide();
+                $(".forgotDialog").show();
+            });
         });
 
         function NextQuestion()
@@ -302,32 +307,73 @@
             Post("SendEmail", { subject: subject, body: body });
         }
         
+        function OpenLogin()
+        {
+            $(".modal-backdrop").show();
+            $(".loginDialog").show();
+        }
+
+        function Login()
+        {
+            var success = function (error) {
+                if (error) {
+                    $(".loginDialog .error").html(error);
+                }
+                else {
+                    window.location.href = "/App";
+                }
+            };
+            Post("Login", { email: $("#LoginEmail").val(), password: $("#LoginPassword").val() }, success);
+        }
+
+        function SendPassword()
+        {
+            var success = function (error) {
+                if (error) {
+                    $(".forgotDialog .error").html(error);
+                }
+                else {
+                    $(".forgotDialog .error").html("Your password has been sent.");
+                    $(".forgotDialog .error").removeClass("error");
+                }
+            };
+            Post("SendPassword", { email: $("#ForgotPasswordEmail").val() }, success);
+        }
+
     </script>
 </head>
 <body>
 <form id="form1" runat="server">
+    <div class="modal-backdrop" style="height:150%"></div>
+    <div class="loginDialog">
+        <div class="dialogClose" onclick="$('.loginDialog').hide();$('.modal-backdrop').hide();">X</div>
+        <h3>Log In</h3>
+        <div>Email</div><input type="text" id="LoginEmail" />
+        <div>Password</div><input type="password" id="LoginPassword" />
+        <div class="forgotPassword">Forgot your password?</div>
+        <div class="error" style="margin: -12px 0 12px;"></div>
+        <a class="button" onclick="Login();">Log In</a>
+    </div>  
+    <div class="forgotDialog">
+        <div class="dialogClose" onclick="$('.forgotDialog').hide();$('.modal-backdrop').hide();">X</div>
+        <h3>Forgot Password</h3>
+        <div>Enter your email to recover your password.</div><input type="text" id="ForgotPasswordEmail" />
+        <div class="error" style="margin: 6px 0 -6px;"></div>
+        <br />
+        <a class="button" onclick="SendPassword();">Send Email</a>
+    </div>   
     <header class="mainnav">
          <ul>
             <li><a href="#">HOME</a></li>
             <li><a href="#howitworks">ABOUT</a></li>
             <li><a href="#contact">CONTACT</a></li>
+            <li class="loginBtn"><a onclick="OpenLogin();">LOG IN</a></li>
         </ul>
     </header>
     <div class="pitch">
         <div class="logoDiv">
             <img src="img/logo.png" />
         </div>
-<%--        Prices
-        <div class="questions">
-            <div class="answer price" style="margin-top:-60px;">
-                <div style="padding: 23px 4px 23px 35px;float: left;border-right: 1px solid #aaa;"><div style="margin: -18px 0 8px -18px;color: #F19F00;font-weight: bold;">SAVE 50% ANNUALLY</div><span style="font-size:2em;vertical-align: top;">$</span><span id="annualPrice" style="font-size:4em;">19</span><span>/mo</span><br /><span style="font-size: .9em;">Billed Annually</span></div>
-                <div style="float:left;padding: 15px 0 0 63px;"><div class="button" style="width: 120px;font-size:1.5em;line-height:2em;margin-bottom: .2em;">Start Today</div><div>&nbsp;Sign up in under a minute</div></div>
-            </div>
-            <div class="answer price" style="border:none;">
-                <div style="padding: 28px 38px;float: left;border-right: 1px solid #aaa;"><span style="font-size:2em;vertical-align: top;">$</span><span id="monthlyPrice" style="font-size:3.8em;">39</span><span>/mo</span><br /><span style="font-size: .9em;">Billed Monthly</span></div>
-                <div style="float:left;padding: 15px 0 0 63px;"><div class="button" style="width: 120px;font-size:1.5em;line-height:2em;margin-bottom: .2em;background: white;color: #F19F00;border: 2px solid #F19F00;">Start Today</div><div>&nbsp;Sign up in under a minute</div></div>
-            </div>
-        </div>--%>
         <div class="opening" style="position:relative;">
             <div class="tagline">
                 <span>Want to Start a Restaurant?</span>

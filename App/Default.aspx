@@ -25,6 +25,12 @@
 
         $(document).ready(function () {
             currentUserId = +$("#CurrentUserId").val();
+            if ($("#NewUser").val())
+            {
+                $(".helpDialog h3").html("Welcome " + $("#UserName").val());
+                $(".helpDialog").show();
+                $(".modal-backdrop").show();
+            }
             $(".myAccount a").html($("#UserName").val());
             $(".restaurantName").html($("#RestaurantName").val());
             $(".fromDb .instructions").html($("#ConceptOverview").val());
@@ -33,7 +39,7 @@
                 currentQuestion = 0;
                 Questions = questions;
             };
-            Post("Get", { header: "Concept", category: "", userId: currentUserId }, success);
+            Post("Get", { header: "Concept", category: "Create Your Concept", userId: currentUserId }, success);
 
             $(".nav.primary div").not(".restaurantName").click(function () {
                 if ($(this).hasClass("active"))
@@ -100,11 +106,11 @@
                 left = +left.substring(0, left.indexOf("px"));
                 var leftClick = $(this).hasClass("left");
                 if(left <= -770)
-                    left = leftClick ? -508 : -770;
-                else if(left <= -508)
-                    left = leftClick ? 0 : -770;
-                else if(left <= 0)
-                    left = leftClick ? 0 : -508;
+                    left = leftClick ? -310 : -770;
+                else if (left <= -310)
+                    left = leftClick ? 25 : -770;
+                else if(left <= 25)
+                    left = leftClick ? 25 : -310;
 
                 $(".subheaderList").animate({ left: left + "px" }, 200, function () { });
 
@@ -163,7 +169,7 @@
                 }
                 else
                 {
-                    alert("Bad");
+                    MessageBox("Please check at least one category.");
                 }
             });
 
@@ -205,9 +211,9 @@
             }
             else if (header == "Business Plan")
             {
-                subheaders = ["Management Team", "Market Analysis", "Company Description", "Marketing Strategy", "Staffing", "Daily Operations", "Software and Controls", "Other Contol Systems", "Inventory", "Accounting"];
+                subheaders = ["Management Team", "Market Analysis", "Marketing Strategy", "Staffing", "Company Description", "Daily Operations", "Software and Controls", "Other Contol Systems", "Inventory", "Accounting"];
                 $(".scrollArrow").show();
-                $(".nav.secondary .subheaderList").css({ left: "0px" });
+                $(".nav.secondary .subheaderList").css({ left: "25px" });
             }
             else if(header == "Financials")
             {
@@ -298,8 +304,20 @@
                     else if (!Questions[currentQuestion + i].Title) {
                         html += "<div style='clear:both;'></div>";
                     }
-                    var even = i % 2 ? "class='even'" : "";
+
+                    var oddQuestions = ["Management & Chef", "Selling & Promotions", "Electricity", "Dues & Subscriptions", "Printed Materials", "Water"];
+                    var evenQuestions = ["Advertising", "Research", "Gas", "Trash Removal"];
+                    var even = (i % 2 && !(oddQuestions.indexOf(Questions[currentQuestion + i].Title) >= 0)) || evenQuestions.indexOf(Questions[currentQuestion + i].Title) >= 0 ? "class='even'" : "";
                     style += even && !Questions[currentQuestion + i].Options ? "" : "clear:left;";
+
+                    var shiftUp = ["Payroll Taxes & Employee Benefits"];
+                    if (shiftUp.indexOf(Questions[currentQuestion + i].Title) >= 0)
+                        style += "margin-top:-68px;";
+
+                    var shiftDown = ["Host / Hostess Rate", "Host / Hostess Shifts per Day", "FICA Taxes - as a % of Gross Payroll", "Disability and Life Insurance", "Common Area Maintenance (CAM)"];
+                    if (shiftDown.indexOf(Questions[currentQuestion + i].Title) >= 0)
+                        style += "margin-top:31px;";
+
                     //if (Questions[currentQuestion + i].Title.length <= 36 && ((even && Questions[currentQuestion + i - 1] && Questions[currentQuestion + i - 1].Title.length > 36)
                     //    || !even && Questions[currentQuestion + i + 1] && Questions[currentQuestion + i + 1].Title.length > 36))
 
@@ -318,7 +336,7 @@
                             var id = Questions[currentQuestion + i].Id;
                             help += "<a onclick='OpenHelp(" + id + ");'>" + link + "</a>";
                         }
-                        html += "<div class='questionMarkWrapper'><img class='questionMark' src='https://cdn0.iconfinder.com/data/icons/super-mono-reflection/blue/question_blue.png' /><div " + even + "><div>" + help + "</div></div></div>";
+                        html += "<div class='questionMarkWrapper'><img class='questionMark' src='../img/blueQuestion.png' /><div " + even + "><div>" + help + "</div></div></div>";
                     }
                     var answer = Questions[currentQuestion + i].Answer.Text || "";
                     html += "<input type='text' value='" + answer + "' /></div>";
@@ -340,9 +358,9 @@
                     html += "<div class='ExampleBtn'>Show Examples</div>";
 
                     html += "<div style='display:none;' class='ExampleText'>"
-                    html += "<img class='scrollExample left' src='https://cdn3.iconfinder.com/data/icons/faticons/32/arrow-left-01-64.png' />";
+                    html += "<img class='scrollExample left' src='../img/largeLeftArrow.png' />";
                     html += "<div>" + RemoveFrontBreaks(Examples[currentExample]) + "</div>";
-                    html += "<img class='scrollExample right' src='https://cdn3.iconfinder.com/data/icons/faticons/32/arrow-right-01-64.png' />";
+                    html += "<img class='scrollExample right' src='../img/largeRightArrow.png' />";
                     html += "</div>";
                         
                 }
@@ -621,7 +639,7 @@
                 if (error)
                     $(".cancelError").html(error);
                 else {
-                    alert("Thank you for using My Owner Box. Your subscription has been cancelled. You will no longer be charged."); //TODO: Messagebox
+                    MessageBox("Thank you for using My Owner Box. Your subscription has been cancelled. You will no longer be charged.", 180, 400);
                     $(".cancelDialog").fadeOut();
                     $(".settingsDialog").fadeOut();
                 }
@@ -671,11 +689,18 @@
         <input type="hidden" runat="server" id="UserName" />
         <input type="hidden" runat="server" id="RestaurantName" />
         <input type="hidden" runat="server" id="ConceptOverview" />
+        <input type="hidden" runat="server" id="NewUser" />
         <div class="modal-backdrop"></div>
         <div class="helpDialog modal-dialog">
             <div class="dialogClose">X</div>
-            <h3>Edit your Restaurant Concept</h3>
-            <div class="dialogContent"></div>
+            <h3></h3>
+            <div class="dialogContent">
+                You’re now one step closer to opening your first restaurant. This journey is hard, but we’ve made it as easy as possible.
+                <br /><br />
+                The purpose of My Owner Box is to help you answer all the questions that are necessary to get funding and open your restaurant.  When you’re done answering the questions, you’ll have a complete business plan that you can take to investors to secure funding.
+                <br /><br />
+                Let’s start with your concept.
+            </div>
             <div class="dialogFooter"></div>
         </div>
         <div class="settingsDialog modal-dialog" style="width: 420px;margin-left: -210px;">
@@ -729,13 +754,13 @@
             </div>
         </div>
         <div class="main">
-           <img class="scrollArrow left" style="float:left;" src="https://cdn4.iconfinder.com/data/icons/miu/22/circle_back_arrow-24.png" />
+           <img class="scrollArrow left" style="float:left;" src="../img/leftArrow.png" />
            <div class="nav secondary">
                <div class="subheaderList">
                     <div class="active" style="margin-left:0;left:50px;">Create Your Concept</div>
                </div>
             </div>
-            <img class="scrollArrow right" style="float:right;" src="https://cdn4.iconfinder.com/data/icons/miu/22/circle_next_arrow_disclosure-24.png" />
+            <img class="scrollArrow right" style="float:right;" src="../img/rightArrow.png" />
             <div class="fromDb" style="margin:5%;">
                 <div class="businessPlanContent">
                     <h2 style="text-align:center;margin-bottom:.5em;">Concept</h2>
