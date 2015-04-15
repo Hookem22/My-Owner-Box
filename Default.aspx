@@ -7,7 +7,7 @@
     <title>My Owner Box</title>
     <meta name="description" content="How to Start a Restaurant. Restaurant Business Plans and Checklists. MyOwnerBox.com" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
-<%--    <link rel="icon" type="image/png" href="img/fav.png">--%>
+    <link rel="icon" type="image/png" href="img/favicon.png">
     <link href="Styles/Style.css?i=3" rel="stylesheet" type="text/css" />
     <link href="Styles/Mobile.css?i=3" rel="stylesheet" type="text/css" />
 

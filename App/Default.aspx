@@ -6,21 +6,17 @@
 <head runat="server">
     <title>My Owner Box</title>
     <meta name="description" content="How to Start a Restaurant. Restaurant Business Plans and Checklists. MyOwnerBox.com" />
-    <%--<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
-    <link rel="icon" type="image/png" href="img/fav.png">--%>
+    <%--<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>--%>
+    <link rel="icon" type="image/png" href="../img/favicon.png">
     <link href="/Styles/Bootstrap/css/bootstrap.css" rel="stylesheet" />
     <link href="/Styles/Bootstrap/css/bootstrap-theme.css" rel="stylesheet" />
-    <link href="/Styles/jquery-te-1.4.0.css" rel="stylesheet" />
                                                                                     
     <link href="/Styles/Style.css" rel="stylesheet" type="text/css" />
     <link href="/Styles/App.css" rel="stylesheet" type="text/css" />
 
     <script src="/Scripts/jquery-2.0.3.min.js" type="text/javascript"></script>
     <script src="/Scripts/bootstrap.js"></script>
-    <script src="/Scripts/jquery-te-1.4.0.min.js"></script>
     <script src="/Scripts/Helpers.js" type="text/javascript"></script>
-    <script src="/Scripts/jsPDF/jspdf.js" type="text/javascript"></script>
-    <script src="/Scripts/jsPDF/FileSaver.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         var Questions;
@@ -662,7 +658,7 @@
 
         function SignOut() {
             var success = function () {
-                window.location.href = "http://myownerbox.com";
+                window.location.href = "/";
             };
             Post("SignOut", { }, success);
         }

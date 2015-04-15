@@ -5,6 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title></title>
+    <link rel="icon" type="image/png" href="../img/favicon.png">
     <link href="/Styles/Bootstrap/css/bootstrap.css" rel="stylesheet" />
     <link href="/Styles/Bootstrap/css/bootstrap-theme.css" rel="stylesheet" />
     <link href="/Styles/jquery-te-1.4.0.css" rel="stylesheet" />
