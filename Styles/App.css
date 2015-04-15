@@ -74,6 +74,7 @@
 {
     color: #1a384b;
     float: right;
+    font-size: 20px;
 }
 .nav div.restaurantName:hover
 {
@@ -105,7 +106,146 @@
 .nav.secondary .subheaderList
 {
     position: absolute;
-    
+}
+.myAccount
+{
+    float: right;
+    margin: 25px 60px 0 0;
+    position: relative;
+}
+.myAccount a
+{
+    font-size: 14px;
+}
+.myAccount > div
+{
+    display: none;
+    position: absolute;
+    background: transparent;
+    padding-top: 12px;
+    margin-left: -22px;
+}
+.myAccount:hover > div
+{
+    display: block;
+}
+.myAccount > div > div:not(.arrowUp) {
+    position: relative;
+    border-bottom: 1px solid #999;
+    background: #fff;
+    box-shadow: 0 1px 1px #999;
+    border-radius: 5px;
+}
+.myAccount > div > div > div {
+    color: #333;
+    padding: .5em;
+    font-size: 14px;
+    width: 140px;
+    border-bottom: 1px solid #F1F1F1;
+}
+.myAccount > div > div > div:hover
+{
+    background: #F1F1F1;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.myAccount .arrowUp {
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 20px solid white;
+    left: 45px;
+    position: absolute;
+    top: -3px;
+}
+.dialogTitle
+{
+    float: left;
+    clear:both;
+    width: 100px;
+    margin: 10px 6px;
+    text-align: right;
+}
+.dialogContent input[type="text"]
+{
+    margin: 3px 0;
+}
+.dialogContent .btn
+{
+    font-size: 1.4rem;
+    color: #FFF;
+    background: #a1a1a1;
+    -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.75);
+    -moz-box-shadow: 0 1px 1px 0 rgba(0,0,0,.75);
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.75);
+    transition: all 100ms;
+    margin: 12px 8px 4px;
+    padding: 4px 20px;
+}
+.dialogContent .btn:hover
+{
+    background: #C1C1C1;
+}
+.dialogBtn
+{
+    float: right;
+    margin: -16px 30px 20px;
+    font-size: 1.4rem;
+    color: #FFF;
+    background: #34b8f4;
+    -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.75);
+    -moz-box-shadow: 0 1px 1px 0 rgba(0,0,0,.75);
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.75);
+    transition: all 100ms;
+}
+.dialogBtn:hover
+{
+    background: #73D3FF;
+    color: #FFF;
+}
+.passwordDialog
+{
+    position: absolute;
+    width: 260px;
+    z-index: 1001;
+    background: #fbfbfb;
+    left: 50%;
+    margin-left: -130px;
+    margin-top: 148px;
+    border: 1px solid #ededed;
+    padding: 0 2em;
+    display: none;
+}
+.passwordDialog .dialogClose
+{
+    margin: 8px -38px 0;
+}
+.cancelDialog
+{
+    position: absolute;
+    width: 260px;
+    z-index: 1001;
+    background: #fbfbfb;
+    left: 50%;
+    margin-left: -130px;
+    margin-top: 148px;
+    border: 1px solid #ededed;
+    padding: 0 2em;
+    display: none;
+}
+.cancelDialog .dialogClose
+{
+    margin: 8px -38px 0;
+}
+.cancelDialog .dialogBtn
+{
+    width: 70px;
+    background: #a1a1a1;
+}
+.cancelDialog .dialogBtn:hover
+{
+    background: #C1C1C1;
 }
 .scrollArrow
 {

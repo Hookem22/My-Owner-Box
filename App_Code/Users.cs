@@ -26,6 +26,8 @@ public class Users : BaseClass<Users>
 
     public string StripeCustomerId { get; set; }
 
+    public DateTime? Ended { get; set; }
+
     public DateTime Joined { get; set; }
 
     [NonDB]

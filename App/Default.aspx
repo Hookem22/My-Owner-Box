@@ -29,8 +29,10 @@
 
         $(document).ready(function () {
             currentUserId = +$("#CurrentUserId").val();
+            $(".myAccount a").html($("#UserName").val());
+            $(".restaurantName").html($("#RestaurantName").val());
             $(".fromDb .instructions").html($("#ConceptOverview").val());
-
+            
             var success = function (questions) {
                 currentQuestion = 0;
                 Questions = questions;
@@ -95,33 +97,6 @@
                 $(this).addClass("clicked");
                 NextClicked();
                 $(this).removeClass("clicked");
-            });
-
-            $(".main").on('keyup', 'input', function (e) {
-                if (e.which == 13) {
-                    if ($(".glyphicon-plus-sign").length)
-                        AddItem();
-                    else
-                        NextClicked();
-                }
-            });
-
-            $(".main").on("click", ".glyphicon-plus-sign", function() {
-                AddItem();
-            });
-
-            $(".main").on("click", ".glyphicon-remove-circle", function () {
-                $(this).closest(".added").remove();
-            });
-
-            $(".header img").click(function () {
-                var success = function (val) {
-                    $("#ConceptEditDialog .jqte_editor").html(val);
-                    $(".modal-dialog").show();
-                    $(".modal-backdrop").show();
-                                        
-                };
-                Post("GetTemplate", { questions: Questions }, success);
             });
 
             $(".main").on("click", ".scrollArrow", function () {
@@ -195,6 +170,7 @@
                     alert("Bad");
                 }
             });
+
         });
 
         function Get()
@@ -529,21 +505,6 @@
             });
         }
 
-        function AddItem(item) {
-            if (!$(".ListControl").val() && !(item && item.length))
-                return;
-
-            if (!item)
-                item = $(".ListControl").val();
-
-            var div = $("<div>", { class: "added AnswerControl", text: item });
-            $(div).append($("<span>", { class: "glyphicon glyphicon-remove-circle" }));
-            $(".glyphicon-plus-sign").after(div);
-
-            $(".ListControl").val("");
-            $(".ListControl").attr("placeholder", "");
-        }
-
         function SaveAnswer()
         {
             if (!Questions[currentQuestion] || Questions[currentQuestion].Id < 0)
@@ -613,13 +574,97 @@
                     var question = Questions[i];
                 }
             }
-            $(".modal-dialog h3").html(question.Title);
+            $(".helpDialog h3").html(question.Title);
             var help = question.Help.substring(question.Help.indexOf("}") + 1);
             help = RemoveFrontBreaks(help);
-            $(".dialogContent").html(help);
+            $(".helpDialog .dialogContent").html(help);
 
-            $(".modal-dialog").show();
+            $(".helpDialog").show();
             $(".modal-backdrop").show();
+        }
+
+        function OpenSettings()
+        {
+            var success = function (user) {
+                $("#SettingsName").val(user.Name);
+                $("#SettingsRestaurant").val($(".restaurantName").html());
+                $("#SettingsEmail").val(user.Email);
+                $(".passwordError, .cancelError").html("");
+
+                $(".settingsDialog").show();
+                $(".modal-backdrop").show();
+            };
+            Post("GetUser", { id: currentUserId }, success);
+        }
+
+        function SaveSettings()
+        {
+            Post("SaveUser", { id: currentUserId, name: $("#SettingsName").val(), email: $("#SettingsEmail").val(), restaurant: $("#SettingsRestaurant").val() });
+
+            $(".myAccount a").html($("#SettingsName").val());
+            $(".restaurantName").html($("#SettingsRestaurant").val());
+
+            $(".settingsDialog").fadeOut();
+            $(".modal-backdrop").fadeOut();
+        }
+
+        function SavePassword()
+        {
+            var success = function (error) {
+                if (error)
+                    $(".passwordError").html(error);
+                else
+                    $(".passwordDialog").fadeOut();
+            };
+            Post("SavePassword", { id: currentUserId, oldPassword: $("#OldPassword").val(), newPassword: $("#NewPassword").val() }, success);
+        }
+
+        function CancelSubscription()
+        {
+            var success = function (error) {
+                if (error)
+                    $(".cancelError").html(error);
+                else {
+                    alert("Thank you for using My Owner Box. Your subscription has been cancelled. You will no longer be charged."); //TODO: Messagebox
+                    $(".cancelDialog").fadeOut();
+                    $(".settingsDialog").fadeOut();
+                }
+            };
+            Post("CancelSubscription", { userId: currentUserId }, success);
+        }
+
+        function OpenContact()
+        {
+            $(".contactError").html("");
+            $(".contactDialog textarea").val("");
+            $(".contactDialog").show();
+            $(".modal-backdrop").show();
+        }
+
+        function SendContact()
+        {
+            var success = function (error) {
+                if (error)
+                    $(".cancelError").html(error);
+                else {
+                    alert("Thank you for using My Owner Box. Your subscription has been cancelled. You will no longer be charged."); //TODO: Messagebox
+                    $(".cancelDialog").fadeOut();
+                    $(".settingsDialog").fadeOut();
+                }
+            };
+            Post("SendEmail", { userId: currentUserId, body: $(".contactDialog textarea").val() });
+            $(".contactDialog .contactError").html("Thanks, your email has been sent.");
+            setTimeout(function () {
+                $(".contactDialog").fadeOut();
+                $(".modal-backdrop").fadeOut();
+            }, 1500);
+        }
+
+        function SignOut() {
+            var success = function () {
+                window.location.href = "http://myownerbox.com";
+            };
+            Post("SignOut", { }, success);
         }
 
     </script>
@@ -627,19 +672,55 @@
 <body>
     <form id="form1" runat="server">
         <input type="hidden" runat="server" id="CurrentUserId" />
+        <input type="hidden" runat="server" id="UserName" />
+        <input type="hidden" runat="server" id="RestaurantName" />
         <input type="hidden" runat="server" id="ConceptOverview" />
         <div class="modal-backdrop"></div>
-        <div class="modal-dialog">
+        <div class="helpDialog modal-dialog">
             <div class="dialogClose">X</div>
             <h3>Edit your Restaurant Concept</h3>
             <div class="dialogContent"></div>
             <div class="dialogFooter"></div>
         </div>
+        <div class="settingsDialog modal-dialog" style="width: 420px;margin-left: -210px;">
+            <div class="dialogClose">X</div>
+            <h3>Account Settings</h3>
+            <div class="dialogContent" style="overflow-y: auto;">
+                <div class="dialogTitle">Name:</div><input type="text" id="SettingsName" />
+                <div class="dialogTitle">Restaurant:</div><input type="text" id="SettingsRestaurant" />
+                <div class="dialogTitle">Email:</div><input type="text" id="SettingsEmail" />
+                <div class="dialogTitle">Password:</div><div class="btn" onclick="$('.passwordDialog').show();">Change Password</div>
+                <div class="dialogTitle">Subscription:</div><div class="btn" onclick="$('.cancelDialog').show();">Cancel Subscription</div>
+            </div>
+            <div class="btn dialogBtn" onclick="SaveSettings();">Save</div>
+        </div>
+        <div class="passwordDialog">
+            <div class="dialogClose" onclick="$('.passwordDialog').hide();">X</div>
+            <h3>Change Password</h3>
+            <div>Old Password:</div><input type="password" id="OldPassword" />
+            <div>New Password:</div><input type="password" id="NewPassword" />
+            <div class="passwordError error"></div>
+            <div class="btn dialogBtn" style="margin: 12px 0px;" onclick="SavePassword();">Save</div>
+        </div>
+        <div class="cancelDialog">
+            <div class="dialogClose" onclick="$('.cancelDialog').hide();">X</div>
+            <div style="padding: 2em 1em 1em;">Are you sure you'd like to cancel your subscription to My Owner Box?</div>
+            <div class="cancelError error"></div>
+            <div class="btn dialogBtn" style="margin: 0 0 0 12px;float: left;" onclick="CancelSubscription();">Yes</div>
+            <div class="btn dialogBtn" style="margin: 0 12px 1.5em 0;" onclick="$('.cancelDialog').hide();">No</div>
+        </div>
+        <div class="contactDialog modal-dialog" style="  width: 420px;margin-left: -210px;">
+            <div class="dialogClose" onclick="$('.contactDialog').hide();">X</div>
+            <h3>Contact Us</h3>
+            <textarea style="margin: 16px 46px;height: 135px;width: 331px;"></textarea>
+            <div class="contactError" style="margin-left: 42px;float: left;"></div>
+            <div class="btn dialogBtn" style="margin:0 42px 16px 0;" onclick="SendContact();">Send</div>
+        </div>
         <div class="header">
             <div style="width:1000px;margin:0 auto;">
                 <img src="../img/logoshadow.png" class="logo" />
                 <div class="myOwnerBox">My Owner Box</div>
-                <div style="float: right;margin: 19px 60px 0 0;"><a href="../Word">My Account</a></div>
+                <div class="myAccount"><a></a><img src="../img/downArrow.png" style="height:18px;" /><div><div class="arrowUp"></div><div><div onclick="OpenSettings();">Account Settings</div><div onclick="OpenContact();">Contact Us</div><div onclick="SignOut();">Sign Out</div></div></div></div>
             </div>
         </div>
         <div class="subheader">
@@ -648,7 +729,7 @@
                 <div>Business Plan</div>
                 <div>Financials</div>
                 <div>Print</div>
-                <div class="restaurantName">Restaurant Name</div>
+                <div class="restaurantName"></div>
             </div>
         </div>
         <div class="main">
