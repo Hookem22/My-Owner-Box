@@ -35,9 +35,14 @@ public partial class Word_Default : System.Web.UI.Page
 
                 WordDoc.Print(wordDocument, header, userId);
             }
-            
+
+            string name = "";
+            List<Restaurant> restaurants = Restaurant.LoadByPropName("UserId", userId.ToString());
+            if (restaurants.Count > 0)
+                name = restaurants[0].Name + " ";
+
             // Stream it down to the browser
-            Response.AppendHeader("Content-Disposition", "attachment;filename=" + "Testdoc5.docx");
+            Response.AppendHeader("Content-Disposition", "attachment;filename=" + name + "Business Plan.docx");
             Response.ContentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
             mem.Position = 0;
             mem.CopyTo(Response.OutputStream);

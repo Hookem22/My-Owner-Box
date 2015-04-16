@@ -211,7 +211,7 @@
             }
             else if (header == "Business Plan")
             {
-                subheaders = ["Management Team", "Market Analysis", "Marketing Strategy", "Staffing", "Company Description", "Daily Operations", "Software and Controls", "Other Contol Systems", "Inventory", "Accounting"];
+                subheaders = ["Management Team", "Market Analysis", "Marketing Strategy", "Staffing", "Company Description", "Daily Operations", "Software and Controls", "Other Control Systems", "Inventory", "Accounting"];
                 $(".scrollArrow").show();
                 $(".nav.secondary .subheaderList").css({ left: "25px" });
             }

@@ -87,6 +87,9 @@ public partial class Default : System.Web.UI.Page
         if (users.Count == 0 || users[0].Id == 0 || users[0].Password != password)
             return "Incorrect email or password";
 
+        if (users[0].Cancelled && users[0].Ended < DateTime.Now)
+            return "This subscription has been cancelled";
+
         HttpContext.Current.Session["CurrentUser"] = users[0];
         return "";
     }

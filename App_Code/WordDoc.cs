@@ -73,7 +73,7 @@ public class WordDoc
         Table tbl = NewTable(body, 1);
 
         tbl.AddRow(new string[] { "" }, new string[] { "Background:17365D" });
-        tbl.AddRow(new string[] { restaurant[0].Name }, new string[] { "Background:1F497D|JustifyCenter|FontSize:72|FontColor:FFFFFF" });
+        tbl.AddRow(new string[] { restaurant[0].Name }, new string[] { "Background:2B579A|JustifyCenter|FontSize:72|FontColor:FFFFFF" });
         tbl.AddRow(new string[] { "" }, new string[] { "Background:17365D" });
 
         body.AddLineBreak();
@@ -111,7 +111,7 @@ public class WordDoc
             if (i == 0 || question.SheetId != questions[i - 1].SheetId)
             {
                 int j = 0;
-                while (question.SheetId == questions[i + j].SheetId)
+                while (i + j < questions.Count && question.SheetId == questions[i + j].SheetId)
                 {
                     if (questions[i + j].Answer != null && !string.IsNullOrEmpty(questions[i + j].Answer.Text))
                     {
@@ -178,6 +178,9 @@ public class WordDoc
             int val = 0;
             if (int.TryParse(questions[i].Answer.Text, out val))
             {
+                if (questions[i].Title == "Landlord Contribution")
+                    val *= -1;
+
                 totalSum += val;
                 sectionSum += val;
             }
@@ -283,7 +286,6 @@ public class WordDoc
 
     static double[] AverageCheck(Body body, string meal)
     {
-        int offset = meal == "Lunch" ? 12 : meal == "Dinner" ? 26 : 0;
         Table tbl = NewTable(body, 6);
 
         string[] header = new string[] { "FontSize:36|Bold|JustifyCenter|Background:2B579A|FontColor:FFFFFF", "JustifyCenter|Background:ABCDEF", "JustifyCenter|Background:ABCDEF", "JustifyCenter|Background:ABCDEF", "JustifyCenter|Background:ABCDEF", "JustifyCenter|Background:ABCDEF" };
@@ -294,20 +296,28 @@ public class WordDoc
         double wineSum = 0;
 
         List<Question> questions = Question.Get("Financials", "Sales Projection", currentUserId, false);
+        string page = "1";
+        if (meal == "Lunch")
+            page = "2";
+        else if (meal == "Dinner")
+            page = "3";
+        questions = questions.FindAll(delegate(Question q)
+        {
+            return q.Page == page;
+        });
         //if breakfast
         tbl.AddRow(new string[] { meal, "Average|Price Point", "% Ordered", "Average|Food", "Average|Beverage", "Average|Check" }, header);
         tbl.AddRow(new string[] { "Food" }, new string[] { "Bold" });
-        foodSum += AddCheckPrice(tbl, "Entree", questions[offset].Answer.Text, questions[offset + 1].Answer.Text, true);
-        foodSum += AddCheckPrice(tbl, "Appetizer", questions[offset + 2].Answer.Text, questions[offset + 3].Answer.Text, true);
+        foodSum += AddCheckPrice(tbl, "Entree", questions.ByTitle("Entree Average Price"), questions.ByTitle("Entree % Ordered"), true);
+        foodSum += AddCheckPrice(tbl, "Appetizer", questions.ByTitle("Appetizer Average Price"), questions.ByTitle("Appetizer % Ordered"), true);
         if (meal != "Breakfast")
-            foodSum += AddCheckPrice(tbl, "Dessert", questions[offset + 4].Answer.Text, questions[offset + 5].Answer.Text, true);
-        else
-            offset -= 2;
+            foodSum += AddCheckPrice(tbl, "Dessert", questions.ByTitle("Dessert Average Price"), questions.ByTitle("Dessert % Ordered"), true);
+
         tbl.AddRow(new string[] { "Beverage" }, new string[] { "Bold" });
-        foodSum += AddCheckPrice(tbl, "Non-Alcoholic", questions[offset + 6].Answer.Text, questions[offset + 7].Answer.Text, true);
-        liquorSum += AddCheckPrice(tbl, "Liquor", questions[offset + 8].Answer.Text, questions[offset + 9].Answer.Text, false);
-        beerSum += AddCheckPrice(tbl, "Beer", questions[offset + 10].Answer.Text, questions[offset + 11].Answer.Text, false);
-        wineSum += AddCheckPrice(tbl, "Wine", questions[offset + 12].Answer.Text, questions[offset + 13].Answer.Text, false);
+        foodSum += AddCheckPrice(tbl, "Non-Alcoholic", questions.ByTitle("Non-Alcoholic Average Price"), questions.ByTitle("Non-Alcoholic % Ordered"), true);
+        liquorSum += AddCheckPrice(tbl, "Liquor", questions.ByTitle("Liquor Average Price"), questions.ByTitle("Liquor % Ordered"), false);
+        beerSum += AddCheckPrice(tbl, "Beer", questions.ByTitle("Beer Average Price"), questions.ByTitle("Beer % Ordered"), false);
+        wineSum += AddCheckPrice(tbl, "Wine", questions.ByTitle("Wine Average Price"), questions.ByTitle("Wine % Ordered"), false);
         double bevSum = liquorSum + beerSum + wineSum;
         tbl.AddRow(new string[] { "TOTALS", "", "", foodSum.ToString("0.00"), bevSum.ToString("0.00"), (foodSum + bevSum).ToString("0.00") }, sumStyle);
 
@@ -344,8 +354,8 @@ public class WordDoc
 
         List<Question> questions = Question.Get("Financials", "Sales Projection", currentUserId, false);
         tbl.AddRow(new string[] { "", "", "Table|Turns", "Covers", "Food", "Liquor", "Beer", "Wine", "Total" }, header);
-        
-        double numberSeats = 150;
+
+        double numberSeats = Question.Get("Financials", "Basic Info", currentUserId, false).ByTitleSum(new string[] { "Number of Dining Seats" });
         int totalCovers = 0;
 
         WeeklyFood = 0;
@@ -1178,8 +1188,8 @@ public class WordDoc
         double distributeYear5 = investmentQuestions.ByTitleSum(new string[] { "Year 5 Percentage" });
 
         double equityContribution = investmentQuestions.ByTitleSum(new string[] { "Operating Partner Equity Contribution" });
-        double cashBeforePayback = investmentQuestions.ByTitleSum(new string[] { "Cash Distribtion % Before Investor Payback" });
-        double cashAfterPayback = investmentQuestions.ByTitleSum(new string[] { "Cash Distribtion % After Investor Payback" });
+        double cashBeforePayback = investmentQuestions.ByTitleSum(new string[] { "Cash Distribution % Before Investor Payback" });
+        double cashAfterPayback = investmentQuestions.ByTitleSum(new string[] { "Cash Distribution % After Investor Payback" });
         
         List<Question> basicInfo = Question.Get("Financials", "Basic Info", currentUserId, false);
         double initialInvestment = basicInfo.ByTitleSum(new string[] { "Equity Capital" });
@@ -1205,17 +1215,17 @@ public class WordDoc
         {
             if(totalInvestment >= 0)
             {
-                investmentDist[i] = distTotal[i] * .01 * (100 - cashBeforePayback);
-                operatorDist[i] = distTotal[i] * .01 * (cashBeforePayback);
+                investmentDist[i] = distTotal[i] * .01 * (cashBeforePayback);
+                operatorDist[i] = distTotal[i] * .01 * (100 - cashBeforePayback);
                 paybackPeriod++;
                 totalInvestment -= investmentDist[i];
                 if(totalInvestment <= 0)
                 {
                     double prevInvestment = totalInvestment + investmentDist[i];
                     double toZeroInvest = prevInvestment;
-                    double toZeroOperate = prevInvestment * (cashBeforePayback / (100 - cashBeforePayback));
-                    double afterZeroInvest = (distTotal[i] - toZeroInvest - toZeroOperate) * .01 * (100 - cashAfterPayback);
-                    double afterZeroOperate = (distTotal[i] - toZeroInvest - toZeroOperate) * .01 * (cashAfterPayback);
+                    double toZeroOperate = prevInvestment * ((100 - cashBeforePayback) / cashBeforePayback);
+                    double afterZeroInvest = (distTotal[i] - toZeroInvest - toZeroOperate) * .01 * (cashAfterPayback);
+                    double afterZeroOperate = (distTotal[i] - toZeroInvest - toZeroOperate) * .01 * (100 - cashAfterPayback);
 
                     investmentDist[i] = toZeroInvest + afterZeroInvest;
                     operatorDist[i] = toZeroOperate + afterZeroOperate;
@@ -1227,8 +1237,8 @@ public class WordDoc
             }
             else
             {
-                investmentDist[i] = distTotal[i] * .01 * (100 - cashAfterPayback);
-                operatorDist[i] = distTotal[i] * .01 * (cashAfterPayback);
+                investmentDist[i] = distTotal[i] * .01 * (cashAfterPayback);
+                operatorDist[i] = distTotal[i] * .01 * (100 - cashAfterPayback);
             }
             investmentLeft[i] = totalInvestment >= 0 ? totalInvestment : 0;
             annualReturn[i] = 100 * investmentDist[i] / initialInvestment;

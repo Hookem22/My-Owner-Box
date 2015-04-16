@@ -109,6 +109,7 @@
             $("#" + lastQuestionId).animate({ left: "-100%" }, 500, function () {
                 $("#" + lastQuestionId).hide();
                 $("#" + lastQuestionId).css("left", "120%");
+                $("#" + lastQuestionId).html("");
             });
 
             var subject = "User Click";
@@ -196,7 +197,9 @@
                     //template += '<br/><div style="width:155px;float:left;">&nbsp;&nbsp;MM&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;YY</div><div>CVC</div>';
                     template += '<br/><input type="text" id="Month" style="width:36px;margin-right:8px;" placeholder="MM" /><input type="text" id="Year" placeholder="YY" style="width:32px;" /><input type="text" id="CVC" placeholder="CVC" style="width:50px;margin:0 0 1.2em 23px" />';
                     template += '<div class="error"></div>';
-                    template += '<br/><a class="button nextBtn" >Create My Account</a></div>';
+                    template += '<br/><a class="button nextBtn" >Create My Account</a>';
+                    template += '<img class="loading" style="margin-left:12px;display:none;" src="http://shop.skype.com/i/images/ab-test/u12_normal_2.gif" />';
+                    template += '</div>';
                     break;
 
                 //case 9:
@@ -222,8 +225,8 @@
 
             $("#" + questionId).animate({ left: "50%" }, 500, function () {
                 $("body").css("overflow-x", "");
+                $(".answer input").first().focus();
             });
-
         }
 
         function ValidateSignUp()
@@ -261,6 +264,9 @@
 
         function ValidateCC()
         {
+            if ($(".disabled").length)
+                return;
+
             $(".error").html("");
             $(".signUp input").removeClass("error");
             var valid = true;
@@ -291,12 +297,18 @@
             var success = function (error) {
                 if (error) {
                     $(".error").html(error);
+                    $(".loading").hide();
+                    $(".button").removeClass("disabled");
                 }
                 else
                 {
                     window.location.href = "/App";
                 }
             };
+
+            $(".loading").show();
+            $(".button").addClass("disabled");
+
             Post("CreateUser", { user: User, restaurantName: restaurantName }, success)
         }
 
