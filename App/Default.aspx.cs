@@ -15,8 +15,13 @@ public partial class App_Default : System.Web.UI.Page
     {
         Users user = HttpContext.Current.Session["CurrentUser"] as Users;
         if (user == null || user.Id == 0)
-            Response.Redirect("http://myownerbox.com");
-
+        {
+            if (ConfigurationManager.AppSettings["IsProduction"] == "true")
+                Response.Redirect("http://myownerbox.com");
+            else
+                user = Users.LoadById(1);
+        }
+           
         CurrentUserId.Value = user.Id.ToString();
         UserName.Value = user.Name;
         TimeSpan span = DateTime.Now - user.Joined;

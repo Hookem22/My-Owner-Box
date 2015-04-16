@@ -307,7 +307,7 @@
 
                     var oddQuestions = ["Management & Chef", "Selling & Promotions", "Electricity", "Dues & Subscriptions", "Printed Materials", "Water"];
                     var evenQuestions = ["Advertising", "Research", "Gas", "Trash Removal"];
-                    var even = (i % 2 && !(oddQuestions.indexOf(Questions[currentQuestion + i].Title) >= 0)) || evenQuestions.indexOf(Questions[currentQuestion + i].Title) >= 0 ? "class='even'" : "";
+                    var even = (i % 2 && !(oddQuestions.indexOf(Questions[currentQuestion + i].Title) >= 0)) || evenQuestions.indexOf(Questions[currentQuestion + i].Title) >= 0 ? "even" : "";
                     style += even && !Questions[currentQuestion + i].Options ? "" : "clear:left;";
 
                     var shiftUp = ["Payroll Taxes & Employee Benefits"];
@@ -318,12 +318,8 @@
                     if (shiftDown.indexOf(Questions[currentQuestion + i].Title) >= 0)
                         style += "margin-top:31px;";
 
-                    //if (Questions[currentQuestion + i].Title.length <= 36 && ((even && Questions[currentQuestion + i - 1] && Questions[currentQuestion + i - 1].Title.length > 36)
-                    //    || !even && Questions[currentQuestion + i + 1] && Questions[currentQuestion + i + 1].Title.length > 36))
-
-                    //var addMargin = ["Petty Cash", "Graphic Design"];
-                    //if (addMargin.indexOf(Questions[currentQuestion + i].Title) >= 0)
-                    //    style += "margin-top:31px;";
+                    var wides = ["Food Cost %", "Liquor Cost %", "Salary % Increase", "Year 1 Percentage"];
+                    even += wides.indexOf(Questions[currentQuestion + i].Title) >= 0 ? " wide" : "";
  
                     html += "<div class='multiText' style='" + style + "'><div style='float:left;max-width:290px'>" + Questions[currentQuestion + i].Title + "</div>";
                     if (Questions[currentQuestion + i].Help) {
@@ -336,7 +332,7 @@
                             var id = Questions[currentQuestion + i].Id;
                             help += "<a onclick='OpenHelp(" + id + ");'>" + link + "</a>";
                         }
-                        html += "<div class='questionMarkWrapper'><img class='questionMark' src='../img/blueQuestion.png' /><div " + even + "><div>" + help + "</div></div></div>";
+                        html += "<div class='questionMarkWrapper'><img class='questionMark' src='../img/blueQuestion.png' /><div class='" + even + "'><div>" + help + "</div></div></div>";
                     }
                     var answer = Questions[currentQuestion + i].Answer.Text || "";
                     html += "<input type='text' value='" + answer + "' /></div>";

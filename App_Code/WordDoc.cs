@@ -34,7 +34,7 @@ public class WordDoc
     {
         currentUserId = userId;
 
-        //TODO: Print title page
+        AddTitlePage(wordDocument);
 
         if (header.Contains("0"))
         {
@@ -54,6 +54,33 @@ public class WordDoc
 
             Financials(wordDocument);
         }
+    }
+
+    static void AddTitlePage(WordprocessingDocument wordDocument)
+    {
+        Body body = wordDocument.MainDocumentPart.Document.Body;
+
+        Users user = Users.LoadById(currentUserId);
+        if (user == null)
+            return;
+
+        List<Restaurant> restaurant = Restaurant.LoadByPropName("UserId", user.Id.ToString());
+        if (restaurant.Count == 0)
+            return;
+
+        body.AddParagraph("\n\n\n\n\n\n");
+
+        Table tbl = NewTable(body, 1);
+
+        tbl.AddRow(new string[] { "" }, new string[] { "Background:17365D" });
+        tbl.AddRow(new string[] { restaurant[0].Name }, new string[] { "Background:1F497D|JustifyCenter|FontSize:72|FontColor:FFFFFF" });
+        tbl.AddRow(new string[] { "" }, new string[] { "Background:17365D" });
+
+        body.AddLineBreak();
+        body.AddLineBreak();
+        body.AddCenterParagraph("Authored and presented by:\n" + user.Name);
+
+        body.AddPageBreak();
     }
 
     static void PrintConcept(WordprocessingDocument wordDocument)
@@ -1659,8 +1686,28 @@ public static class BodyPart
             run.AppendChild(new Text(text));
             run.AppendChild(new Break());
         }
-
     }
+
+    public static void AddCenterParagraph(this Body body, string paragraph)
+    {
+        paragraph = paragraph.Replace("\n\n", "\n");
+        string[] texts = paragraph.Split('\n');
+        foreach (string text in texts)
+        {
+            Paragraph para = body.AppendChild(new Paragraph());
+            ParagraphProperties paraProperties = para.AppendChild(new ParagraphProperties());
+
+            paraProperties.AppendChild(new Justification() { Val = JustificationValues.Center });
+
+            Run run = para.AppendChild(new Run());
+            RunProperties runProperties = run.AppendChild(new RunProperties());
+            runProperties.Append(new FontSize() { Val = new StringValue("24") });
+
+            run.AppendChild(new Text(text));
+            run.AppendChild(new Break());
+        }
+    }
+
 
     public static void AddLineBreak(this Body body)
     {

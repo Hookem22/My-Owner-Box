@@ -607,6 +607,10 @@
 .questionMarkWrapper > div.even > div:after {
     left: 316px;
 }
+.questionMarkWrapper > div.wide
+{
+    width: 540px;
+}
 .questionMarkWrapper a
 {
     color: #337ab7;
