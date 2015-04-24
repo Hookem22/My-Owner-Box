@@ -27,7 +27,7 @@
             currentUserId = +$("#CurrentUserId").val();
             if ($("#NewUser").val())
             {
-                $(".helpDialog h3").html("Welcome " + $("#UserName").val());
+                $(".helpDialog h3").html("Welcome " + $("#UserName").val() + "!");
                 $(".helpDialog").show();
                 $(".modal-backdrop").show();
             }

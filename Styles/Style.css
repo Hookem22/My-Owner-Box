@@ -266,7 +266,7 @@ textarea
 	border-right: 20px solid transparent;
 	
 	border-bottom: 40px solid white;
-    margin: -39px 47% 0;
+    margin: -39px 48% 0;
 }
 .howitworks
 {
@@ -298,6 +298,8 @@ textarea
     line-height: 24px;
     clear: both;
     margin: 4px 10%;
+    text-align: left;
+    padding-left: 2%
 }
 .step .horizontal
 {
@@ -418,15 +420,16 @@ textarea
 }
 .answer .buyBtn
 {
-    width: 120px;
+    width: 140px;
     font-size:1.4em;
     line-height:2em;
     margin-bottom: .2em;
+    margin-left: 50px;
 }
 .answer .startToday
 {
     float:left;
-    padding: 15px 0 0 63px;
+    padding: 22px 0 0 2px;
 }
 .answer.signUp input
 {

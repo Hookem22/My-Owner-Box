@@ -46,4 +46,6 @@ public class CreditCard
     public string CardExpirationYear { get; set; }
 
     public string Cvc { get; set; }
+
+    public string Price { get; set; }
 }

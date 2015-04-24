@@ -16,8 +16,8 @@
     <script type="text/javascript">
         var currentStep = 0;
         var marginLeft = "-300px";
-        //var prices = [29, 35, 39, 45, 49, 55, 59, 65, 69, 75, 79, 85, 89, 95, 99];
-        var price = 45; //prices[Math.floor(Math.random() * 11)];
+        var prices = [9, 19, 29, 39];
+        var price = prices[Math.floor(Math.random() * 4)];
 
         $(document).ready(function () {
             var mobParam = getParameterByName("id");
@@ -76,8 +76,8 @@
             $(".questions").on("click", ".creditCard img", function (event) {
                 $(".creditCard img").attr("src", "img/UncheckedRadio.png");
                 $(this).attr("src", "img/CheckedRadio.png");
-                var price = $(this).hasClass("monthly") ? "$45 per month" : "$264 per year";
-                $(".creditCard .price").html(price);
+                var pricing = $(this).hasClass("monthly") ? "$" + price + " per month" : "$" + Math.floor(price / 2) * 12 + " per year";
+                $(".creditCard .price").html(pricing);
 
             });
 
@@ -89,14 +89,14 @@
 
         function NextQuestion()
         {
-            if (currentStep >= 9)//Validation
+            if (currentStep >= 10)//Validation
             {
-                if(currentStep == 9)
+                if(currentStep == 10)
                 {
                     if (!ValidateSignUp())
                         return;
                 }
-                if(currentStep == 10)
+                if(currentStep == 11)
                 {
                     ValidateCC();
                     return;
@@ -114,14 +114,15 @@
 
             var subject = "User Click";
             var body = $("#" + lastQuestionId + " .question span").html() + "<br/><br/>";
-            if (currentStep == 8)
-            {
+            if (currentStep == 9) {
                 var type = Annual ? "Annual" : "Monthly";
                 body += "MyOwnerBox Purchase: " + type;
-            }                
-            else
-                body += $("#" + lastQuestionId + " input").val();
-
+            }
+            else {
+                $(".answer input[type='text']").each(function () {
+                    body += $(this).val() + "   ";
+                })
+            }
             body = EscapeString(body);
             SendEmail(subject, body);
 
@@ -154,48 +155,56 @@
                     template = template.replace("<input", "<input placeholder='Month/Year' ");
                     break;
                 case 5:
-                    question = "Here's how it works:<br/>We're going to walk you through.";
-                    template = '<div class="question"><span>{{Question}}</span></div><div class="answer"><h2>The fastest, easiest way to start your restaurant</h2><ul><li>1.) <span style="font-weight:bold;">Organize</span> your ideas</li><li>2.) <span style="font-weight:bold;">Step by Step</span> guides</li><li>3.) <span style="font-weight:bold;">Create</span> your concept and business plan</li></ul><a class="button nextBtn" >Next</a></div>';
+                    question = "Here's how it works:";
+                    template = '<div class="question"><span>{{Question}}</span></div><div class="answer" style="padding:30px;"><img src="img/lightbulbMoney.png" style="height:60px;margin: 4px 20px 0 0;" /><h2 style="padding-right: 20px;font-weight: normal;font-size: 22px;margin-bottom: 32px;">You’ve got a great idea for a restaurant but you don’t know how to get started.</h2><a class="button nextBtn" style="margin-left:300px;" >Next</a></div>';
                     template = template.replace("{{Question}}", question);
                     break;
                 case 6:
-                    question = "At the end, you'll end up<br/>with a pitch and a plan.";
-                    template = '<div class="question"><span>{{Question}}</span></div><div class="answer withImg"><img src="img/businessplan.png" /><a class="button nextBtn" style="margin-left:16px;" >Next</a></div>';
+                    question = "Here's how it works:";
+                    template = '<div class="question"><span>{{Question}}</span></div><div class="answer" style="padding:30px;"><img src="img/businessplan.png" style="height: 110px;margin: 4px 18px 0 0;" /><h2 style="padding-right: 20px;font-weight: normal;font-size: 22px;margin-bottom: 32px;">The first thing you need to do is put together a business plan that you can take to investors or use to open your restaurant.</h2><a class="button nextBtn" style="margin-left:300px;" >Next</a></div>';
                     template = template.replace("{{Question}}", question);
                     break;
                 case 7:
-                    template = '<div class="tagline"><span>Ready to Get Started?</span></div><a class="pitchButton" onclick="NextQuestion()">Yes, I am</a></div>';
+                    question = "Here's how it works:";
+                    template = '<div class="question"><span>{{Question}}</span></div><div class="answer" style="padding:30px;"><img src="img/logoBlue.png" style="height:60px;margin: 4px 12px 40px 0;" /><h2 style="padding-right: 20px;font-weight: normal;font-size: 22px;margin-bottom: 32px;">My Owner Box is the fastest, easiest way to put together your restaurant business plan.</h2><a class="button nextBtn" style="margin-left:300px;" >Next</a></div>';
+                    template = template.replace("{{Question}}", question);
                     break;
                 case 8:
-                    template = '<div class="answer price" style="margin-top:-60px;"><div style="padding: 23px 4px 8px 35px;float: left;border-right: 1px solid #aaa;"><div style="margin: -18px 0 8px -18px;color: #F19F00;font-weight: bold;">SAVE 50% ANNUALLY</div><span style="font-size:2em;vertical-align: top;">$</span><span id="annualPrice" style="font-size:4em;">{{AnnualPrice}}</span><span>/mo</span><br /><span style="font-size: .9em;">Billed Annually</span></div><div class="startToday"><div class="button buyBtn annual">Start Today</div><div class="underMinute">&nbsp;Sign up in under a minute</div></div></div><div class="answer price" style="border:none;"><div style="padding: 28px 38px 18px;float: left;border-right: 1px solid #aaa;"><span style="font-size:2em;vertical-align: top;">$</span><span id="monthlyPrice" style="font-size:3.8em;">{{MonthlyPrice}}</span><span>/mo</span><br /><span style="font-size: .9em;">Billed Monthly</span></div><div class="startToday"><div class="button buyBtn" style="background: white;color: #F19F00;border: 2px solid #F19F00;">Start Today</div><div class="underMinute">&nbsp;Sign up in under a minute</div></div></div>';
-                    template = template.replace("{{MonthlyPrice}}", price).replace("{{AnnualPrice}}", Math.floor(price / 2));
+                    template = '<div class="tagline"><span>Ready to Get Started?</span></div><a class="pitchButton" onclick="NextQuestion()">Yes, I am</a></div>';
                     break;
                 case 9:
-                    template = '<div class="question"><span>Sign Up</span></div><div class="answer signUp">';
+                    template = '<div class="question" style="margin-top:-70px;"><span></span></div><div class="answer price" style="margin-top: 70px;padding: 0 15px 10px 0;"><div style="padding: 23px 4px 16px 35px;float: left;border-right: 1px solid #aaa;"><div style="margin: -18px 0 10px -18px;color: #F19F00;font-weight: bold;">GET STARTED TODAY</div><span style="font-size:2em;vertical-align: top;margin-left: 24px;">$</span><span id="annualPrice" style="font-size:4em;">{{Price}}</span><br /><span style="font-size: .9em;margin-left: 26px;">One time fee</span></div><div class="startToday"><div class="button buyBtn annual">Start Now</div><div class="underMinute">&nbsp;Creating your restaurant business plan</div></div></div>';
+                    template = template.replace("{{Price}}", price);
+                    break;
+                case 10:
+                    template = '<div class="question"><span>Sign Up Now</span></div><div class="answer signUp">';
                     template += '<div>Name</div><input type="text" id="Name" />';
                     template += '<div>Email</div><input type="text" id="Email" />';
                     template += '<div>Password</div><input type="password" id="Password" />';
                     template += '<div>Confirm Password</div><input type="password" id="ConfirmPassword" />';
                     template += '<a class="button nextBtn" style="margin-left: 16px;" >Continue</a></div>';
                     break;
-                case 10:
-                    template = '<div class="question"><span>Sign Up</span></div><div class="answer signUp creditCard">';
-                    template += '<div class="annualHeader">Annual Subscription - $22/month (billed $264/yr)</div>';
-                    if (Annual)
-                    {
-                        template += '<div class="price">$264 per year</div>';
-                        template += '<div style="margin-bottom:8px;"><img class="annual" src="img/CheckedRadio.png" />Annual<img class="monthly" src="img/UncheckedRadio.png" style="margin-left:24px;" />Monthly</div>';
-                    }
-                    else
-                    {
-                        template += '<div class="price">$45 per month</div>';
-                        template += '<div style="margin-bottom:8px;"><img class="annual" src="img/UncheckedRadio.png" />Annual<img class="monthly" src="img/CheckedRadio.png" style="margin-left:24px;" />Monthly</div>';
-                    }
+                case 11:
+                    template = '<div class="question"><span>Sign Up Now</span></div><div class="answer signUp creditCard">';
+                    //template += '<div class="annualHeader">Annual Subscription - $' + Math.floor(price / 2) + '/month (billed $'+ Math.floor(price / 2) * 12 + '/yr)</div>';
+                    //if (Annual)
+                    //{
+                    //    template += '<div class="price">$' + Math.floor(price / 2) * 12 + ' per year</div>';
+                    //    template += '<div style="margin-bottom:8px;"><img class="annual" src="img/CheckedRadio.png" />Annual<img class="monthly" src="img/UncheckedRadio.png" style="margin-left:24px;" />Monthly</div>';
+                    //}
+                    //else
+                    //{
+                    //    template += '<div class="price">$' + price + ' per month</div>';
+                    //    template += '<div style="margin-bottom:8px;"><img class="annual" src="img/UncheckedRadio.png" />Annual<img class="monthly" src="img/CheckedRadio.png" style="margin-left:24px;" />Monthly</div>';
+                    //}
+
+                    //template += '<div class="price">$' + price + '</div>';
                     //var name = User.Name;
                     //template += '<div>Cardholder Name</div><input type="text" id="Name" value="' + name + '" />';
                     template += '<input type="text" id="CardNumber" placeholder="Credit Card Number" />';
                     //template += '<br/><div style="width:155px;float:left;">&nbsp;&nbsp;MM&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;YY</div><div>CVC</div>';
                     template += '<br/><input type="text" id="Month" style="width:36px;margin-right:8px;" placeholder="MM" /><input type="text" id="Year" placeholder="YY" style="width:32px;" /><input type="text" id="CVC" placeholder="CVC" style="width:50px;margin:0 0 1.2em 23px" />';
+                    template += '<div style="margin-left: 12px;font-size: 1.15em;">$' + price + ' one time charge</div>';
                     template += '<div class="error"></div>';
                     template += '<br/><a class="button nextBtn" >Create My Account</a>';
                     template += '<img class="loading" style="margin-left:12px;display:none;" src="http://shop.skype.com/i/images/ab-test/u12_normal_2.gif" />';
@@ -291,7 +300,7 @@
 
             User.Annual = $("img.annual").attr("src") == "img/CheckedRadio.png";
 
-            var creditCard = { CardNumber: $("#CardNumber").val(), CardExpirationMonth: $("#Month").val(), CardExpirationYear: $("#Year").val(), Cvc: $("#CVC").val() };
+            var creditCard = { CardNumber: $("#CardNumber").val(), CardExpirationMonth: $("#Month").val(), CardExpirationYear: $("#Year").val(), Cvc: $("#CVC").val(), Price: price };
             User.CreditCard = creditCard;
 
             var success = function (error) {
@@ -416,21 +425,32 @@
     </div>
     <div id="howitworks" class="arrow-up"></div>
     <div class="howitworks">
-        <h2 style="margin-bottom:2em;"><span style="color:#F19F00;"><i>How My Owner Box Works</i></span>&nbsp;&nbsp;Plan a restaurant today!</h2>
+        <h2 style="margin-bottom:2em;"><span style="color:#F19F00;"><i>My Owner Box</i></span>&nbsp;&nbsp;Plan a restaurant today!</h2>
         <div class="step">
-            <img src="img/lightbulb.png" />
+            <img src="img/lightbulbMoney.png" />
             <div class="horizontal"></div>
-            <div>You’ve got an idea for a restaurant</div>
+            <div>A well-conceived, professional restaurant business plan is your greatest single asset for turning your restaurant dreams into reality. It's the key to convincing anyone to invest money, make a loan, lease space, essentially do business with you prior to opening.
+                <br /><br />
+                Zach Wolff<br />
+                Restaurant Consultant</div>
         </div>
         <div class="step">
-            <img src="img/questionMark.png" />
+            <img src="img/graph.png" />
             <div class="horizontal"></div>
-            <div>You don’t know how to get started</div>
+            <div>Having a sound business plan was the single most important ingredient in making my new business a reality.
+            <br /><br />
+            Kellie Reed<br />
+            The Topaz <br />
+            Santa Rosa, CA
+            </div>
         </div>
         <div class="step">
             <img src="img/logoBlue.png" />
             <div class="horizontal"></div>
-            <div>Let’s walk through it together</div>
+            <div>The business plan is the most important thing I look at when considering a small business loan. Without a well thought-out business plan, I have a difficult time granting the loan.
+                <br /><br />
+                Joe Herman<br />
+                Small Business Lender</div>
         </div>
     </div>
     <div class="quote">
