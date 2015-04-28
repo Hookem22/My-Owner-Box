@@ -89,20 +89,11 @@
 
         function NextQuestion()
         {
-            if (currentStep >= 10)//Validation
+            if(currentStep == 9)
             {
-                if(currentStep == 10)
-                {
-                    if (!ValidateSignUp())
-                        return;
-                }
-                if(currentStep == 11)
-                {
-                    ValidateCC();
+                if (!ValidateSignUp())
                     return;
-                }
             }
-
 
             var lastQuestion = currentStep % 2
             var lastQuestionId = "question" + lastQuestion;
@@ -114,15 +105,11 @@
 
             var subject = "User Click";
             var body = $("#" + lastQuestionId + " .question span").html() + "<br/><br/>";
-            if (currentStep == 9) {
-                var type = Annual ? "Annual" : "Monthly";
-                body += "MyOwnerBox Purchase: " + type;
-            }
-            else {
-                $(".answer input[type='text']").each(function () {
-                    body += $(this).val() + "   ";
-                })
-            }
+
+            $(".answer input[type='text']").each(function () {
+                body += $(this).val() + "   ";
+            });
+
             body = EscapeString(body);
             SendEmail(subject, body);
 
@@ -173,43 +160,65 @@
                     template = '<div class="tagline"><span>Ready to Get Started?</span></div><a class="pitchButton" onclick="NextQuestion()">Yes, I am</a></div>';
                     break;
                 case 9:
-                    template = '<div class="question" style="margin-top:-70px;"><span></span></div><div class="answer price" style="margin-top: 70px;padding: 0 15px 10px 0;"><div style="padding: 23px 4px 16px 35px;float: left;border-right: 1px solid #aaa;"><div style="margin: -18px 0 10px -18px;color: #F19F00;font-weight: bold;">GET STARTED TODAY</div><span style="font-size:2em;vertical-align: top;margin-left: 24px;">$</span><span id="annualPrice" style="font-size:4em;">{{Price}}</span><br /><span style="font-size: .9em;margin-left: 26px;">One time fee</span></div><div class="startToday"><div class="button buyBtn annual">Start Now</div><div class="underMinute">&nbsp;Creating your restaurant business plan</div></div></div>';
-                    template = template.replace("{{Price}}", price);
-                    break;
-                case 10:
-                    template = '<div class="question"><span>Sign Up Now</span></div><div class="answer signUp">';
+                    template = '<div class="question"><span>Get Started Now</span></div><div class="answer signUp">';
                     template += '<div>Name</div><input type="text" id="Name" />';
                     template += '<div>Email</div><input type="text" id="Email" />';
                     template += '<div>Password</div><input type="password" id="Password" />';
                     template += '<div>Confirm Password</div><input type="password" id="ConfirmPassword" />';
-                    template += '<a class="button nextBtn" style="margin-left: 16px;" >Continue</a></div>';
+                    template += '<a class="button nextBtn" style="margin-left: 16px;" >Get Started</a><img style="height: 40px;margin-left: 330px;margin-top:-51px;display:none;" src="http://shop.skype.com/i/images/ab-test/u12_normal_2.gif" /></div>';
                     break;
-                case 11:
-                    template = '<div class="question"><span>Sign Up Now</span></div><div class="answer signUp creditCard">';
-                    //template += '<div class="annualHeader">Annual Subscription - $' + Math.floor(price / 2) + '/month (billed $'+ Math.floor(price / 2) * 12 + '/yr)</div>';
-                    //if (Annual)
-                    //{
-                    //    template += '<div class="price">$' + Math.floor(price / 2) * 12 + ' per year</div>';
-                    //    template += '<div style="margin-bottom:8px;"><img class="annual" src="img/CheckedRadio.png" />Annual<img class="monthly" src="img/UncheckedRadio.png" style="margin-left:24px;" />Monthly</div>';
-                    //}
-                    //else
-                    //{
-                    //    template += '<div class="price">$' + price + ' per month</div>';
-                    //    template += '<div style="margin-bottom:8px;"><img class="annual" src="img/UncheckedRadio.png" />Annual<img class="monthly" src="img/CheckedRadio.png" style="margin-left:24px;" />Monthly</div>';
-                    //}
+                default:
+                    window.href.location = "/App";
 
-                    //template += '<div class="price">$' + price + '</div>';
-                    //var name = User.Name;
-                    //template += '<div>Cardholder Name</div><input type="text" id="Name" value="' + name + '" />';
-                    template += '<input type="text" id="CardNumber" placeholder="Credit Card Number" />';
-                    //template += '<br/><div style="width:155px;float:left;">&nbsp;&nbsp;MM&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;YY</div><div>CVC</div>';
-                    template += '<br/><input type="text" id="Month" style="width:36px;margin-right:8px;" placeholder="MM" /><input type="text" id="Year" placeholder="YY" style="width:32px;" /><input type="text" id="CVC" placeholder="CVC" style="width:50px;margin:0 0 1.2em 23px" />';
-                    template += '<div style="margin-left: 12px;font-size: 1.15em;">$' + price + ' one time charge</div>';
-                    template += '<div class="error"></div>';
-                    template += '<br/><a class="button nextBtn" >Create My Account</a>';
-                    template += '<img class="loading" style="margin-left:12px;display:none;" src="http://shop.skype.com/i/images/ab-test/u12_normal_2.gif" />';
-                    template += '</div>';
-                    break;
+                //case 8:
+                //    $(".opening").hide();
+                //    template = '<div class="tagline"><span>Ready to Get Started?</span></div><a class="pitchButton" onclick="GoToApp()">Yes, I am</a><img style="height:64px;margin-top:15px;margin-left: 252px;display:none;" src="http://www.entrepreneur.com/iglobal/loading.gif" /></div>';
+                //    break;
+                //default:
+                //    window.href.location = "/App";
+
+
+                //case 8:
+                //    template = '<div class="tagline"><span>Ready to Get Started?</span></div><a class="pitchButton" onclick="NextQuestion()">Yes, I am</a></div>';
+                //    break;
+                //case 9:
+                //    template = '<div class="question" style="margin-top:-70px;"><span></span></div><div class="answer price" style="margin-top: 70px;padding: 0 15px 10px 0;"><div style="padding: 23px 4px 16px 35px;float: left;border-right: 1px solid #aaa;"><div style="margin: -18px 0 10px -18px;color: #F19F00;font-weight: bold;">GET STARTED TODAY</div><span style="font-size:2em;vertical-align: top;margin-left: 24px;">$</span><span id="annualPrice" style="font-size:4em;">{{Price}}</span><br /><span style="font-size: .9em;margin-left: 26px;">One time fee</span></div><div class="startToday"><div class="button buyBtn annual">Start Now</div><div class="underMinute">&nbsp;Creating your restaurant business plan</div></div></div>';
+                //    template = template.replace("{{Price}}", price);
+                //    break;
+                //case 10:
+                //    template = '<div class="question"><span>Sign Up Now</span></div><div class="answer signUp">';
+                //    template += '<div>Name</div><input type="text" id="Name" />';
+                //    template += '<div>Email</div><input type="text" id="Email" />';
+                //    template += '<div>Password</div><input type="password" id="Password" />';
+                //    template += '<div>Confirm Password</div><input type="password" id="ConfirmPassword" />';
+                //    template += '<a class="button nextBtn" style="margin-left: 16px;" >Continue</a></div>';
+                //    break;
+                //case 11:
+                //    template = '<div class="question"><span>Sign Up Now</span></div><div class="answer signUp creditCard">';
+                //    //template += '<div class="annualHeader">Annual Subscription - $' + Math.floor(price / 2) + '/month (billed $'+ Math.floor(price / 2) * 12 + '/yr)</div>';
+                //    //if (Annual)
+                //    //{
+                //    //    template += '<div class="price">$' + Math.floor(price / 2) * 12 + ' per year</div>';
+                //    //    template += '<div style="margin-bottom:8px;"><img class="annual" src="img/CheckedRadio.png" />Annual<img class="monthly" src="img/UncheckedRadio.png" style="margin-left:24px;" />Monthly</div>';
+                //    //}
+                //    //else
+                //    //{
+                //    //    template += '<div class="price">$' + price + ' per month</div>';
+                //    //    template += '<div style="margin-bottom:8px;"><img class="annual" src="img/UncheckedRadio.png" />Annual<img class="monthly" src="img/CheckedRadio.png" style="margin-left:24px;" />Monthly</div>';
+                //    //}
+
+                //    //template += '<div class="price">$' + price + '</div>';
+                //    //var name = User.Name;
+                //    //template += '<div>Cardholder Name</div><input type="text" id="Name" value="' + name + '" />';
+                //    template += '<input type="text" id="CardNumber" placeholder="Credit Card Number" />';
+                //    //template += '<br/><div style="width:155px;float:left;">&nbsp;&nbsp;MM&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;YY</div><div>CVC</div>';
+                //    template += '<br/><input type="text" id="Month" style="width:36px;margin-right:8px;" placeholder="MM" /><input type="text" id="Year" placeholder="YY" style="width:32px;" /><input type="text" id="CVC" placeholder="CVC" style="width:50px;margin:0 0 1.2em 23px" />';
+                //    template += '<div style="margin-left: 12px;font-size: 1.15em;">$' + price + ' one time charge</div>';
+                //    template += '<div class="error"></div>';
+                //    template += '<br/><a class="button nextBtn" >Create My Account</a>';
+                //    template += '<img class="loading" style="margin-left:12px;display:none;" src="http://shop.skype.com/i/images/ab-test/u12_normal_2.gif" />';
+                //    template += '</div>';
+                //    break;
 
                 //case 9:
                 //    question = "Perfect. We are currently in private beta.<br/>Enter your email for an invitation<br/> to My Owner Box.";
@@ -236,6 +245,12 @@
                 $("body").css("overflow-x", "");
                 $(".answer input").first().focus();
             });
+        }
+
+        function GoToApp() {
+            $(".pitchButton").fadeOut();
+            $(".questions img").fadeIn(1000);
+            window.location.href = "/App";
         }
 
         function ValidateSignUp()
@@ -268,7 +283,21 @@
             else
                 User = { Name: $("#Name").val(), Email: $("#Email").val(), Password: $("#Password").val() };
 
-            return true;
+            $(".signUp img").show();
+            $(".button").hide();
+
+            var success = function (error) {
+                if (error) {
+                    $(".error").html(error);
+                    $(".signUp img").hide();
+                    $(".button").show();
+                }
+                else {
+                    window.location.href = "/App";
+                }
+            };
+
+            Post("CreateUser", { user: User, restaurantName: restaurantName }, success);
         }
 
         function ValidateCC()
@@ -318,7 +347,7 @@
             $(".loading").show();
             $(".button").addClass("disabled");
 
-            Post("CreateUser", { user: User, restaurantName: restaurantName }, success)
+            Post("CreateUser", { user: User, restaurantName: restaurantName }, success);
         }
 
         function SendEmail(subject, body) {

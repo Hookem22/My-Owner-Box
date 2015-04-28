@@ -18,8 +18,7 @@ public partial class Default : System.Web.UI.Page
     [WebMethod]
     public static string CreateUser(Users user, string restaurantName)
     {
-        string error = BuyPlan(user);
-        if(string.IsNullOrEmpty(error))
+        try
         {
             user.Joined = DateTime.Now;
             user.Save();
@@ -30,16 +29,48 @@ public partial class Default : System.Web.UI.Page
 
             if (ConfigurationManager.AppSettings["IsProduction"] == "true")
             {
-                string body = user.Annual ? "Purchase: Annual" : "Purchase: Monthly";
+                string body = "New Sign Up";
                 body += string.Format("<br/>Name: {0}<br/>Email: {1}", user.Name, user.Email);
-                Email email1 = new Email("MyOwnerBox@MyOwnerBox.com", "myownerbox@gmail.com", "New Purchase", body);
+                Email email1 = new Email("MyOwnerBox@MyOwnerBox.com", "myownerbox@gmail.com", "New Sign Up", body);
                 email1.Send();
-                Email email2 = new Email("MyOwnerBox@MyOwnerBox.com", "williamallenparks@gmail.com", "New Purchase", body);
+                Email email2 = new Email("MyOwnerBox@MyOwnerBox.com", "williamallenparks@gmail.com", "New Sign Up", body);
                 email2.Send();
             }
-            return "";
         }
-        return error;
+        catch (Exception ex)
+        {
+            Email email1 = new Email("MyOwnerBox@MyOwnerBox.com", "myownerbox@gmail.com", "Sign Up Error", ex.Message);
+            //email1.Send();
+            Email email2 = new Email("MyOwnerBox@MyOwnerBox.com", "williamallenparks@gmail.com", "Sign Up Error", ex.Message);
+            email2.Send();
+        }
+
+        return "";
+        
+        
+        
+        //string error = BuyPlan(user);
+        //if(string.IsNullOrEmpty(error))
+        //{
+        //    user.Joined = DateTime.Now;
+        //    user.Save();
+        //    Restaurant restaurant = new Restaurant() { Name = restaurantName, UserId = user.Id };
+        //    restaurant.Save();
+
+        //    HttpContext.Current.Session["CurrentUser"] = user;
+
+        //    if (ConfigurationManager.AppSettings["IsProduction"] == "true")
+        //    {
+        //        string body = user.Annual ? "Purchase: Annual" : "Purchase: Monthly";
+        //        body += string.Format("<br/>Name: {0}<br/>Email: {1}", user.Name, user.Email);
+        //        Email email1 = new Email("MyOwnerBox@MyOwnerBox.com", "myownerbox@gmail.com", "New Purchase", body);
+        //        email1.Send();
+        //        Email email2 = new Email("MyOwnerBox@MyOwnerBox.com", "williamallenparks@gmail.com", "New Purchase", body);
+        //        email2.Send();
+        //    }
+        //    return "";
+        //}
+        //return error;
     }
 
     static string BuyPlan(Users user)
@@ -94,9 +125,9 @@ public partial class Default : System.Web.UI.Page
         catch (Exception ex)
         {
             Email email1 = new Email("MyOwnerBox@MyOwnerBox.com", "myownerbox@gmail.com", "Stripe Error", ex.Message);
-            //email1.Send();
+            email1.Send();
             Email email2 = new Email("MyOwnerBox@MyOwnerBox.com", "williamallenparks@gmail.com", "Stripe Error", ex.Message);
-            //email2.Send();
+            email2.Send();
 
             return "Error: " + ex.Message;
         }
@@ -201,7 +232,7 @@ public partial class Default : System.Web.UI.Page
             return;
 
         body = body.Replace("%20", " ").Replace("%3Cbr%3E", "<br/>").Replace("%3Cbr/%3E", "<br/>");
-        body = body.Replace("undefined<br/><br/><br/><br/>", "Request for Purchase<br/><br/>");
+        body = body.Replace("undefined<br/><br/><br/><br/>", "Request for Sign Up<br/><br/>");
         Email email1 = new Email("MyOwnerBox@MyOwnerBox.com", "myownerbox@gmail.com", subject, body);
         email1.Send();
         Email email2 = new Email("MyOwnerBox@MyOwnerBox.com", "williamallenparks@gmail.com", subject, body);
